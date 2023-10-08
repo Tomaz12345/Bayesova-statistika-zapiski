@@ -1,0 +1,440 @@
+\documentclass[a4paper, 12pt]{book}
+
+\usepackage{fancyhdr}
+
+\newcommand{\ttitle}{Bayesova statistika - zapiski s predavanj prof. Smrekarja}
+\newcommand{\ttitleshort}{Bayesova statistika}
+\newcommand{\tauthor}{Tomaž Poljanšek}
+\newcommand{\tdate}{študijsko leto 2023/24}
+
+\usepackage{color}
+\usepackage{soul}
+\usepackage[numbers]{natbib}
+
+\usepackage{physics}
+
+\usepackage[parfill]{parskip}
+\usepackage[hyphens]{url}
+
+\usepackage[usestackEOL]{stackengine}[2013-10-15] % formatting Pascal
+\usepackage[dvipsnames]{xcolor}
+
+\usepackage{cancel}
+\usepackage[export]{adjustbox}
+
+% Related to math
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{mathtools}
+\usepackage{youngtab}
+\usepackage{tikz}
+
+% encoding and language
+\usepackage{lmodern}
+\usepackage[slovene, english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% multiline comments
+\usepackage{comment}
+\usepackage{verbatim}
+
+% random text - for texting
+\usepackage{lipsum}
+\usepackage{blindtext}
+
+\usepackage{hyperref}
+
+% images
+\usepackage{graphicx}
+\graphicspath{ {../images/} }
+
+% no blank page
+\usepackage{atbegshi}
+\renewcommand{\cleardoublepage}{\clearpage}
+
+% theorems
+\theoremstyle{definition}
+\newtheorem{counter}{Counter}[section]
+\newtheorem{defn}[counter]{Definicija}
+\newtheorem{lemma}[counter]{Lema}
+\newtheorem{conseq}[counter]{Posledica}
+\newtheorem{claim}[counter]{Trditev}
+\newtheorem{theorem}[counter]{Izrek}
+\newtheorem{pro}[counter]{Dokaz}
+%%
+\theoremstyle{remark}
+\newtheorem*{ex}{Primer}
+\newtheorem*{exmp}{Zgled}
+\newtheorem*{rem}{Opomba}
+
+% QED
+\renewcommand\qedsymbol{$\blacksquare$}
+
+\hypersetup{pdftitle={\ttitle}}
+
+\addtolength{\marginparwidth}{-20pt}
+\addtolength{\oddsidemargin}{40pt}
+\addtolength{\evensidemargin}{-40pt}
+
+\renewcommand{\baselinestretch}{1.3}
+\setlength{\headheight}{15pt}
+\renewcommand{\chaptermark}[1]
+{\markboth{\MakeUppercase{\thechapter.\ #1}}{}} \renewcommand{\sectionmark}[1]
+{\markright{\MakeUppercase{\thesection.\ #1}}} \renewcommand{\headrulewidth}{0.5pt} \renewcommand{\footrulewidth}{0pt}
+
+% header
+\fancyhf{}
+\fancyhead[LE,RO]{\sl \thepage} 
+\fancyhead[RE]{\sc \tauthor}
+\fancyhead[LO]{\sc \ttitleshort}
+
+
+\newcommand{\autfont}{\Large}
+\newcommand{\titfont}{\LARGE\bf}
+\newcommand{\clearemptydoublepage}{\newpage{\pagestyle{empty}\cleardoublepage}}
+\setcounter{tocdepth}{1}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\ch}{\operatorname{char}}
+
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{icomma}
+\usepackage{tabularx}
+\usepackage{hhline}
+
+\usepackage{enumitem}
+\usepackage{ulem}
+\newcommand{\msout}[1]{\text{\sout{\ensuremath{#1}}}} % cross text in math mode
+
+\title{\ttitle}
+\author{\tauthor}
+\date{\tdate}
+
+\newcommand\mymaketitle{
+  \begin{titlepage}
+    \begin{center}
+        \vspace*{4cm}
+        \Huge
+        \textbf{\ttitle}
+                        
+        \vspace{1.5cm}
+        \huge
+        \tauthor
+            
+        \vspace{3cm}
+        \Large
+        \tdate
+    \end{center}
+  \end{titlepage}
+}
+
+
+
+
+\begin{document}
+
+\selectlanguage{slovene}
+\renewcommand{\thepage}{}
+\newcommand{\sn}[1]{"`#1"'}
+
+\mymaketitle
+
+\clearpage
+\frontmatter
+
+% kazalo
+\pagestyle{empty}
+\def\thepage{}
+\tableofcontents{}
+
+%%
+\def\x{\hspace{3ex}}    %BETWEEN TWO 1-DIGIT NUMBERS
+\def\y{\hspace{2.45ex}}  %BETWEEN 1 AND 2 DIGIT NUMBERS
+\def\z{\hspace{1.9ex}}    %BETWEEN TWO 2-DIGIT NUMBERS
+\stackMath
+
+\clearpage
+\phantomsection
+
+\section*{Seznam uporabljenih kratic}
+
+\noindent\begin{tabular}{p{0.1\textwidth}|p{.8\textwidth}}
+  {\bf kratica} & {pomen} \\
+  \hline
+  {\bf s.v.} & {slučajni vektor} \\
+  {\bf B} & {binomska porazdelitev} \\
+  {\bf NEP} & {neodvisen in enako porazdeljen} \\
+  {\bf s.s.} & {slučajna spremenljivka} \\
+  {\bf p.v.} & {pričakovana vrednost} \\
+\end{tabular}
+
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Povzetek}
+\chapter*{Povzetek}
+
+
+\pagenumbering{arabic}
+
+\mainmatter
+\setcounter{page}{1}
+\pagestyle{fancy}
+
+
+% 1. predavanje: 2.10.
+
+\chapter{Uvod}
+
+
+Bayesova statistika je formalni okvir za \sn{osveževanje} vedenja/znanja o porazdelitvi nekega slučajnega vektorja.
+\begin{exmp}
+  1000, $\approx 400$Č $\to 600$B (apriorno znanje). \\
+  Izvedemo (statistični) poskus: izvlečemo $10$, dobimo $6$ črnih in $4$ bele
+\end{exmp}
+
+
+\section{Elementarna Bayesova statistika}
+
+Privzamemo popoln sistem dogodkov $E_1, E_2 \dots E_m: E_i \cap E_j = \emptyset$ za $i \neq j$ in
+$E_1 \cup E_2 \cup \dots \cup E_m = \Omega$. \\
+Če imamo še neki dogodek $A$, velja t.i. zakon o popolni verjetnosti \\
+$P(A) = \sum_{i=1}^{m} P(A \mid E_i) \cdot P(E_i)$ (interpretacija: 2-fazni poskus). \\
+V Bayesovem okviru nas zanimajo $P(E_j \mid A)$ (verjetnost, da se je v \sn{1. fazi} zgodil $E_j$,
+če se je \sn{2. fazi} zgodil $A$).
+Ker je
+\begin{equation*}
+  P(E_j \mid A) = \frac{P(E_j \cap A)}{P(A)}
+\end{equation*}
+je
+\begin{equation*}
+  P(E_j \mid A) = \frac{P(A \mid E_j) \cdot P(E_j)}{P(A)} \quad \text{- elementarna pogojna verjetnost}
+\end{equation*}
+oziroma
+\begin{equation*}
+  P(E_j \mid A) = \frac{P(A \mid E_j) \cdot P(E_j)}{\sum_{i=1}^{m} P(A \mid E_i) \cdot P(E_i)}
+    \quad \text{- elementarna Bayesova formula.}
+\end{equation*}
+Nadaljujemo zgled. V Bayesovi statistiki predhodno (\sn{apriorno}) vedenje formaliziramo kot realizacijo slučajnega eksperimenta.
+V našem primeru vpeljemo fukcijo, da smo število črnih frnikul $\theta$ (- realizacija) dobili kot rezultat
+slučajne spremenljivke $\Theta \in \{0, 1, 2 \dots 1000\}$. \\
+Informacijo $\theta \approx 400$ zakodiramo kot $E(\Theta) = 400$. \\
+% skica
+Privzamemo (kar!) $\Theta \sim B\left(1000, \frac{4}{10}\right)$ \\
+$\implies P(\Theta = \theta) = \binom{1000}{\theta} \left(\frac{4}{10}\right)^{\theta} \left(1-\frac{4}{10}\right)^{1000-\theta}$. \\
+$P(k$ črnih od $10$ izvlečenih$ \mid \Theta = \theta) = \frac{\binom{\theta}{k} \binom{1000-\theta}{10-k}}{\binom{10}{k}}$ (*) \\
+(*) pri omejitvah ($k$ omejimo). \\
+Osvežena porazdelitev - novo vedenje \\
+\begin{align*}
+  &P(\Theta = \theta \mid 6 \text{ črnih od } 10 \text{ izvlečenih}) = \\
+  &\frac{P(6 \text{ črnih od } 10 \text{ izvlečenih} \mid \Theta = \theta) \cdot P(B(1000, \frac{4}{10}) = \theta)}
+    {\sum_{i=0}^{1000} P(6 \text{ črnih od } 10 \text{ izvlečenih} \mid \Theta = i) \cdot P(B(1000, \frac{4}{10})) = i}.
+\end{align*}
+Pravimo ji aposteriorna porazdelitev.
+
+
+\section{Proučevani slučajni vektor (vzročni) parametrični model}
+
+Naj bo $X = (X_1, X_2 \dots X_n) \in \R^n$ preučevani slučajni vektor.
+Pogosto so neodvisni in enako porazdeljeni (NEP) realizacija danega slučajnega eksperimenta.
+S pomočjo statistike lahko \sn{ocenjujemo} porazdelitev slučajnega vektorja $X$.
+Zanjo privzamemo, da pripada nekemu modelu, t.j. neki množici dopustnih rešitev.
+Privzamemo, da je ta množica parametrizirana s parametričnim prostorom $\Theta \subset \R^r$.
+Tu si mislimo, da parameter $\theta \in \Theta$ dobimo kot realizacijo slučajnega vektorja (s.v.) $\Theta$
+z vrednostmi v $\Theta$ (večinoma $r \geq 2$).
+Porazelitvi s.v. $X_i$ pogojno na $\Theta = \theta$ pravimo vzorčna porazdelitev.
+Privzeli bomo, da imamo gostote $f(x \mid \theta)$ ali verjetnostne funkcije
+\begin{equation*}
+  P(X = x \mid \theta) = f(x \mid \theta),
+\end{equation*}
+torej da velja
+\begin{equation*}
+  P(X \in B \mid \Theta = \theta) = \int_B f(x \mid \theta) d\nu (x)
+\end{equation*}
+(v Lebesgueovi meri) ali
+\begin{equation*}
+  P(X \in B \mid \Theta = \theta) = \sum_{x \in B} f(x \mid \theta).
+\end{equation*}
+Modelu pogojnih porazdelitev $(X \mid \Theta = \theta)$ pravino vrorčni model.
+
+
+\section{Apriorna in \sn{robna} porazdelitev}
+
+Porazdelitvi fiktivnega slučajnega vektorja $\Theta$ pravimo apriorna porazdelitev,
+brezpogojni (robni) porazdelitvni slučajnega vektorja $X$ pa pravimo \sn{robna} porazdelitev \\
+(*) v resnici sta obe porazdelitvi robni porazdelitvi družne porazdelitve vektorja $(X, \Theta)$ z vrednostmi v $\R^{n+r}$.
+\begin{exmp}
+  Ocenjujemo Bernoullijevo porazdelitev. Predhodno vedenje je podano z apriorno prazdelitvijo na $(0,1)$;
+  mislimo si, da je $p$ realizacija slučajne spremenljivke (s.s.) $\Pi$ z vrednostmi v $(0,1)$. Možnosti:
+  \begin{itemize}
+    \item nimamo apriornega mnenja o (dejanskem) $p$: tedaj bi (morda) vzeli zvezno porazdelitev z gostoto enakomerna porazdelitve,
+      % skica
+    \item smo \sn{zelo} prepričani, da je (dejanski) $p \approx \frac{1}{2}$. %Tedaj bi imeli
+      % skica
+  \end{itemize}
+\end{exmp}
+Recimo, da je $f(p)$ gostota apriorne porazdelitve. Tedaj so apriorne verjetnosti
+\begin{equation*}
+  P(\Pi \in (a,b)) = \int_{a}^{b} f(p) dp
+\end{equation*}
+in apriorna pričakovana vrednost
+\begin{equation*}
+  E(\Pi) = \int_{0}^{1} p f(p) dp. 
+\end{equation*}
+Pripomnimo, da pri $\Pi \sim U(0,1)$ dobimo $E(U(0,1)) = \frac{1}{2}$. \\
+Privzemimo, da smo \sn{vzorčili} $p$, potem pa \sn{neodvisno} $n$-krat vržemo $p$-kovanec ($P($cifra$=p)$),
+gre za slučajne spremenljivke $X_1, X_2 \dots X_n$, za katere je $(X_i \mid \Pi = p) \sim Bernoulli(p)$
+in so $X_1 \dots X_n$ neodvisne pogojno na $p$.
+To ne pomeni, da do $X_1 \dots X_n$ brezpogojno neodvisne. \\
+Za $i \neq j$ je
+\begin{align*}
+  P(X_i = 1 \land X_j = 1) &= \int_{0}^{1} P(X_i = 1 \land X_j = 1 \mid \Pi = p) f(p) dp = \\
+  &\stackrel{\text{pogojno neodvisne}}{=}  \int_{0}^{1} P(X_i = 1 \mid \Pi = p) P(X_j = 1 \mid \Pi = p) f(p) dp = \\
+  &= \int_{0}^{1} p^2 f(p) dp = \\
+  &= E(\Pi^2).
+\end{align*}
+Ker je $P(X_i = 1) = \int_{0}^{1} P(X_i = 1 \mid p) f(p) dp = \int_{0}^{1} p f(p) dp = E(\Pi)$, je
+\begin{equation*}
+  Cov(X_i, X_j) = E(\Pi^2) - E(\Pi)^2 = D(\Pi)
+\end{equation*}
+za $i \neq j$, torej so $X_i$ brezpogojno neodvisne $\iff$ $\Pi =$ konstantna (slučajna spremenljivka). \\
+Tvorimo $X = X_1 + \dots + X_n \in \{0, 1 \dots n\}$.
+To je \sn{preučevana} slučajna spremenljivka.
+Velja $(X\mid \Pi = p) \sim B(n,p)$.
+To je vzorčna porazdelitev; vzročni model je parametriziran s prostorom parametrov $(0,1) = \Theta$.
+Robna porazdelitev je podana z verjetnostmi
+\begin{align*}
+  P(X = k) &= \int_{0}^{1} P(X = k \mid p) f(p) dp = \\
+  &= \int_{0}^{1} \binom{n}{k} p^k (1-p)^{n-k} f(p) dp.
+\end{align*}
+Recimo, da \sn{opazimo} $X = k$. Aposteriorna porazdelitev (osveženo vedenje o $p$) je sestavljeno iz verjetnosti
+\begin{align*}
+  P(X \in (a,b) \mid X = k) &= \frac{P(X = k \land \Pi \in (a,b))}{P(X = k)} = \\
+  &= \frac{\int_{0}^{1} P(X = k \land \Pi \in (a,b) \mid \Pi = p) f(p) dp}{P(X = k)} = \\
+  &= \int_{a}^{b} \frac{P(X = k \mid \Pi = p)}{P(X = k)} f(p) dp.
+\end{align*}
+Opazimo, da ima aposteriorna porazdelitev $(\Pi \mid X = k)$ gostoto
+\begin{equation*}
+  f_{(\pi \mid X)}(p \mid k) = \frac{P(X = k \mid p) f(p)}{P(X = k)}.
+\end{equation*}
+Zgornji formuli pravimo Bayesova formula. \\
+Za številsko oceno za $p$ bi lahko vzeli pričakovano vrednost aposteriorne porazdelitve
+\begin{equation*}
+  \hat{p} = E(\Pi \mid X = k) = \int_{0}^{1} p \cdot f(p \mid k) dp.
+\end{equation*}
+Pravimo ji aposteriorna pričakovana vrednost. \\
+Posebej priročna družina apriornih porazdelitev (za binomske vzorčne porazdelitve) je t.i.
+$Beta = \{Beta(a,b) \mid a,b \in (0, \infty)\}$
+\begin{equation*}
+  f_{Beta(a,b)}(p) = \frac{1}{B(a,b)} p^{a-1} (1-p)^{b-1} 1_{(0,1)}(p)
+\end{equation*}
+(tu je $B(a,b) = \int_{0}^{1} p^{a-1} (1-p)^{b-1} dp$). \\
+\begin{align*}
+  &E(Beta(a,b)) = \frac{a}{a+b} \\
+  &D(Beta(a,b)) = \frac{ab}{(a+b)^2 (a+b+1)}.
+\end{align*}
+$D(Beta(a,b))$ predstavlja \sn{težo} apriornega prepričanja; večji - manj sigurni smo.
+% skica
+\begin{equation*}
+  E(Beta(a,b)) = 0.7.
+\end{equation*}
+Aposteriorna porazdelitev ima gostoto (če je $f(p) = f_{Beta(a,b)}(p)$)
+\begin{align*}
+  f(p \mid k) &= \frac{\binom{n}{k} p^k (1-p)^{n-k} \cdot \frac{1}{B(a,b)} p^{a-1} (1-p)^{b-1}}{P(X = k)} = \\
+  &= \text{konst.} \cdot p^{a+k-1} (1-p)^{b+n-k-1}.
+\end{align*}
+Vidimo, da je $(\Pi \mid X = k) \sim Beta(a+k, b+n-k)$. \\
+Aposteriorna pričakovana vrednost (p.v.) je
+\begin{align*}
+  \frac{a+k}{a+b+n} &= \frac{(a+b)\frac{a}{a+b} + n \frac{k}{n}}{a+b+n} = \\
+  &= \frac{a+b}{a+b+n} \cdot \frac{a}{a+b} + \frac{n}{a+b+n} \cdot \frac{k}{n}.
+\end{align*}
+Tukaj je
+\begin{itemize}
+  \item $\frac{a}{a+b}$ apriorna ocena,
+  \item $\frac{k}{n}$ vzorčna ocena in
+  \item $\frac{a+b}{a+b+n}$ in $\frac{n}{a+b+b}$ faktorja pri konveksni kombinaciji obeh ocen.
+\end{itemize}
+Vzorec velik $\to$ prevlada mnenje vzorca.
+
+
+% 2. predavanje: 3.10.
+
+\section{Disperzija aposteriornih porazdelitev}
+
+Gre pravzaprav za disperzijo pogojnih porazdelitev.
+Naj bosta $X: \Omega \to \R^m$ in $Y: \Omega \to \R^n$ in naj ima $(X,Y)$ gostoto $f_{(X,Y)}$ glede na $\mu \times \nu$
+Sledita gostoti \\
+$f_X(x) = \int f_{(X,Y)}(x,y) d\nu (y)$ za $X$ glede na $\mu$ in \\
+$f_Y(y) = \int f_{(X,Y)}(x,y) d\mu (x)$ za $Y$ glede na $\nu$.
+Dalje definiramo pogojni porazdelitvi $(Y \mid X = x)$ in $(X \mid Y = y)$ preko gostot
+\begin{equation*}
+  f_{(Y \mid X)}(y \mid x) = \frac{f_{(X,Y)}(X,Y)}{f_X(x)}
+\end{equation*}
+glede na $\nu$: gostota v $X \to \mu$ in simetrično za $f_{(X \mid Y)}(x \mid y)$. \\
+$P(Y \in B) \mid X = x = \int_B f_{(Y \mid X)}(y \mid x) d\nu (y)$ - porazdelitev, opremljena z gostoto.
+\begin{defn}
+  \begin{equation*}
+    E(Y \mid X = x) = \int y f_{(Y \mid X)}(y \mid x) d\nu (y).
+  \end{equation*}
+  $y$ lahko zamenjamo s $h(y)$. \\
+  Pišemo $E(Y \mid X = x) = u(X)$ - $h$ je identiteta.
+\end{defn}
+\begin{defn}
+  \begin{equation*}
+    E(Y \mid X) = u(X): \Omega \to \R^n.
+  \end{equation*}
+  Slučajni vektor $\to$ pogojna pričakovana vrednost, \\
+  oz.
+  \begin{equation*}
+    E(Y \mid X)(\omega) = u(X(\omega)) = E(Y \mid X = X(\omega)).
+  \end{equation*}
+  $E(Y \mid X)(\omega)$: funkcija na $X$, kompozitum. \\
+  $X(\omega)$: vrednost.
+\end{defn}
+\begin{defn}
+  Pogojno varianco slučajnega vektorja $Y$, pogojno na $X = x$ definiramo kot varianco pogojne porazdelitve $(Y \mid X = x)$, t.j.
+  \begin{equation*}
+    E((Y - u(X))(Y - u(X))^T \mid X = x) =: Var(Y \mid X = x).
+  \end{equation*}
+  Ker je $E$ aditivna, velja
+  \begin{equation*}
+    E((Y - u(X))(Y - u(X))^T \mid X = x) = E(Y Y^T \mid X = x) - u(X) u(X)^T =: v(X).
+  \end{equation*}
+  $v(X)$ je $n \times n$ matrika.
+\end{defn}
+\begin{defn}
+  Pogojna varianca slučajnega vektorja $Y$ pogojno na slučajni vektor $X$ je
+  \begin{equation*}
+    Var(Y \mid X) = v(X).
+  \end{equation*}
+\end{defn}
+
+
+
+
+\clearpage
+\phantomsection
+
+\addcontentsline{toc}{chapter}{Literatura}
+\bibliography{../bibtex/literatura}
+\bibliographystyle{plainnat}
+
+
+\clearpage
+\phantomsection
+
+\chapter*{Dodatki}
+\addcontentsline{toc}{chapter}{Dodatki}
+
+
+
+
+\end{document}
