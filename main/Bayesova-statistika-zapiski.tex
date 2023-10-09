@@ -114,6 +114,10 @@
 \usepackage{ulem}
 \newcommand{\msout}[1]{\text{\sout{\ensuremath{#1}}}} % cross text in math mode
 
+
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{%
+            \node[shape=circle,fill=white!20,draw,inner sep=2pt] (char) {#1};}}
+
 \title{\ttitle}
 \author{\tauthor}
 \date{\tdate}
@@ -174,19 +178,21 @@
   {\bf NEP} & {neodvisen in enako porazdeljen} \\
   {\bf s.s.} & {slučajna spremenljivka} \\
   {\bf p.v.} & {pričakovana vrednost} \\
+  {\bf AKI} & {aposteriorni kredibilnostni interval} \\
+  {\bf BF} & {Bayesova formula} \\
 \end{tabular}
 
-\clearpage
-\phantomsection
-\addcontentsline{toc}{chapter}{Povzetek}
-\chapter*{Povzetek}
+%\clearpage
+%\phantomsection
+%\addcontentsline{toc}{chapter}{Povzetek}
+%\chapter*{Povzetek}
 
-
-\pagenumbering{arabic}
 
 \mainmatter
 \setcounter{page}{1}
 \pagestyle{fancy}
+
+\pagenumbering{arabic}
 
 
 % 1. predavanje: 2.10.
@@ -418,21 +424,311 @@ $P(Y \in B) \mid X = x = \int_B f_{(Y \mid X)}(y \mid x) d\nu (y)$ - porazdelite
 \end{defn}
 
 
+% 3. predavanje: 9.10.
+
+Zadnjič: beta-binomski model: proučevana s.s. $T$;
+vzorčne porazdelitve $(T \mid p) \sim B(n,p)$ za $p \in \Theta = (0,1)$.
+Če je apriorna porazdelitev $Beta(a,b)$, je aposteriorna pri $T = k$ enaka $Beta(a+k, b+n-k)$. \\
+Disperzija porazdelitve $(\Pi \mid T = k)$ je enaka $\frac{(a-k)(b+n-k)}{(a+b+k)^2(a+b+n+1)}$
+(in je odvisna od realizacije $k$). \\
+DN: za katere $k$ je $D$(aposteriorne) $> D$(apriorne). \\
+Izkaže se, da je za nekatere $k$ manjša, za nekatere $k$ pa večja od disperzije apriorne porazdelitve.
+Vendar pa velja t.i. \sn{zakon popolne porazdelitve}
+\begin{equation*}
+  Var(\Theta) = E(Var(\Theta \mid X)) + Var(E(\Theta \mid X)),
+\end{equation*}
+kjer sta seveda
+\begin{align*}
+  &E(Var(\Theta \mid X)) \geq 0 \text{ in} \\
+  &Var(E(\Theta \mid X)) \geq 0,
+\end{align*}
+($X$ vzorčni), iz katerega sledi $E(Var(\Pi \mid X)) \leq Var(\Theta)$ (apriori).
+V konkretnem primeru je
+\begin{equation*}
+  E(Var(\Pi \mid T)) \leq Var(\Pi).
+\end{equation*}
+\begin{rem}
+  \begin{equation*}
+    E(Var(\Pi \mid T)) = \sum_{k=0}^{n} Var(\Pi \mid k) \cdot P(T = k);
+  \end{equation*}
+  $T$ vzorčimo, $T$ je robna porazdelitev (binomska pogojna?).
+\end{rem}
+(V povprečju aposteriorna varianca boljša.)
 
 
-\clearpage
-\phantomsection
+\subsection{Aposteriorni kredibilnostni interval}
 
-\addcontentsline{toc}{chapter}{Literatura}
-\bibliography{../bibtex/literatura}
-\bibliographystyle{plainnat}
+(Bayesova različica intervala zaupanja). \\
+V konkretnem zgledu \sn{iščemo} funkciji realizacije $L(k), U(k)$, za kateri velja
+\begin{equation*}
+  \forall k \; P\left(L(k) \leq p \leq U(k)\right) \geq 1-\alpha.
+\end{equation*}
+$p$ je slučajen. \\
+Ker za $\Pi \sim Beta(a,b)$, vemo $(\Pi \mid T=k) \sim Beta(a+k, b+n-k)$, lahko izberemo
+\begin{align*}
+  &L(k) = F_{Beta(a+k,b+n-k)}^{-1}\left(\frac{\alpha}{2}\right), \\
+  &U(k) = F_{Beta(a+k,b+n-k)}^{-1}\left(1 - \frac{\alpha}{2}\right)
+\end{align*}
+% skica
+in v aposteriorni kredibilnostni interval (AKI) dobimo $= 1 - \alpha$.
+Taki konstrukciji pravimo centralni kredibilnostni interval.
+V praksi pogosto uporabljamo tudi t.i. kredibilnostni interval največje gostote, kjer zahtevamo
+\begin{equation*}
+  f_{(\Pi \mid T=k)}(L(k)) = f_{(\Pi \mid T=k)}(U(k)).
+\end{equation*}
+% skica
+To ima smisel za unimodalne aposteriorne porazdelitve.
 
 
-\clearpage
-\phantomsection
+\subsection{Splošne oznake}
 
-\chapter*{Dodatki}
-\addcontentsline{toc}{chapter}{Dodatki}
+$X$ - proučevalni vektor (z vrednostmi v $\R^n$). \\
+$x$ - realizacija vektorja $X (x \in \R^n)$. \\
+$\Theta \subset \R^n$ - parametrični prostor. \\
+$\Theta$ - (fiktivni) vektor z realizacijo $\theta \in \Theta$. \\
+$P = \{P_{\theta} = (X \mid \Pi = \theta) \mid \theta \in \Theta\}$ - družina vzorčnih porazdelitev (vzorčni model). \\
+$f(x \mid \theta)$ - gostota (ali verjetnostna funkcija) porazdelitve $(X \mid \Theta = \theta)$
+(izračunano v $x$). \\
+\begin{rem}
+  $f(x \mid \theta) = f_{X \mid \Theta}(x \mid \theta)$ - spuščamo.
+\end{rem}
+V istem smislu gostota (ali verjetnostna funkcija) apriorne porazdelitve.
+Za aposteriorno gostoro (ali verjetnostno funkcijo) velja Bayesova formula (BF)
+\begin{equation*}
+  f(\theta \mid x) = \frac{f(x \mid \theta) f(\theta)}{f(\theta)} \propto f(x \mid \theta) f(\theta).
+\end{equation*}
+$f(x)$ je normalizacijski faktor.
+
+
+
+\chapter{Enoparametrični modeli}
+
+
+\section{Beta-binomski model}
+
+Uvodni beta-binomski model je enoparametričen.
+
+
+\section{Poissonov model (gama-poissonov model)}
+
+Naj bo parametrični prostor $\Theta = (0, \infty)$ in naj bo $X = (X_1 \dots X_n)$,
+kjer so $(X_i \mid \lambda) \stackrel{\text{NEP}}{\sim} Poisson(\lambda)$.
+Za proučevano s.s. vzamemo $T = \sum_{i=1}^{n} X_i$; seveda je $(T \mid \lambda) \sim Poisson(n\lambda)$. \\
+Privzemimo apriorno porazdelitev
+\begin{equation*}
+  f(\lambda) = f_{Gama(a,b)}(\lambda) = \frac{b^a}{\Gamma(a)} \lambda^{a-1} e^{-b\lambda} \cdot 1_{(0,\infty)}(\lambda).
+\end{equation*}
+$(0,\infty)$ je parametrični prostor, $a$ in $b$ sta pozitivni konstanti. \\
+Izkaže se:
+\begin{align*}
+  &E(Gama(a,b)) = \frac{a}{b}, \\
+  &D(Gama(a,b)) = \frac{a}{b^2}.
+\end{align*}
+DN. \\
+\begin{equation*}
+  P(T = k \mid \lambda) = e^{-n \lambda} \frac{(n \lambda)^k}{k!}.
+\end{equation*}
+Bayesova formula se glasi
+\begin{align*}
+  f(\lambda \mid T = k) &\propto P(T = k \mid \lambda) \cdot f(\lambda) \\
+  &\propto e^{-n \lambda} \lambda^k \cdot \lambda^{a-1} e^{-b \lambda} \\
+  &= \lambda^{a+k-1} e^{-(b+n) \lambda}
+\end{align*}
+$\implies (\Lambda \mid T = k) \sim Gama(a+k, b+n)$.
+
+\begin{defn}
+  Naj bo podan vzorčni model $P$ in naj bo $K$ družina porazdelitev na parametričnem prostoru $\Theta$.
+  Pravimo, da je $K$ konjugirana k $P$, če vedno velja
+  \begin{equation*}
+    f(\theta \mid x) \in K \; \implies \; \forall x: \; (\Theta \mid X = x) \in K.
+  \end{equation*}
+  $f(\theta \mid x)$ je porazdelitev na $\Theta$.
+  Rečemo lahko tudi, da sta $P$ in $K$ konjugiran par.
+\end{defn}
+
+
+\section{Normalni model z znano disperzijo}
+
+Tu je $\sigma^2$ znana disperzija, vzorec $X = (X_1 \dots X_n)$ pa zadošča \\
+$(X_i \mid \mu) \stackrel{\text{NEP}}{\sim} N(\mu, \sigma^2)$, kjer je $\mu \in \Theta = \R$.
+S katero porazdelitvijo bi zakodirali apriorno informacijo? \\
+Recimo, da je apriorno mnenje: $\mu \approx \mu_0$.
+Vzemimo za apriorno porazdelitev kar $N(\mu_0, \tau_0^2)$. \\
+Vzorčna:
+\begin{align*}
+  f(x \mid \mu) &= f(x_1 \dots x_n \mid \mu) \\
+  &= (2 \pi \sigma^2)^{-\frac{1}{2}} e^{-\frac{1}{2 \sigma^2} \sum_{i=1}^{n} (x_i - \mu)^2}.
+\end{align*}
+Pripomnimo, da je
+\begin{equation*}
+  \sum_{i=1}^{n} (x_i - \mu)^2 = n \cdot (\mu - \overline{x})^2 + \sum_{i=1}^{n} (x_i - \overline{x})^2,
+\end{equation*}
+kjer je $\overline{x} = \frac{1}{n} \sum_{i=1}^{n} x_i$.
+% skica
+(Vzorčna: jih je več, apriorna: ena.) \\
+Apriorna:
+\begin{equation*}
+  f(\mu) = (2 \pi \sigma_0^2)^{-\frac{1}{2}} e^{-\frac{1}{2 \sigma_0^2} (\mu - \mu_0)^2}.
+\end{equation*}
+Opazimo, da je
+\begin{equation*}
+  f(\mu) = e^{\text{kvadratni polinom}(\mu)}.
+\end{equation*}
+Velja:
+\begin{equation*}
+  \int_{-\infty}^{\infty} e^{a \mu^2 + b \mu + c} d\mu < \infty \; \iff \; a < 0.
+\end{equation*}
+DN (kako se narobe lotiti): drugače koliko apriorna gostota (integral robne gostote, Bayesova formula). \\
+V tem duhu
+\begin{equation*}
+  f(\mu \mid x) \propto e^{-\frac{1}{2} \left(\left(\frac{n}{\sigma^2} + \frac{1}{\tau_0^2}\right) \mu^2 -
+  2 \left(\frac{n \overline{x}}{\sigma^2} - \frac{\mu_0}{\tau_0^2}\right) \mu\right)}.
+\end{equation*}
+Prepoznamo kot normalno porazdelitev.
+Označimo jo $N(\mu_1, \tau_1^2)$. \\
+Velja
+\begin{equation*}
+  f_{N(\mu_1, \tau_1^2)}(\mu) \propto e^{-\frac{1}{2} \left(\frac{1}{\tau_1^2} \mu^2 - 2 \frac{\mu_2}{\tau_1^2} \mu\right)}.
+\end{equation*}
+Sledi
+\begin{align*}
+  &[\mu^2]: \; \frac{n}{\sigma^2} + \frac{1}{\tau_0^2} = \frac{1}{\tau_1^2} \text{ in} \\
+  &[\mu]: \; \frac{n \overline{x}}{\sigma^2} + \frac{\mu_0}{\tau_0^2} = \frac{\mu_1}{\tau_1^2}.
+\end{align*}
+Tukaj je:
+\begin{itemize}
+  \item $\frac{n}{\sigma^2}$ vzorčna preciznost,
+  \item $\frac{1}{\tau_0^2}$ apriorna preciznost,
+  \item $\frac{1}{\tau_1^2}$ aposteriorna preciznost,
+  \item preciznosti se pri seštevanju neodvisnih normalnih porazdelitvah seštevajo.
+\end{itemize}
+Preciznost je $\frac{1}{D(..)}$. \\
+To pomeni
+\begin{equation*}
+  \tau_1^2 = (\frac{n}{\sigma^2} + \frac{1}{\tau_0^2})^{-1}
+\end{equation*}
+in
+\begin{align*}
+  \mu_1^2 &= \tau_1^2 (\frac{n}{\sigma^2} + \frac{1}{\tau_0^2}) \\
+  &= \frac{(\frac{n}{\sigma^2} \overline{x} + \frac{1}{\tau_0^2} \mu_0) \cdot \frac{\tau_0^2 \sigma^2}{n}}
+    {(\frac{n}{\sigma^2} + \frac{1}{\tau_1^2}) \cdot \frac{\tau_0^2 \sigma^2}{n}} \\
+  &= \frac{\tau_0^2 \overline{x} + \frac{\sigma^2 \mu_0}{n}}{\tau_0^2 + \frac{\sigma^2}{n}} \\
+  &= \frac{\tau_0^2}{\tau_0^2 + \frac{\sigma^2}{n}} \overline{x} +
+    \frac{\frac{\sigma^2}{n}}{\tau_0^2 + \frac{\sigma^2}{n}} \mu_0
+\end{align*}
+
+
+\section{Eksponentne družine porazdlitev}
+
+Vzorčni model pripada eksponentni družini porazdelitev, če velja
+\begin{align}
+  f(x \mid \theta) &= c(\theta) \cdot e^{\langle Q(\theta), T(x)\rangle} \cdot h(x) \nonumber \\
+  &= e^{-\psi(\theta)} e^{\langle Q(\theta), T(x)\rangle} \cdot h(x), \label{eksponentna-osnova}
+\end{align}
+kjer je
+\begin{align*}
+  &\tau: \Theta \to \R \\
+  &T: \R^n \to \R^m \\
+  &Q: \Theta \to \R^m \text{ in} \\
+  &h: \R^n \to [0, \infty].
+\end{align*}
+\begin{exmp}
+  \begin{enumerate}[label=\protect\circled{\arabic*}] \text{}
+    \item NEP Bernoullijev model: \\
+      \begin{align*}
+        &(X_i \mid p) \stackrel{\text{NEP}}{\sim} Bernoulli(p) = B(1,p) \\
+        &f(x_1 \dots x_n \mid p) = p^{\sum_{i=1}^{n} x_i} (1-p)^{n-\sum_{i=1}^{n} x_i} \cdot 1_{\{0,1\}^n} (x_1 \dots x_n)
+      \end{align*}
+      % 1_{\{0,1\}^n} (x_1 \dots x_n) realizacija?
+      \begin{equation*}
+        f(x_1 \dots x_n \mid p) = P(X_1 = x_1 \dots X_n = x_n \mid p)
+      \end{equation*}
+      Preoblikujemo v:
+      \begin{equation*}
+        (1-p)^{n} \left(\frac{p}{1-p}\right)^{\sum_{i=1}^{n} x_i} \cdot 1_{\{0,1\}^n} (x_1 \dots x_n) =
+        e^{\ln(\frac{p}{1-p}) \sum_{i=1}^{n} x_i} \cdot 1_{\{0,1\}^n} (x_1 \dots x_n).
+      \end{equation*}
+      
+    \item Normalni model z znano $\sigma^2$: \\
+      $\Theta = \R, \mu \in \R$
+      \begin{align*}
+        (EXP) \; f(x_1 \dots x_n \mid \mu) &= (2 \pi \sigma^2)^{-\frac{n}{2}} e^{-\frac{1}{2 \sigma^2} \sum_{i=1}^{n} (x_i - \mu)^2} \\
+        &= (2 \pi \sigma^2)^{-\frac{n}{2}} e^{-\frac{1}{2 \sigma^2} \sum_{i=1}^{n} x_i^2
+          + \frac{\mu}{\sigma^2} \sum_{i=1}^{n} x_i - \frac{n \mu^2}{2 \sigma^2}} \\
+        &= (2 \pi \sigma^2)^{-\frac{n}{2}} \cdot e^{-\frac{n \mu^2}{2 \sigma^2}}
+          \cdot e^{\frac{\mu}{\sigma^2} \sum_{i=1}^{n} x_i} \cdot e^{-\frac{1}{2 \sigma^2} \sum_{i=1}^{n} x_i^2}.
+      \end{align*}
+      Tukaj je
+      \begin{align*}
+        &c(\mu) = (2 \pi \sigma^2)^{-\frac{n}{2}} \cdot e^{-\frac{n \mu^2}{2 \sigma^2}} \\
+        &Q(\mu) = e^{-\frac{\mu}{\sigma^2}} \\
+        &T(x) = e^{\sum_{i=1}^{n} x_i} \\
+        &h(x) = e^{-\frac{1}{2 \sigma^2} \sum_{i=1}^{n} x_i^2}
+      \end{align*}
+    \item Normalni model z neznano disperzijo: \\
+      $\Theta = \R \times (0, \infty) = (\mu, \sigma^2)$ \\
+      Zapišemo
+      \begin{equation*}
+        f(x_1 \dots x_n \mid \mu, \sigma^2) = (2 \pi \sigma^2)^{-\frac{n}{2}} e^{-\frac{n \mu^2}{2 \sigma^2}}
+          e^{\left\langle \left(\frac{\mu}{\sigma^2}, -\frac{1}{2 \sigma^2}\right),
+          \left(\sum_{i=1}^{n} x_i, \sum_{i=1}^{n} x_i^2\right)\right\rangle}.
+      \end{equation*}
+      Tukaj je
+      \begin{align*}
+        &c(\mu) = (2 \pi \sigma^2)^{-\frac{n}{2}} e^{-\frac{n \mu^2}{2 \sigma^2}} \\
+        &Q(\mu) = \left(\frac{\mu}{\sigma^2}, -\frac{1}{2 \sigma^2}\right) \\
+        &T(x) = \left(\sum_{i=1}^{n} x_i, \sum_{i=1}^{n} x_i^2\right).
+      \end{align*}
+      $m = 2$. \\
+      Preimenujemo (EXP) in definirajmo apriorne gostote
+      \begin{equation}
+        \label{apriori-nornalna-neznana}
+        f(\eta, \upsilon) = \frac{1}{K(\eta, \upsilon)} \cdot e^{\langle Q(\theta), \eta  \rangle - \upsilon \psi(\theta)}.
+      \end{equation}
+      Tukaj je $\mu \in \R^n$ in $\upsilon \in \R$. \\
+      (Upoštevati moramo morebitne omejitve zaradi zahteve $\int F = 1$). \\
+      Seveda je
+      \begin{equation*}
+        K(\eta, \upsilon) = \int e^{\langle Q(\theta), \upsilon \rangle - \upsilon \psi(\theta)} d\theta.
+      \end{equation*}
+      Aposteriorna gostota?
+      \begin{equation*}
+        f(\theta \mid x) \propto e^{-(\upsilon + 1) \psi(\theta) + \langle Q(\theta), \eta + T(x) \rangle}
+      \end{equation*}
+      Tukaj smo zmožili nekonstantne faktorje iz \ref{eksponentna-osnova} in \ref{apriori-nornalna-neznana}. \\
+      Vidimo:
+      \begin{equation*}
+        f(\theta \mid x) = f_{(\eta + T(x), \upsilon + 1)}(\theta).
+      \end{equation*}
+      Gre za konjugirano družino.
+      \begin{exmp}
+        Aplicirajmo to konstrukcijo na modelu \circled{2}.
+        Dobimo konjugirano družino
+        \begin{equation*}
+          f_{(\eta, \upsilon)}(\mu) \propto e^{\frac{\mu}{\sigma^2 \eta} - \tau \frac{n \mu^2}{2 \sigma^2}},
+        \end{equation*}
+        kjer sta $\eta, \upsilon \in \R$. \\
+        Vidimo, da mora biti $\upsilon > 0$. \\
+        DN: $\eta, \upsilon \to \mu_0, \tau_0^2$ - reparametrizacija.
+      \end{exmp}
+  \end{enumerate}
+\end{exmp}
+
+
+
+%\clearpage
+%\phantomsection
+
+%\addcontentsline{toc}{chapter}{Literatura}
+%\bibliography{../bibtex/literatura}
+%\bibliographystyle{plainnat}
+
+
+%\clearpage
+%\phantomsection
+
+%\chapter*{Dodatki}
+%\addcontentsline{toc}{chapter}{Dodatki}
 
 
 
