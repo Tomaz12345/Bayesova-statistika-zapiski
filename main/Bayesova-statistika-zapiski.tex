@@ -268,7 +268,7 @@ torej da velja
 \begin{equation*}
   P(X \in B \mid \Theta = \theta) = \sum_{x \in B} f(x \mid \theta).
 \end{equation*}
-Modelu pogojnih porazdelitev $(X \mid \Theta = \theta)$ pravino vrorčni model.
+Modelu pogojnih porazdelitev $(X \mid \Theta = \theta)$ pravino vzorčni model.
 
 
 \section{Apriorna in \sn{robna} porazdelitev}
@@ -714,6 +714,91 @@ kjer je
   \end{enumerate}
 \end{exmp}
 
+
+% 4. predavanje: 17.10.
+
+\section{Neinformirane apriorne porazdelitve}
+
+Neinformirana apriorna porazdelitev je taka, ki \sn{ne vsebuje predhodne informacije} o parametru.
+Tovrsten koncept je šibko-informativna apriorna porazdelitev. % sovrsten?
+Izkaže se, da s statistični praksi (tudi v aplikacija frekventistične statistike) potrebujemo ta koncept.
+
+\begin{exmp}
+  V Beta-binomskem modelu (..) je Laplace predlagal $U(0,1) = Beta(1,1)$ kot neinformirano porazdelitev. \\
+  % skica
+  \underline{Učinek reparametrizacije}
+  \begin{exmp}
+    Binomski vzorčni model: $f(k \mid p) = \binom{n}{k} p^k (1-p)^{n-k}, \; p \in (0,1)$. \\
+    Reparametrizirajmo s parametrom $q = \ln\left(\frac{p}{1-p}\right) = logit(p)$.
+    Dobimo
+    \begin{align*}
+      \widetilde{f}(k \mid q) &= f(k \mid logit^{-1}(q)) \\
+      &= f\left(k \mid \frac{e^q}{1+e^q}\right) \\
+      &= \binom{n}{k} \left(\frac{e^q}{1+e^q}\right)^k \left(\frac{1}{1+e^q}\right)^{n-k} \\
+      &= \binom{n}{k} (1+e^q)^{-k} e^{kq} \quad (q \in \R).
+    \end{align*}
+    Kako je s transformacijo apriorne porazdelitve? \\
+    Naj bo $\Pi$ slučajna spremenljivka z realizacijo $p$ in $Q$ slučajna spremenljivka z realizacijo $q$;
+    velja $Q = logit \circ \Pi = logit(\Pi)$:
+    \begin{align*}
+      &f_Q(q) = f_{logit(\Pi)}(q) = f_{\Pi}(logit^{-1}(q)) \cdot \left|\frac{d}{dq} logit^{-1}(q)\right| \\
+      &logit^{-1}(q) = 1 - \frac{1}{1+e^q} \implies \frac{d}{dq} logit^{-1}(q) = (1+e^q)^{-2} e^q.
+    \end{align*}
+    Sledi: če je $\Pi \in (0,1)$, je
+    \begin{equation*}
+      f_Q(q) = \frac{e^q}{(1+e^q)^2};
+    \end{equation*}
+    ali je to še ploščata porazdelitev? \\
+    Jeffreys je kot privzeto neinformativno porazdelitev predlagal
+    \begin{equation}
+      \label{Jeffrey-neinformativna}
+      f(\theta) \propto \sqrt{|det (FI(\theta))|}.
+    \end{equation}
+    Tu je $FI(\theta)$ t.i. Fisherjeva informacija:
+    \begin{align*}
+      FI(\theta) &= E_{(X \mid \Theta)} (grad_{\theta} \ln(f(x \mid \theta)) \cdot grad_{\theta} \ln(f(x \mid \theta))^T) \\
+      &= Var_{(X \mid \Theta)} (grad_{\theta} \ln (f(x \mid \theta))) \\
+      &= -E_{(X \mid \Theta)} (H_{\theta} (ln f) (x \mid \theta)).
+    \end{align*}
+    Za $\theta \in \Theta \subset \R^r$ je $grad_{\theta} \ln (f(x \mid \theta))$ vektor s komponentami
+    $\frac{\partial}{\partial \theta_i} \ln(f(x \mid \theta))$ za $1 \leq i \leq r$.
+  \end{exmp}
+  \underline{Učinek reparametrizacije na Jeffreysovo apriorno porazdelitev} \\
+  Reparametrizirajmo s parametrom $\lambda = \phi(\theta)$, kjer je
+  \begin{equation*}
+    \phi: \Theta \subset \R^n \to \Lambda \subset \R^n
+  \end{equation*}
+  diferenciabilen; sledi
+  \begin{equation*}
+    \widetilde{f}(x \mid \lambda) = f(x \mid \phi^{-1}(\lambda)).
+  \end{equation*}
+  Odvajajmo
+  \begin{align*}
+    \frac{\partial}{\partial \lambda_i} \ln(\widetilde{f}(x \mid \lambda)) &=
+      \sum_{j=1}^{n} (\frac{\partial}{\partial \lambda_j} \ln(f(x \mid \lambda_j)) \cdot
+        \frac{\partial (\psi^{-1})_j}{\partial \lambda_i} (\lambda)) \\
+    &= \left[\frac{\partial (\psi^{-1})_j}{\partial \lambda_i}\right]_{j=1}^n
+      \cdot grad_{\theta} (\ln f) (x \mid \phi^{-1}(\lambda))
+  \end{align*}
+  \begin{equation*}
+    grad_{\lambda} f(x \mid \lambda) = [J(\phi^{-1}(\lambda))]^T \cdot grad_{\theta} \ln f (x \mid \phi^{-1}(\lambda))
+  \end{equation*}
+  $J$: Jacobijeva matrika.
+  \begin{align*}
+    \ln \widetilde{f}(x \mid \lambda) &= \ln(f(x \mid \phi^{-1}(\lambda))) \cdot
+      grad_{\lambda} \ln(f(x \mid \lambda)) \cdot grad_{\lambda} \ln(f(x \mid \lambda))^T \\
+    &= [J \phi^{-1}(\lambda)]^T \cdot grad_{\theta} \ln f (x \mid \phi^{-1}(\lambda)) \cdot
+      grad_{\theta} \ln f (x \mid \phi^{-1}(\lambda))^T \cdot [J \phi^{-1}(\lambda)] \\
+    &\implies \widetilde{FI}(\lambda) = (J \phi^{-1}(\lambda))^T \cdot
+      FI(\phi^{-1}(\lambda)) \cdot J \phi^{-1}(\lambda).      
+  \end{align*}
+  Kaj je Jeffreysova apriorna porazdelitev na $\lambda$?
+  \begin{align*}
+    &f_{Jeffrey}(\lambda) = c \sqrt{det \widetilde{FI}(\lambda)} = \\
+    &= c \sqrt{det FI (\phi^{-1}(\lambda))} = c |det J(\phi^{-1}(\lambda))|;
+  \end{align*}
+  to je transformirana Jeffreysova apriorna porazdelitev (transformirana sama vase).
+\end{exmp}
 
 
 %\clearpage
