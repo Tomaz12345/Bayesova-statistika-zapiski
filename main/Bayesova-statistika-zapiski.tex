@@ -180,6 +180,7 @@
   {\bf p.v.} & {pričakovana vrednost} \\
   {\bf AKI} & {aposteriorni kredibilnostni interval} \\
   {\bf BF} & {Bayesova formula} \\
+  {\bf s.g.} & {skoraj gotovo} \\
 \end{tabular}
 
 %\clearpage
@@ -799,6 +800,79 @@ Izkaže se, da s statistični praksi (tudi v aplikacija frekventistične statist
   \end{align*}
   to je transformirana Jeffreysova apriorna porazdelitev (transformirana sama vase).
 \end{exmp}
+
+
+% 5. predavanje: 23.10.
+
+\chapter{Monte-Carlo integracija in metode vzorčenja}
+
+
+Proučujemo (neznani) parameter vzorčnega povprečja, recimo da nas zanima realnoštevilska funkcija $h(\theta)$.
+\begin{exmp} \text{} \\
+  Morda nas zanima \sn{$E(X^2)$} naše preučevane slučajne spremenljivke.
+  Če imamo normalni model s parametrom $\theta = (\mu, \sigma^2)$, nas torej zanima $h(\mu, \sigma^2) = (\mu^2, \sigma^2)$.
+  V Bayesovem okviru iz apriorne porazdelitve in vzorca dobimo aposteriorno porazdelitev z gostoto
+  \begin{equation*}
+    f(\theta \mid x) = \frac{f(x \mid \theta) f(\theta)}{f(x)},
+  \end{equation*}
+  kot oceno za $h(\theta)$ vzamemo npr. aposteriorno pričakovano vrednost
+  \begin{equation*}
+    E(h(\theta) \mid X = x) = \int h(\theta) f(\theta \mid x) d\theta.
+  \end{equation*}
+\end{exmp}
+Problemi:
+\begin{itemize}
+  \item $h(\theta) f(\theta \mid x)$ je lahko zahtevna za integracijo - numerično,
+  \item morda je \sn{že} $f(x \mid \theta) f(\theta)$ zahtevna za integracijo in $f(x)$ sploh ne \sn{poznamo}.
+\end{itemize}
+Odgovor na to je integracija Monte-Carlo z Markovskimi verigami.
+
+
+\section{Klasična integracija Monte-Carlo}
+
+\begin{exmp}
+  \sn{Integrirajte} $\int_{0}^{1} \left| \sin(100 \sin(\pi x))\right| dx$.
+\end{exmp}
+Spomnimo se na KZVŠ: če so $X_1, X_2 \dots$ NEP slučajni vektorji s pričakovano vrednostjo $\mu$, velja
+\begin{equation*}
+  \frac{x_1 + \dots + x_n}{n} \to \mu = \int x f(x) dx
+\end{equation*}
+skoraj gotovo (s.g.). \\
+Če je $h$ taka realnoštevilska funkcija, da obstaja $E(h(X_i))$,
+so tudi $h(X_1), h(X_2) \dots$ NEP s pričakovano vrednostjo $E(h(X_i))$ in zato
+\begin{equation*}
+  \frac{h(x_1) + \dots + h(x_n)}{n} \to E(h(X_i)) = \int h(x) f(x) dx
+\end{equation*}
+skoraj gotovo. \\
+S pomočjo KZVŠ lahko ocenimo integral dane funkcije $h: (0,1) \to \R$ na naslednji način:
+privzamemo zaporedje NEP $X_i \sim N(0,1)$, torej velja
+\begin{equation*}
+  \frac{h(x_1) + \dots + h(x_n)}{n} \to \int h(x) .|. dx
+\end{equation*}
+skoraj gotovo. \\
+Kaj to pomeni? \\
+Verjetnost tistih zaporedij $(X_1, X_2 \dots)$,
+pri katerih limita $\frac{1}{n} \sum_{i=1}^{n} h(x_i)$ obstaja in je enaka $.|.$. \\
+Tu manjka ocena za natančnost ocene. \\
+DN: implementirajmo. \\
+NEP - izziv. \\
+Izkaže se, da s psevdonaključnimi števili znamo izvrstno simulirati NEP.
+Vzorčenje iz $(0,1)$ (za razumno velike vzorce). \\
+Oceno natančnosti lahko dobimo s pomočjo CLI: privzemino obstoj disperzije slučajne spremenljivke $X_i$
+($\iff \int h(x)^2 f(x) dx < \infty$).
+\begin{equation*}
+  S^2 = \frac{1}{n-1} \sum_{i=1}^{n} (h(X_i) - \overline{h(X_i)})^2.
+\end{equation*}
+Po CLI velja
+\begin{equation*}
+  \frac{h(X_i) - E(h(X_i))}{\frac{S}{\sqrt{n}}} \xrightarrow[n \to \infty]{D} N(0,1).
+\end{equation*}
+Za $\alpha \in (0, \frac{1}{2})$ sledi
+\begin{equation*}
+  P\left(\frac{\overline{h(X_i)} - E(h(X_i))}{\frac{S}{\sqrt{n}}} \in [-z_{\frac{\alpha}{2}}, z_{\frac{\alpha}{2}}]\right) = 1 - \alpha%\to
+\end{equation*}
+Verjamemo, da se ocena $\overline{h(x_i)}$ razlikuje od dejanskega integrala $E(h(x_i))$ za kvečjemu
+$z_{\frac{\alpha}{2}} \cdot \frac{s}{\sqrt{n}}$.
 
 
 %\clearpage
