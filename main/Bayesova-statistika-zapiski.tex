@@ -181,6 +181,8 @@
   {\bf AKI} & {aposteriorni kredibilnostni interval} \\
   {\bf BF} & {Bayesova formula} \\
   {\bf s.g.} & {skoraj gotovo} \\
+  {\bf k.p.f.} & {kumulativna porazdelitvena funkcija} \\
+  {\bf A/R} & {accept or reject} \\
 \end{tabular}
 
 %\clearpage
@@ -873,6 +875,108 @@ Za $\alpha \in (0, \frac{1}{2})$ sledi
 \end{equation*}
 Verjamemo, da se ocena $\overline{h(x_i)}$ razlikuje od dejanskega integrala $E(h(x_i))$ za kvečjemu
 $z_{\frac{\alpha}{2}} \cdot \frac{s}{\sqrt{n}}$.
+
+
+% 6. predavanje: 24.10.
+
+\section{Simulacija vzorčenja z inverzno kumulativno porazdelitveno funkcijo}
+
+Privzemimo, da je \sn{ciljna} kumulativna porazdelitvena funkcija (k.p.f.) \\
+$F: \R \to [0,1]$ zvezna bijekcija $\R \to (0,1)$.
+Velja trditev.
+\begin{claim}
+  Naj bo $U \sim U(0,1)$. Tedaj je $F^{-1}(U) \sim F$.
+\end{claim}
+\begin{conseq}
+  Če \sn{poznamo} $F^{-1}$, znamo simulirati vzorčenje \sn{iz $F$}.
+\end{conseq}
+\begin{pro}
+  $P(F^{-1}(U) \leq x) = P(U \leq F(x)) = F(x)$.
+\end{pro}
+\begin{exmp}
+  \sn{Poznamo} $\Phi^{-1}$, kjer je $\Phi(x) = \int_{-\infty}^{x} \frac{1}{\sqrt{2\pi}} e^{-\frac{t^2}{2}} dt$.
+\end{exmp}
+Zgornja trditev je standardna metoda za vzorčenje iz $N(0,1)$
+($\stackrel{\text{vaja}}{\implies}$ znamo vzorčiti iz $N(\mu, \Sigma)$ za poljubne $\mu \in \R^d$ in $\sigma \in \R^{d \times d}$ s.p.d.). \\
+V splošnem, če definiramo posplošeni inverz
+\begin{equation*}
+  F^{-}(U) = \inf F^{-1}([u, \infty)),
+\end{equation*}
+je (še vedno) $F^{-1}(U) \sim F$. ($\stackrel{\text{vaja}}{\implies}$ znamo vzorčiti iz končnih diskretnih porazdelitev).
+
+
+\section{Metoda sprejmi ali zavrni (A/R)}
+
+\underline{Motivacija:} Naj bo $f: \R \to [0, \infty)$ ciljna (Lebesgueova) gostota.
+Označimo \sn{graf} pod njo:
+\begin{equation*}
+  A_f = \{(x, u) \mid 0 \leq u \leq f(x)\} \subset \R^2.
+\end{equation*}
+Seveda je $S(A_f) = 1$ (ploščina). \\
+% skica
+Pripomnimo, da za $(X,U) \sim U(A_f)$ velja $X \sim f$:
+\begin{equation*}
+  f_X(x) = \int_{u=-\infty}^{\infty} f_{(X,U)}(x,u) du = \int_{0}^{f(x)} du = f(x).
+\end{equation*}
+\begin{enumerate}[label={A/R \#\arabic{*}:}]
+  \item privzemimo $\{x \mid f(x) > 0\} \subset (a,b)$, kjer $-\infty < a < b < \infty$ in $\exists m: f(x) < m$ za vse $x$. \\
+    % skica
+    Simulacijo vzorčenja $X \sim f$ implementiramo takole:
+    \begin{enumerate}[label=(\roman*)]
+      \item vzorčimo $Y=y$, kjer $Y \sim (a,b)$ -\sn{$x$},
+      \item vzorčimo $(V \mid Y=y) = v$ (realizacija) iz $U(0,m)$ -\sn{$y$},
+      \item če je $v < f(y)$ sprejmemo $X=y$, če je $v \geq f(y)$ zavrnemo $y$ in ponovimo (i).
+    \end{enumerate}
+    Preverimo $X \sim f$. Za $I \subset (a,b)$ je
+    \begin{align*}
+      P(X \in I) &\stackrel{\text{vaja}}{=} P(Y \in I \mid v < f(y)) \\
+      &= \frac{\int_{\R} P(Y \in I \land v < f(Y) \mid Y=y) \cdot f_Y(y) dy}
+        {\int_{\R} P(v < f(Y) \mid Y=y) \cdot f_Y(y) dy} \\
+      &\stackrel{\text{pogojna}}{=} \frac{\int_{\R} P(y \in I \land v < f(y)) \cdot f_Y(y) dy}
+        {\int_{\R} P(v < f(y)) \cdot f_Y(y) dy} \\
+      &\stackrel{I \subset (a,b)}{=} \frac{\int_{I} P(v < f(y)) \cdot \frac{1}{b-a} dy}
+        {\int_{(a,b)} P(v < f(y)) \cdot \frac{1}{b-a} dy} \\
+      &= \frac{\int_{I} f(y) dy}
+        {\int_{(a,b)} f(y) dy} \\
+      &= \int_I f(y) dy,
+    \end{align*}
+    kjer smo v zadnjem koraku upoštevali $P(V < f(y)) = \frac{f(y)}{m}$ na $(a,b)$. \\ % in da je V enakomerno porazdeljena
+    $\int_I f(y) dy$ je gostota $X$.
+  \item Privzemimo, da znamo vzorčiti iz gostote $g: \R \to [0,\infty)$ in da je $f(x) < M \cdot g(x)$ za vse $x$ (za neki $M$).
+    Simulacijo vzorčenja $X \sim f$ implementiramo takole:
+    \begin{enumerate}[label=(\roman*)]
+      \item vzorčimo $Y=y$, kjer $Y \sim g$,
+      \item vzorčimo $(V \mid Y=y) = v$ iz $U(0,M \cdot g(y))$.
+        Lahko vzamemo $W \sim U(0,1)$ in $V \sim M \cdot g(y) \cdot W$,
+      \item če je $v < f(y)$ sprejmemo $X=y$, če je $v \geq f(y)$ zavrnemo in ponovimo (i).
+    \end{enumerate}
+    Preverimo $X \sim f$. Za $I \subset \R$ je
+    \begin{align*}
+      P(X \in I) &\stackrel{\text{vaja}}{=} P(Y \in I \mid M \cdot g(y) \cdot w < f(y)) \\
+      &= \frac{\int_{\R} P(Y \in I \land M \cdot g(y) \cdot w < f(Y) \mid Y=y) \cdot f_Y(y) dy}
+        {\int_{\R} P(M \cdot g(y) \cdot w < f(Y) \mid Y=y) \cdot f_Y(y) dy} \\
+      &\stackrel{\text{pogojna}}{=} \frac{\int_{I} P(W < \frac{f(y)}{Mg(y)}) \cdot g(y) dy}
+        {\int_{\R} P(W < \frac{f(y)}{Mg(y)}) \cdot g(y) dy} \\
+      &= \dots = \int_I f(y) dy,
+    \end{align*}
+    kjer smo v upoštevali $P(W < \frac{f(y)}{Mg(y)}) = \frac{f(y)}{Mg(y)}$.
+    Opazimo da je $M \cdot g(y)$ namesto $m$ od prej (na nek način). \\
+    Pripomnimo, da je verjetnost sprejetja tu enaka
+    \begin{equation*}
+      P(M \cdot g(y) W < f(y)) = \frac{1}{M} \int_{\R} f(y) dy = \frac{1}{M}.
+    \end{equation*}
+    Želimo $M$ čim bližje 1.
+    \begin{exmp}
+      Oglejmo si $f = F_{N(0,1)}$ in $g = F_{Cauchy} \; \left(g(x) = \frac{1}{\pi(1+x^2)}\right)$.
+      \begin{align*}
+        &F_{Cauchy}(x) = \int_{-\infty}^{\infty} \frac{dt}{\pi(1+t^2)} = \frac{1}{\pi} \arctan(x) + \frac{1}{2} \\
+        &F_{Cauchy}^{-1}(u) = \tan(\pi\left(u-\frac{1}{2}\right)).
+      \end{align*}
+      $u$ smo izrazili iz $x = \frac{1}{\pi} arctan(x) + \frac{1}{2}$. \\
+      Vzorčenje iz Cauchyja je $\tan(\pi(U-\frac{1}{\pi}))$, $U$ enakomerna na $(0,1)$.
+    \end{exmp}
+    DN: optimiziraj $M$. % primer iz predavanj?
+\end{enumerate}
 
 
 %\clearpage
