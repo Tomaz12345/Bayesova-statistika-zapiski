@@ -183,6 +183,9 @@
   {\bf s.g.} & {skoraj gotovo} \\
   {\bf k.p.f.} & {kumulativna porazdelitvena funkcija} \\
   {\bf A/R} & {accept or reject} \\
+  {\bf M.v.} & {Markovska veriga} \\
+  {\bf EZVŠ} & {ergodični zakon veliikih števil} \\
+  {\bf ECLI} & {ergodični CLI}
 \end{tabular}
 
 %\clearpage
@@ -977,6 +980,130 @@ Pripomnimo, da za $(X,U) \sim U(A_f)$ velja $X \sim f$:
     \end{exmp}
     DN: optimiziraj $M$. % primer iz predavanj?
 \end{enumerate}
+
+
+% 7. predavanje: 30.10.
+
+\section{Metode MCMC (Monte Carlo z markovskimi verigami)}
+
+\underline{Okvir}: \\
+Želeli bi simulirati vzorčenje iz \sn{ciljne} spremenljivke z gostoto $f$
+(ki jo morda poznamo le do multiplikativne konstante natančno).
+Izkaže se, da za ocenjevanje pričakovane vrednosti
+\begin{equation*}
+  E(h(\sn{X})) = \int h(x) f(x) dx \quad \text{(nevtralne črke)}
+\end{equation*}
+pravzaprav ne potrebujemo simulacije neodvisnega vzorčenja. \\
+Aproksimacija z vzročnim povprečjem
+\begin{equation*}
+  E_f(h) = \frac{1}{m} \sum_{i=1}^{m} h\left(X^{(i)}\right)
+\end{equation*}
+dobro funkcionira tudi v primeru, ko je $X^{(0)}, X^{(1)}, X^{(2)} \dots$ primerna markovska veriga
+(z vrednostmi tam, kjer $f > 0$ - prostor \sn{stanj}) s stacionarno porazdelitvijo z gostoto $f$.
+\begin{defn}[Markovska veriga]
+  Markovska veriga je zaporedje s.v. (na prostoru stanj), ki ima lastnost, da je
+  \begin{enumerate}[label=(\roman*)]
+    \item $\forall n:$
+      \begin{equation*}
+        (X^{(n)} \mid X^{(n-1)} = x^{(n-1)} \dots X^{(0)} = x^{(0)}) = (X^{(n)} \mid X^{(n-1)} = x^{(n-1)})
+      \end{equation*}
+      - markovska lastnost (neodvisno od $n$),
+    \item porazdelitve $(X^{(n)} \mid X^{(n-1)} = x)$ so za vse $n$ enake (za vsak $x$ imamo eno porazdelitev).
+  \end{enumerate}
+\end{defn}
+Tehnično gledano to pomeni, da Markovska veriga nastane tako,
+da ob času $n$ vrednost $X^{(n)}$ dobimo z vzorčenjem iz cele porazdelitve, ki je odvisna le od stanja $x^{(n-1)}$. \\
+$X^{(i)}$ - členi markovske verige, \\
+$(X^{(n)} \mid X^{(n-1)} = x)$ - prehodne porazdelitve. \\
+Markovska veriga (M.v.) ima stacionarno porazdelitev $(...)f$, če vedno velja sklep $(X^{(n-1)}) \sim f \; \implies \; X^{(n)} \sim f$. \\
+(!! nista pa $X^{(n-1)}$ in $X^{(n)}$ neodvisna s.v.) \\
+Za ocenjevanje potrebujemo t.i. ergodične markovske verige:
+\begin{enumerate}[label=(\alph*)]
+  \item EZVŠ (ergodični zakon veliikih števil): če za vsako integrabilno funkcijo $h$ velja
+    \begin{equation*}
+      \lim_{n \to \infty} \frac{1}{n} h\left(X^{(i)}\right) = E_f(h)
+    \end{equation*}
+    skoraj gotovo (s.g.) za (skoraj) vse začetne vrednosti $x^{(0)}$ (ustrezne dobimo z verjetnostjo $1$),
+  \item ECLI (ergodični CLI): za vsako funkcijo $h$, za katero obstaja $\int h^2(x) f(x) dx$,
+    obstaja konstanta $\gamma_n$ (MCMC disperzija), za katero
+    \begin{equation*}
+      \frac{\frac{1}{n} \sum_{i=1}^{n} h\left(X^{(i)}\right) - \int h(x) f(x) dx}{\frac{\gamma_n}{\sqrt{n}}}
+        \stackrel{D}{\to} N(0,1).
+    \end{equation*}
+    (!! $\gamma_n$ je potrebno oceniti iz vzorca, kar je težko.)
+\end{enumerate}
+Privzamemo (i) in naj bo $A \subset \{f > 0\}$ vsako območje, za katero
+\begin{equation*}
+  P(\sn{X} \in A) = \int_A f(x) dx = a > 0.
+\end{equation*}
+Vzenimo $a := 1_A$. \\ %a,n?
+Tedaj $\frac{\text{število členov (do $n$-tega, ki padejo v )A}}{n} \stackrel{n \to \infty}{\to} \int 1_A(x) f(x) dx = a$. %a?
+
+\subsection{Metropolisov algoritem}
+
+Naj bo $f$ ciljna gostota in naj bo $\{q(y \mid x) \mid y,x \text{ iz prostora stanj}\}$ družina \sn{predlaganih} gostot:
+za vsak $x$ (iz katerih pa znamo simulirati NEP vzorčenje) je $q(\_ \mid x)$ gostota neke porazdelitve.
+Naj bo še $q(y \mid x) = q(x \mid y)$ za vse pare (če smo v stanju $x$, predlagamo $y$ \sn{z enako verjetnsotjo},
+kot če bi predlagali $x$, če smo v stanju $y$). \\
+\underline{Opis algoritma}:
+\begin{enumerate}[label=(\roman*)]
+  \item od nekod dobimo $x^{(0)}$,
+  \item privzamemo, da že imamo realizacijo $X^{(n-1)} = x^{(n-1)}$.
+    Vzorčimo kandidata $y$ za naslednjo realizacijo iz $q(\_ \mid x^{(n-1)})$. \\
+    Če velja $f(y) \geq f\left(x^{(n-1)}\right)$, vzamemo $X^{(n)} = y$ (realizacija). \\
+    Če je $f(y) < f\left(x^{(n-1)}\right)$, vzamemo
+    \begin{equation*}
+      \begin{cases}
+        X^{(n)} = y \text{ z verjetnostjo } \rho = \frac{f(y)}{f\left(x^{(n-1)}\right)} \\
+        X^{(n)} = x^{(n-1)} \text{ z verjetnostjo } 1 - \rho
+      \end{cases}
+    \end{equation*}
+    Naenkrat. $X^{(n)} = y$ z verjetnostjo $\rho = \min \{\frac{f(y)}{f\left(x^{(n-1)}\right)}, 1\}$ (*) \\
+    (*): če $f\left(x^{(n-1)}\right) = 0$, vedno vzamemo $y$. \\
+    Ta korak implementiramo z realizacijo $u \in U(0,1)$, vzamemo $X^{(n)} = y$, če $u \leq \rho$, oz. $X^{(n)} = x^{(n-1)}$, če $u > \rho$.
+\end{enumerate}
+Izkaže se, da ta opis določa markovsko verigo s stacionarno porazdelitvijo $f$.
+Če velja sklep $f(y) > 0 \implies \; \forall x: q(y \mid x) > 0$, ima veriga EZVŠ. \\
+\underline{Bayesova aplikacija}. \\
+Ciljna gostota je $f(\theta \mid x) (\text{v } \theta)$. \\
+Če je $\theta^{(n-1)}$ stanje v času $n-1$, za implementacijo koraka (ii) potrebujemo
+\begin{equation*}
+  \frac{f(\theta^{*} \mid x)}{f(\theta^{(n-1)} \mid x)} = \frac{f(x \mid \theta^{*}) f(\theta^{(*)})}{f(x \mid \theta^{(n-1)}) f(\theta^{((n-1))})};
+\end{equation*}
+v resnici ne potrebujemo normalizacijske konstante v Bayesovi formuli. \\
+Tipični primeri predlaganih gostot:
+\begin{enumerate}
+  \item $(Y \mid X^{(n-1)} = x^{(n-1)}) \sim U\left(K_{\delta}(X^{(n-1)})\right)$ za fiksen $\delta$ (krogla s polmerom $\delta$),
+    v neki mertiki. \\
+    % skica
+    (Povrnljivost - povsod, kjer neničelne verjetnosti, jemlje $\infty$-krat.) \\
+    (To pomeni $q(y \mid x) = \frac{1}{Vol(K_{\delta}(x))} \cdot 1_{K_{\delta}(x)} (y)$ (namesto klasične uporabimo $\infty$ metriko).)
+  \item $(Y \mid X^{(n-1)} = x^{(n-1)}) \sim N\left(x^{(n-1)}, \Sigma\right)$ za fiksno $\Sigma$. \\
+    (To pomeni $q(y \mid x) = (2 \pi)^{-\frac{dim}{2}} (det \Sigma)^{-\frac{1}{2}} e^{-\frac{1}{2} \langle \Sigma^{-1}(y-x), (y-x)\rangle}$
+      - simetričnost \checkmark.) \\
+    V tem primeru je $Y|X^{(n-1)} = X^{(n-1)} + N(0, \Sigma)$.
+\end{enumerate}
+Metropolisov algoritem tipično nima ECLI :(.
+
+\subsection{Metropolis-Hastingov algoritem}
+
+Tu predlagane gostote $q(y \mid x)$ ne zadoščajo simetričnosti.
+V algoritmu namesto $\rho$ iz 3.4.1. uporabimo
+\begin{equation*}
+  \rho = \rho\left(x^{(n-1)}, y\right) = \min \{1, \frac{f(y)}{f\left(x^{(n-1)}\right)} \cdot
+    \frac{q\left(x^{(n-1)} \mid y\right)}{q\left(y \mid x^{(n-1)}\right)}\}
+\end{equation*}
+(in $\rho = 1$ če $f\left(x^{(n-1)}\right) \cdot q\left(y \mid x^{(n-1)}\right) = 0$). \\
+\underline{Enake lastnosti kot prej:}
+\begin{itemize}
+  \item vedno dobimo verigo s stacionarno porazdelitvijo $f$
+  \item če $\forall x: \; q(\_, x^{(n)})$ dopušča kandidate iz $\{f > 0\}$ (v končno korakih), velja EVZŠ (blagi pogoji).
+\end{itemize}
+Dobimo pa še: \\
+- pri primernih predpostavkah na $q$ dobimo tudi ECLI.
+\begin{exmp}[\sn{Neodvisni} Hastingov algoritem]
+  Vedno \sn{funkcionira} (teoretično) $q(y \mid x) = q(y)$ za neko fiksno porazdelitev z gostoto $g$, kjer $g(y) > 0$ za $\forall f(y) > 0$.
+\end{exmp}
 
 
 %\clearpage
