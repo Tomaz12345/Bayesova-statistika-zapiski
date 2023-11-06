@@ -1106,6 +1106,103 @@ Dobimo pa še: \\
 \end{exmp}
 
 
+% 8. predavanje: 6.11.
+
+\subsection{Gibsov vzorčevalnik}
+Gibsov vzorčevalnik je algoritem za konstrukcijo markovske verige s ciljno gostoto $f(x,y)$ (ali $f(x_1 \dots x_n)$)
+na podlagi vzorčenja iz \sn{gostot} $f(x \mid y)$ ali $f(y \mid x)$. \\
+\underline{Motivacija}: proučujemo vzorčni model z gostotami $f(x \mid \theta_1, \theta_2) = f(x \mid \theta)$,
+ki je tak, da znamo simulirati neko vzorčenje iz $f(\theta_1 \mid \theta_2, x)$ in $f(\theta_2 \mid \theta_1, x)$,
+ne pa (neposredno) iz $f(\theta_1, \theta_2 \mid x)$. \\
+\underline{Opis algoritma}.
+\begin{enumerate}[label=(\roman*)]
+  \item Vzorčimo $y_0$ iz neke porazdelitve ali pa $y_0$ določimo. \\
+    Vzorčimo $x_0$ iz pogojne porazdelitve $f(X \mid y_0)$.
+  \item Če poznamo $(x_{n-1}, y_{n-1})$, vzorčimo najprej $y_n$ iz $f(x \mid x_{n-1})$,
+    potem pa še $x_n$ iz $f(y \mid y_n)$ (temu koraku oz. njegovim podkorakom pravimo \sn{osveževanje}).
+\end{enumerate}
+Dobimo zaporedje s.s. (ali DN)
+\begin{equation*}
+  X^{(0)} = (x_0, y_0), \; X^{(1)} = (x_1, y_1), \; X^{(2)} = (x_2, y_2) \text{ itd.}
+\end{equation*}
+Izkaže se, da so zaporedja
+\begin{align*}
+  &X^{(0)}, X^{(1)}, X^{(2)} \dots \\
+  &X_0, X_1, X_2 \dots \\
+  &Y_0, Y_1, Y_2 \dots \\
+\end{align*}
+markovske verige in da ima veriga $\{X^{(i)} \mid n\}$ stacionarno porazdelitev $f(x,y)$.
+Pri blagih pogojih je ta veriga ergodična.
+\begin{exmp} \text{} \\
+  Tipična aplikacija v Bayesovi statistiki je: \\
+  privzemimo model $f(x \mid \theta_1, \theta_2)$ z apriorno gostoto $f(\theta_1, \theta_2) = f(\theta_1), f(\theta_2)$,
+  kjer je $f(\theta_1)$ iz konjugirane družine k modelu $f(x \mid \theta_1, \text{KONST})$,
+  $f(\theta_2)$ pa je iz konjugirane družine k modelu $f(x \mid \text{KONST}, \theta_2)$,
+  iz katerih znamo simulirati NEP vzorčenje. \\
+  Polna aposteriorna porazdelitev
+  \begin{equation*}
+    f(\theta_1, \theta_2 \mid x) = \frac{f(x \mid \theta_1, \theta_2) \cdot f(\theta_1) \cdot f(\theta_2)}{f(x)}
+  \end{equation*}
+  je tipično nedostopna, pač pa velja
+  \begin{equation}
+    \label{apost-theta1,2}
+    f(\theta_1 \mid \theta_2, x) = \frac{f(x \mid \theta_1, \theta_2) \cdot f(\theta_1 \mid \theta_2)}{f(x \mid \theta_2)}
+    = \frac{f(x \mid \theta_1, \theta_2) \cdot f(\theta_1)}{f(x \mid \theta_2)},
+  \end{equation}
+  kar je aposteriorna gostota Bayesovega modela z gostotami $f(x \mid \theta_1, \theta_2)$ iz apriorne gostote $f(\theta_1)$,
+  kjer $\theta_2$ razumemo kot konstanto.
+  Po našem premisleku je torej $f(\theta_1 \mid \theta_2, x)$ iz \sn{prave} konjugirane družine.
+  Simetrično je
+  \begin{equation*}
+    f(\theta_2 \mid \theta_1, x) = \frac{f(x \mid \theta_1, \theta_2) \cdot f(\theta_2)}{f(x \mid \theta_1)}
+  \end{equation*}
+  iz \sn{znane} konjugirane družine. \\
+  Konkretno si oglejmo enorazsežni NEP-normalni model
+  \begin{equation}
+    \label{NEP-normalni-model}
+    (X \mid \mu, \sigma^2) \sim N\left(\begin{bmatrix}\mu \\ \vdots \\ \mu\end{bmatrix}, \sigma^2 I\right)
+  \end{equation}
+  z gostotami
+  \begin{equation*}
+    f(x_1 \dots x_n \mid \mu, \sigma^2) = f(x \mid \mu, \sigma^2) =
+    \left(2 \pi \sigma^2\right)^{-\frac{n}{2}} e^{-\frac{1}{2 \sigma^2} \cdot \sum_{i=1}^{n} (x_i-\mu)^2}.
+  \end{equation*}
+  Vemo, da je $\{N(\mu_{*}, \tau_{*}^2) \mid \mu_{*} \in \R, \tau_{*}^2 \in (0, \infty)\}$
+  konjugirana k enoparametričnim modelom z gostotami \refeq{NEP-normalni-model}, kjer $\sigma^2$ poznamo. \\
+  Izkaže se (vaja), da je družina $\{\text{InvGama}(a,b) \mid a,b \in (0, \infty)\}$
+  konjugirana k enoparametričnim modelom z gostotami \refeq{NEP-normalni-model}, kjer $\mu$ poznamo.
+  Tu je $Y \sim \text{InvGama}(a,b) \iff \frac{1}{Y} \sim \text{Gama}(a,b)$, velja
+  \begin{equation*}
+    f_{\text{InvGama}(a,b)}(y) = \frac{b^a}{\Gamma(a)} y^{-a-1} e^{-\frac{b}{y}}.
+  \end{equation*}
+  Vemo: pri $f(\mu) = f_{N(\mu_{*}, \tau_{*}^2)}(\mu)$ je
+  \begin{equation*}
+    f(\mu \mid \sigma^2, x) \stackrel{\refeq{apost-theta1,2}}{=}
+      f_{N\left(\frac{\frac{\sigma^2}{n}}{\frac{\sigma^2}{n} + \tau_{*}^2} \mu_{*} + 
+                \frac{\tau_{*}^2}{\frac{\sigma^2}{n} + \tau_{*}^2} \overline{x},
+                \frac{\frac{\sigma^2}{n} \cdot \tau_{*}^2}{\frac{\sigma^2}{n} + \tau_{*}^2}\right)}(\mu).
+  \end{equation*}
+  Vidimo: pri $f(\sigma^2) = f_{\text{InvGama}(a,b)}(\sigma^2)$ je
+  \begin{equation*}
+    f(\sigma^2 \mid \mu, x) =
+      f_{\text{InvGama}\left(a+\frac{n}{2}, b+\frac{1}{2}\sum_{i=1}^{n}(x_i-\mu)^2\right)}(\sigma^2).
+  \end{equation*}
+  \underline{Gibsov vzorčevalnik}: ciljna porazdelitev $f(\mu, \sigma^2 \mid x)$.
+  \begin{enumerate}[label=(\roman*)]
+    \item Določimo $\sigma_0^2 = 1$. Vzorčimo $\mu_0$ iz
+      \begin{equation*}
+        f_{N\left(\frac{\frac{1}{n}}{\frac{1}{n} + \tau_{*}^2} \mu +
+                  \frac{\tau_{*}^2}{\frac{1}{n} + \tau_{*}^2} \overline{x},
+                  \frac{\frac{1}{n} \tau_{*}^2}{\frac{1}{n} + \tau_{*}^2}\right)},
+      \end{equation*}
+    \item vzorčimo $\sigma_1^2$ iz $f(\sigma^2 \mid \mu_0, x)$, \\
+      vzorčimo $\mu_1^2$ iz $\dots$ \\
+      $\vdots$
+  \end{enumerate}
+  (Blagi pogoji so izpolnjeni, veriga ergodična.)
+\end{exmp}
+
+
 %\clearpage
 %\phantomsection
 
