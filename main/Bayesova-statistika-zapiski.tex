@@ -238,7 +238,7 @@ Nadaljujemo zgled. V Bayesovi statistiki predhodno (\sn{apriorno}) vedenje forma
 V našem primeru vpeljemo fukcijo, da smo število črnih frnikul $\theta$ (- realizacija) dobili kot rezultat
 slučajne spremenljivke $\Theta \in \{0, 1, 2 \dots 1000\}$. \\
 Informacijo $\theta \approx 400$ zakodiramo kot $E(\Theta) = 400$. \\
-% skica
+\includegraphics[scale=0.4]{apriori_1_1} \\
 Privzamemo (kar!) $\Theta \sim B\left(1000, \frac{4}{10}\right)$ \\
 $\implies P(\Theta = \theta) = \binom{1000}{\theta} \left(\frac{4}{10}\right)^{\theta} \left(1-\frac{4}{10}\right)^{1000-\theta}$. \\
 $P(k$ črnih od $10$ izvlečenih$ \mid \Theta = \theta) = \frac{\binom{\theta}{k} \binom{1000-\theta}{10-k}}{\binom{10}{k}}$ (*) \\
@@ -286,10 +286,10 @@ brezpogojni (robni) porazdelitvni slučajnega vektorja $X$ pa pravimo \sn{robna}
   Ocenjujemo Bernoullijevo porazdelitev. Predhodno vedenje je podano z apriorno prazdelitvijo na $(0,1)$;
   mislimo si, da je $p$ realizacija slučajne spremenljivke (s.s.) $\Pi$ z vrednostmi v $(0,1)$. Možnosti:
   \begin{itemize}
-    \item nimamo apriornega mnenja o (dejanskem) $p$: tedaj bi (morda) vzeli zvezno porazdelitev z gostoto enakomerna porazdelitve,
-      % skica
-    \item smo \sn{zelo} prepričani, da je (dejanski) $p \approx \frac{1}{2}$. %Tedaj bi imeli
-      % skica
+    \item nimamo apriornega mnenja o (dejanskem) $p$: tedaj bi (morda) vzeli zvezno porazdelitev z gostoto enakomerna porazdelitve, \\
+      \includegraphics[scale=0.4]{apriori_nimamo_1_3} \\
+    \item smo \sn{zelo} prepričani, da je (dejanski) $p \approx \frac{1}{2}$. \\ %Tedaj bi imeli
+      \includegraphics[scale=0.4]{apriori_imamo_1_3} \\
   \end{itemize}
 \end{exmp}
 Recimo, da je $f(p)$ gostota apriorne porazdelitve. Tedaj so apriorne verjetnosti
@@ -352,8 +352,8 @@ $Beta = \{Beta(a,b) \mid a,b \in (0, \infty)\}$
   &E(Beta(a,b)) = \frac{a}{a+b} \\
   &D(Beta(a,b)) = \frac{ab}{(a+b)^2 (a+b+1)}.
 \end{align*}
-$D(Beta(a,b))$ predstavlja \sn{težo} apriornega prepričanja; večji - manj sigurni smo.
-% skica
+$D(Beta(a,b))$ predstavlja \sn{težo} apriornega prepričanja; večji - manj sigurni smo. \\
+\includegraphics[scale=0.4]{aposteriori_1_4} \\
 \begin{equation*}
   E(Beta(a,b)) = 0.7.
 \end{equation*}
@@ -462,7 +462,7 @@ V konkretnem primeru je
 (V povprečju aposteriorna varianca boljša.)
 
 
-\subsection{Aposteriorni kredibilnostni interval}
+\section{Aposteriorni kredibilnostni interval}
 
 (Bayesova različica intervala zaupanja). \\
 V konkretnem zgledu \sn{iščemo} funkciji realizacije $L(k), U(k)$, za kateri velja
@@ -475,18 +475,18 @@ Ker za $\Pi \sim Beta(a,b)$, vemo $(\Pi \mid T=k) \sim Beta(a+k, b+n-k)$, lahko 
   &L(k) = F_{Beta(a+k,b+n-k)}^{-1}\left(\frac{\alpha}{2}\right), \\
   &U(k) = F_{Beta(a+k,b+n-k)}^{-1}\left(1 - \frac{\alpha}{2}\right)
 \end{align*}
-% skica
+\includegraphics[scale=0.5]{interval_kvantili_1_5} \\
 in v aposteriorni kredibilnostni interval (AKI) dobimo $= 1 - \alpha$.
 Taki konstrukciji pravimo centralni kredibilnostni interval.
 V praksi pogosto uporabljamo tudi t.i. kredibilnostni interval največje gostote, kjer zahtevamo
 \begin{equation*}
   f_{(\Pi \mid T=k)}(L(k)) = f_{(\Pi \mid T=k)}(U(k)).
 \end{equation*}
-% skica
+\includegraphics[scale=0.5]{interval_kredibilnostni_1_5} \\
 To ima smisel za unimodalne aposteriorne porazdelitve.
 
 
-\subsection{Splošne oznake}
+\section{Splošne oznake}
 
 $X$ - proučevalni vektor (z vrednostmi v $\R^n$). \\
 $x$ - realizacija vektorja $X (x \in \R^n)$. \\
@@ -569,8 +569,9 @@ Pripomnimo, da je
 \begin{equation*}
   \sum_{i=1}^{n} (x_i - \mu)^2 = n \cdot (\mu - \overline{x})^2 + \sum_{i=1}^{n} (x_i - \overline{x})^2,
 \end{equation*}
-kjer je $\overline{x} = \frac{1}{n} \sum_{i=1}^{n} x_i$.
-% skica
+kjer je $\overline{x} = \frac{1}{n} \sum_{i=1}^{n} x_i$. \\
+\includegraphics[scale=0.5]{x_prostorska_2_2} \\
+$\R(1,1 \dots 1)$ - prostorska diagonala. \\
 (Vzorčna: jih je več, apriorna: ena.) \\
 Apriorna:
 \begin{equation*}
@@ -731,7 +732,8 @@ Izkaže se, da s statistični praksi (tudi v aplikacija frekventistične statist
 
 \begin{exmp}
   V Beta-binomskem modelu (..) je Laplace predlagal $U(0,1) = Beta(1,1)$ kot neinformirano porazdelitev. \\
-  % skica
+  \includegraphics[scale=0.3]{ploščata_2_6} \\
+  \sn{Ploščata porazdelitev}. \\
   \underline{Učinek reparametrizacije}
   \begin{exmp}
     Binomski vzorčni model: $f(k \mid p) = \binom{n}{k} p^k (1-p)^{n-k}, \; p \in (0,1)$. \\
@@ -916,14 +918,14 @@ Označimo \sn{graf} pod njo:
   A_f = \{(x, u) \mid 0 \leq u \leq f(x)\} \subset \R^2.
 \end{equation*}
 Seveda je $S(A_f) = 1$ (ploščina). \\
-% skica
+\includegraphics[scale=0.4]{območje_3_3} \\
 Pripomnimo, da za $(X,U) \sim U(A_f)$ velja $X \sim f$:
 \begin{equation*}
   f_X(x) = \int_{u=-\infty}^{\infty} f_{(X,U)}(x,u) du = \int_{0}^{f(x)} du = f(x).
 \end{equation*}
 \begin{enumerate}[label={A/R \#\arabic{*}:}]
   \item privzemimo $\{x \mid f(x) > 0\} \subset (a,b)$, kjer $-\infty < a < b < \infty$ in $\exists m: f(x) < m$ za vse $x$. \\
-    % skica
+    \includegraphics[scale=0.5]{meja_območje_3_3} \\
     Simulacijo vzorčenja $X \sim f$ implementiramo takole:
     \begin{enumerate}[label=(\roman*)]
       \item vzorčimo $Y=y$, kjer $Y \sim (a,b)$ -\sn{$x$},
@@ -1016,7 +1018,7 @@ da ob času $n$ vrednost $X^{(n)}$ dobimo z vzorčenjem iz cele porazdelitve, ki
 $X^{(i)}$ - členi markovske verige, \\
 $(X^{(n)} \mid X^{(n-1)} = x)$ - prehodne porazdelitve. \\
 Markovska veriga (M.v.) ima stacionarno porazdelitev $(...)f$, če vedno velja sklep $(X^{(n-1)}) \sim f \; \implies \; X^{(n)} \sim f$. \\
-(!! nista pa $X^{(n-1)}$ in $X^{(n)}$ neodvisna s.v.) \\
+(\includegraphics[scale=0.08]{radiation_symbol} nista pa $X^{(n-1)}$ in $X^{(n)}$ neodvisna s.v.) \\
 Za ocenjevanje potrebujemo t.i. ergodične markovske verige:
 \begin{enumerate}[label=(\alph*)]
   \item EZVŠ (ergodični zakon veliikih števil): če za vsako integrabilno funkcijo $h$ velja
@@ -1030,7 +1032,7 @@ Za ocenjevanje potrebujemo t.i. ergodične markovske verige:
       \frac{\frac{1}{n} \sum_{i=1}^{n} h\left(X^{(i)}\right) - \int h(x) f(x) dx}{\frac{\gamma_n}{\sqrt{n}}}
         \stackrel{D}{\to} N(0,1).
     \end{equation*}
-    (!! $\gamma_n$ je potrebno oceniti iz vzorca, kar je težko.)
+    (\includegraphics[scale=0.08]{radiation_symbol} $\gamma_n$ je potrebno oceniti iz vzorca, kar je težko.)
 \end{enumerate}
 Privzamemo (i) in naj bo $A \subset \{f > 0\}$ vsako območje, za katero
 \begin{equation*}
@@ -1068,14 +1070,14 @@ Izkaže se, da ta opis določa markovsko verigo s stacionarno porazdelitvijo $f$
 Ciljna gostota je $f(\theta \mid x) (\text{v } \theta)$. \\
 Če je $\theta^{(n-1)}$ stanje v času $n-1$, za implementacijo koraka (ii) potrebujemo
 \begin{equation*}
-  \frac{f(\theta^{*} \mid x)}{f(\theta^{(n-1)} \mid x)} = \frac{f(x \mid \theta^{*}) f(\theta^{(*)})}{f(x \mid \theta^{(n-1)}) f(\theta^{((n-1))})};
+  \frac{f(\theta^{*} \mid x)}{f(\theta^{(n-1)} \mid x)} = \frac{f(x \mid \theta^{*}) f(\theta^{(*)})}{f(x \mid \theta^{(n-1)}) f(\theta^{(n-1)})};
 \end{equation*}
 v resnici ne potrebujemo normalizacijske konstante v Bayesovi formuli. \\
 Tipični primeri predlaganih gostot:
 \begin{enumerate}
   \item $(Y \mid X^{(n-1)} = x^{(n-1)}) \sim U\left(K_{\delta}(X^{(n-1)})\right)$ za fiksen $\delta$ (krogla s polmerom $\delta$),
-    v neki mertiki. \\
-    % skica
+    v neki metriki. \\
+    \includegraphics[scale=0.5]{krogla_3_4_1} \\
     (Povrnljivost - povsod, kjer neničelne verjetnosti, jemlje $\infty$-krat.) \\
     (To pomeni $q(y \mid x) = \frac{1}{Vol(K_{\delta}(x))} \cdot 1_{K_{\delta}(x)} (y)$ (namesto klasične uporabimo $\infty$ metriko).)
   \item $(Y \mid X^{(n-1)} = x^{(n-1)}) \sim N\left(x^{(n-1)}, \Sigma\right)$ za fiksno $\Sigma$. \\
@@ -1109,6 +1111,7 @@ Dobimo pa še: \\
 % 8. predavanje: 6.11.
 
 \subsection{Gibsov vzorčevalnik}
+
 Gibsov vzorčevalnik je algoritem za konstrukcijo markovske verige s ciljno gostoto $f(x,y)$ (ali $f(x_1 \dots x_n)$)
 na podlagi vzorčenja iz \sn{gostot} $f(x \mid y)$ ali $f(y \mid x)$. \\
 \underline{Motivacija}: proučujemo vzorčni model z gostotami $f(x \mid \theta_1, \theta_2) = f(x \mid \theta)$,
