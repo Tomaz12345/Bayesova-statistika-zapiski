@@ -499,7 +499,7 @@ $f(x \mid \theta)$ - gostota (ali verjetnostna funkcija) porazdelitve $(X \mid \
   $f(x \mid \theta) = f_{X \mid \Theta}(x \mid \theta)$ - spuščamo.
 \end{rem}
 V istem smislu gostota (ali verjetnostna funkcija) apriorne porazdelitve.
-Za aposteriorno gostoro (ali verjetnostno funkcijo) velja Bayesova formula (BF)
+Za aposteriorno gostoto (ali verjetnostno funkcijo) velja Bayesova formula (BF)
 \begin{equation*}
   f(\theta \mid x) = \frac{f(x \mid \theta) f(\theta)}{f(\theta)} \propto f(x \mid \theta) f(\theta).
 \end{equation*}
@@ -625,7 +625,7 @@ in
 \end{align*}
 
 
-\section{Eksponentne družine porazdlitev}
+\section{Eksponentne družine porazdelitev}
 
 Vzorčni model pripada eksponentni družini porazdelitev, če velja
 \begin{align}
@@ -1204,6 +1204,160 @@ Pri blagih pogojih je ta veriga ergodična.
   \end{enumerate}
   (Blagi pogoji so izpolnjeni, veriga ergodična.)
 \end{exmp}
+
+
+% 9. predavanje: 13.11.
+
+\chapter{Normalni modeli}
+
+
+\underline{Uvodni zgled}: 1-razsežni \sn{NEP-normalni} model, kjer je
+$(X \mid \mu, \sigma^2) \sim N(\left(\begin{bmatrix}\mu & \vdots & \mu\end{bmatrix}, \sigma^2 I_{n \times n}\right))$
+z vzorčnimi gostotami
+\begin{equation}
+  f(x \mid \mu, \sigma^2) = \left(2 \pi \sigma^2\right)^{-\frac{n}{2}} e^{-\frac{1}{2 \sigma^2} \left(\sum_{i=1}^{n} (x_i-\mu)^2\right)}.
+  \label{normalni-gostota-x}
+\end{equation}
+Izkaže se, da je konjugirana družina apriornih gostot podana kot
+\begin{equation}
+  f(\mu, \sigma^2) = f_{\text{InvGama}(a,b)}(\sigma^2) \cdot f_{N\left(\mu_0, \frac{\sigma^2}{\kappa_0}\right)}(\mu).
+  \label{normalni-apriorna}
+\end{equation}
+(Za vajo lahko izpeljete; razcepite $\psi = \psi_1 + \psi_2$ ($\log$ ?) $\to$ $\tau_1, \tau_2$ namesto $\tau$). \\
+Tu so $\mu_0 \in \R, a, b, \kappa_0 \in (0, \infty)$ parametri konjugirane družine;
+$\kappa_0$ interpretiramo kot število prostorskih stopenj (fiktivno).
+
+
+\section{Dvofazna predstavitev}
+
+Privzemimo razcep $\vartheta = (\vartheta_1, \vartheta_2)$ in zapišimo
+\begin{equation*}
+  f(\vartheta_1, \vartheta_2) = f(\vartheta_1 \mid \vartheta_2) \cdot f(\vartheta_2).
+\end{equation*}
+Za aposteriorno gostoto pri $X = x$ velja
+\begin{equation*}
+  f(\vartheta_1, \vartheta_2 \mid x) = \frac{f(x \mid \vartheta_1, \vartheta_2) \cdot f(\vartheta_1 \mid \vartheta_2)}{f(x \mid \vartheta_2)}
+    \cdot \frac{f(x \mid \vartheta_2) \cdot f(\vartheta_2)}{f(x)}
+\end{equation*}
+oz.
+\begin{equation*}
+  f(\vartheta_1, \vartheta_2 \mid x) = f(\vartheta_1 \mid \vartheta_2, x) \cdot f(\vartheta_2 \mid x).
+\end{equation*}
+Tu je $f(\vartheta_1 \mid \vartheta_2, x)$ aposteriorna gostota modela z vzorčnimi gostotami $f(x \mid \vartheta_2)$
+in apriorno gostoto $f(\vartheta_2$). \\
+Tipično je $f(\vartheta_1 \mid \vartheta_2, x)$ enostavneje izračunati (eksplicitno) kot $f(\vartheta_2 \mid x)$,
+ker za slednje potrebujemo še $f(x \mid \vartheta_2)$. \\
+Načeloma lahko $f(x \mid \vartheta_2)$ izračunamo z integriranjem:
+\begin{equation*}
+  f(x \mid \vartheta_2) = \int f(x \mid \vartheta_1, \vartheta_2) \cdot f(\vartheta_1 \mid \vartheta_2) d\vartheta_1,
+\end{equation*}
+vendar :( \\
+\underline{Aplicirajmo} na vzorčne gostote z \refeq{normalni-gostota-x} z apriorno \refeq{normalni-apriorna}.
+\begin{enumerate}[label=(\roman*)]
+  \item $f(\mu \mid \sigma^2, x)$ \sn{pripada} modelu $(X \mid \mu) \sim
+    N\left(\begin{bmatrix}\mu\\\vdots\\\mu\end{bmatrix}, \sigma^2 I\right)$ ($\sigma^2$ konst.) za apriorno
+    $M \sim N\left(\mu_0, \frac{\sigma^2}{\kappa_0}\right) = N(\mu_0, \tau_0^2)$. \\
+    To pomeni $f(\mu \mid \sigma^2, x) \leftrightarrow N(\mu, \tau_0^2)$, kjer je
+    \begin{equation*}
+      \mu_1 = \frac{\frac{\sigma^2}{n}}{\frac{\sigma^2}{n} + \tau_0^2} \mu_0 + \frac{\tau_0^2}{\frac{\sigma^2}{n} + \tau_0^2} \overline{x}
+    \end{equation*}
+    in
+    \begin{equation*}
+      \tau_1^2 = \frac{\frac{\sigma^2}{n} \cdot \tau_0^2}{\frac{\sigma^2}{n} + \tau_0^2} = \frac{\sigma^2}{n + \kappa_0}.
+    \end{equation*}
+    Interpretacija variance: več primerov.
+  \item Za $f(\sigma^2 \mid x)$ potrebujemo $f(x \mid \sigma^2)$. \\
+    DN: intergirajte. \\
+    Oglejmo si raje
+    \begin{align*}
+      f(x, \mu \mid \sigma^2) &= f(x \mid \mu, \sigma^2) \cdot f(\mu \mid \sigma^2) \\
+      &\propto e^{-\frac{1}{2\sigma^2} \sum_{i=1}^{n} (x_i - \mu)^2} \cdot
+        e^{-\frac{1}{2 \left(\frac{\sigma^2}{\kappa_0}\right)} (\mu - \mu_0)^2} \\
+      &= e^{-\frac{1}{2} \left\langle W \begin{bmatrix}x_1\\\vdots\\x_n\\\mu\end{bmatrix},
+        \begin{bmatrix}x_1\\\vdots\\x_n\\\mu\end{bmatrix} \right\rangle},
+    \end{align*}
+    kjer je
+    \begin{equation*}
+      W = \begin{bmatrix}
+        \frac{1}{\sigma^2} & \dots & 0 & -\frac{1}{\sigma^2} \\
+        0 & \dots & \vdots & -\frac{1}{\sigma^2} \\
+        \vdots & \vdots & \frac{1}{\sigma^2} & -\frac{1}{\sigma^2} \\
+        -\frac{1}{\sigma^2} & \frac{1}{\sigma^2} & \dots & \frac{\kappa_0 + n}{\sigma^2}
+      \end{bmatrix}.
+    \end{equation*}
+    Vidimo, da je $(X, M \mid V \sim \sigma^2)$ normalna porazdelitev $\implies \; (X \mid V \sim \sigma^2)$ je kot robna tudi normalna. \\
+    $\stackrel{!!}{\implies}$ potrebujemo le $E(X \mid V \sim \sigma^2)$ in $Var(X \mid V \sim \sigma^2)$. \\
+    Vemo:
+    \begin{align*}
+      E(X \mid V \sim \sigma^2) =& E(E(X \mid M, V) \mid V \sim \sigma^2) \text{ in} \\
+      Var(X \mid V \sim \sigma^2) =& E(Var(X \mid M, V) \mid V \sim \sigma^2) + \\
+      &Var(E(X \mid M, V) \mid V \sim \sigma^2).
+    \end{align*}
+    Naprej:
+    \begin{align*}
+      &E(X \mid M = \mu, V \sim \sigma^2) = \mu \cdot \begin{bmatrix}1\\\vdots\\1\end{bmatrix}
+        \implies E(X \mid M, V) = \begin{bmatrix}1\\\vdots\\1\end{bmatrix} \cdot M \\
+      &Var(X \mid M = \mu, V \sim \sigma^2) = \sigma^2 I \implies Var(X \mid M, V) = V \cdot I.
+    \end{align*}
+    Sledi:
+    \begin{align*}
+      &E(X \mid V \sim \sigma^2) = E\left(\begin{bmatrix}1\\\vdots\\1\end{bmatrix} M \mid V \sim \sigma\right) =
+        \begin{bmatrix}1\\\vdots\\1\end{bmatrix} \mu_0 \text{ in} \\
+      &Var(X \mid V \sim \sigma^2) = \sigma^2 I +
+        \begin{bmatrix}1\\\vdots\\1\end{bmatrix} Var(M \mid V \sim \sigma^2) \begin{bmatrix}1&\cdots&1\end{bmatrix} \\
+      &= \sigma^2 \left(I + \frac{1}{\kappa_0} \begin{bmatrix}1&\dots&1\\\vdots&&\vdots\\1&\dots&1\end{bmatrix}\right).
+    \end{align*}
+    Lahko zapišemo
+    \begin{align*}
+      f(x \mid \sigma^2) &= (2 \pi \sigma^2)^{-\frac{n}{2}} \cdot
+        det \left(I + \frac{1}{\kappa_0} \begin{bmatrix}1&\dots&1\\\vdots&&\vdots\\1&\dots&1\end{bmatrix}\right)^{-1} \\
+      &\cdot e^{-\frac{1}{2\sigma^2} \left\langle 
+          \left(I + \frac{1}{\kappa_0} \begin{bmatrix}1&\dots&1\\\vdots&&\vdots\\1&\dots&1\end{bmatrix}\right)^{-1}
+          \left(x - \begin{bmatrix}\mu_0\\\vdots\\\mu_0\end{bmatrix}\right), x - \begin{bmatrix}\mu_0\\\vdots\\\mu_0\\\mu_0\end{bmatrix}
+        \right\rangle}.
+    \end{align*}
+    Velja še
+    \begin{align*}
+      &f(\sigma^2) = f_{\text{InvGama}}(\sigma^2) = \frac{b^a}{\gamma(a)} \cdot (\sigma^2)^{-a-1} \cdot e^{-\frac{b}{\sigma^2}} \\
+      \implies &f(\sigma^2 \mid x) \propto (\sigma^2)^{-\frac{n}{2}} \cdot
+        e^{-\frac{1}{\sigma^2} \frac{1}{2} \left(\langle \dots, \dots \rangle\right)} \cdot (\sigma^2)^{-a-1} e^{-\frac{b}{\sigma^2}} \\
+        &\leftrightarrow \text{InvGama}\left(a + \frac{n}{2},
+          b + \frac{1}{2} \left\langle
+            \left(I + \frac{1}{\kappa_0} \begin{bmatrix}1&\dots&1\\\vdots&&\vdots\\1&\dots&1\end{bmatrix}\right)^{-1}
+            \left(x - \begin{bmatrix}\mu_0\\\vdots\\\mu_0\end{bmatrix}\right), x - \begin{bmatrix}\mu_0\\\vdots\\\mu_0\end{bmatrix}
+          \right\rangle\right)
+    \end{align*}
+    $\leftrightarrow$: konjugirana porazdelitev. \\
+    Prepričali smo se, da je opisana družina apriornih porazdelitev konjugirana, in sicer
+    \begin{itemize}
+      \item $a \to a + \frac{n}{2}$
+      \item $b \to b + \frac{1}{2} \langle \dots, \dots \rangle$
+      \item $\mu_0 \to \frac{\kappa_0}{\kappa_0 + n} \mu_0 + \frac{n}{\kappa_0 + n} \overline{x}$
+      \item $\kappa_0 \to \kappa_0 + n$.
+    \end{itemize}
+    Nova $b$ in $\mu_0$ sta odvisna od realizacije $(x_1 \dots x_n)$. \\
+    $b + \frac{1}{2} \left(\sum_{i=1}^{n} (x_i - \overline{x})^2 + \frac{n \cdot \kappa_0}{\kappa_0 + n} (\overline{x} - \mu_0)^2\right)$
+\end{enumerate}
+
+
+\section{Hierarhični modeli}
+
+Spomnimo se na normalni model \sn{preizkušnja $m$ terapij}.
+Frekvencistično gledamo neodvisne skupine s.s. \\
+\begin{tabular}{c @{\hspace{2\tabcolsep}} *{4}{c}}
+  $X_{1,1}$ & $X_{1,2}$ & $\dots$ & $X_{1,m}$ \\
+  $\vdots$ & $\vdots$ & & $X_{n_m, m}$ \\
+  $X_{n_1, 1}$ & $\vdots$ & & \\
+  & $X_{n_2, 2}$ & &
+\end{tabular}. \\
+Velikosti $n_1 + \dots + n_m = n$. \\
+Funkcija neodvisnosti: $X_{ij} \sim N(\mu_j, \sigma^2)$. \\
+Vse variance so enaka (homoskelastičnost) zaradi \sn{preprostosti}. \\
+Najbolj nas zanimajo (ocene) za $\mu_j$ in $\sigma^2$, \sn{optimalne} frekventistične cenilke so:
+\begin{align*}
+  &\hat{\mu_j} = \frac{1}{n_j} \sum_{i=1}^{n_j} X_{ij} = \overline{X_{.j}} \\
+  &\hat{\sigma} = \frac{1}{n-m} \sum_{j=1}^m \sum_{i=1}^{n_j} (X_{ij} - \overline{X_{.j}})^2.
+\end{align*}
 
 
 %\clearpage
