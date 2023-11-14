@@ -185,7 +185,8 @@
   {\bf A/R} & {accept or reject} \\
   {\bf M.v.} & {Markovska veriga} \\
   {\bf EZVŠ} & {ergodični zakon veliikih števil} \\
-  {\bf ECLI} & {ergodični CLI}
+  {\bf ECLI} & {ergodični CLI} \\
+  {\bf M-H} & {Matropolis-Hasting}
 \end{tabular}
 
 %\clearpage
@@ -1205,6 +1206,153 @@ Pri blagih pogojih je ta veriga ergodična.
   (Blagi pogoji so izpolnjeni, veriga ergodična.)
 \end{exmp}
 
+
+% 10. predavanje: 14.11.
+
+\section{Markovske verige z zveznim prostorom stanj - appendix}
+
+Markovska veriga \sn{na} $\Sigma$ v diskretnem času je zaporedje merljivih preslikav $X_i: \Omega \to \Sigma$
+$(i = 0, 1, 2 \dots)$, kjer je $\Omega$ verjetnostni prostor, $\Sigma$ merljiv prostor in velja
+\begin{equation}
+  P(X_n \in A \mid X_{n-1} = x_{n-1} \dots X_0 = x_0) = P(X_n \in A \mid X_{n-1} = x_{n-1})
+  \label{markovska-lastnost-A}
+\end{equation}
+za vse $n \in \N, A \subset \Sigma$ in vse n-terice $x_0 \dots x_{n-1} \in \Sigma$. \\
+Tu je $\{P(\_ \mid x) \mid x \in \Sigma\}$ družina verjetnostnih mer na $\Sigma$, za katero velja,
+da je za vsako merljivo množico $A \subset \Sigma$ preslikava $\Sigma \to [0,1]$, $x \mapsto \P(A \mid x)$ merljiva. \\
+Prostoru $\Sigma$ pravimo parameter stanj, $X_i$ so členi verige,
+lastnosti \refeq{markovska-lastnost-A} pa pravimo markovska lastnost. \\
+Tu se bomo omejili na Borelove množice $\Sigma \subset \R^r$ (z Borelovo $\sigma$-algebro.) \\
+Poudarimo, da so verjetnosti $P(_ \mid x)$ (pravimo jim \sn{prehodne verjetnosti}) neodvisne od $n$
+(torej za vse $n$ enake).
+\begin{exmp} \text{} \\
+  Če ima $X_0$ neko porazdelitev in velja $X_n = X_{n-1} + \varepsilon_n$
+  (kjer so $X_0, \varepsilon_1 \dots$ neodvisne in $\epsilon_0 \sim N(0, V)$ za $V \in \P(r)$ (V je s.p.d.))
+  in $X_0, X_1, X_2 \dots$ markovska veriga in velja
+  \begin{equation*}
+    P(A \mid x) = P(N(x, V) \in A).
+  \end{equation*}
+\end{exmp}
+\begin{exmp}
+  Metropolis-Hastingovova veriga:
+  \begin{enumerate}[label=(\arabic*)]
+    \item imamo $X_0 = x_0$,
+    \item če je $X_{n-1} = x$, potem realizacijo od $X_n$ dobimo takole:
+      \begin{enumerate}[label=(\roman*)]
+        \item vzorčimo $y$ iz predlagane porazdelitve $dP_{(Y \mid x)} = q(y \mid x) d\nu(y)$
+        \item vzorčimo $u = U \sim U(0,1)$ in sprejmemo $X_n = y$, če $u \leq \rho(x, y)$
+          oz. $X_n = x$, če $u > \rho(x,y)$, kjer
+          \begin{equation*}
+            \rho(x,y) = \begin{cases}
+              \min \{1, \frac{f(y)}{f(x)} \cdot \frac{q(x \mid y)}{q(y \mid x)}\}; f(x) q(y \mid x) \neq 0 \\
+              1; f(x) q(y \mid x) = 0
+            \end{cases}
+          \end{equation*}
+          Tu je $f$ ciljna gostota (glede na $\nu$),
+      \end{enumerate}
+    \item 
+      \begin{align*}
+        &P(X_n \in A \mid X_{n-1}=x) \\
+        &= \int_{y \in \Sigma} P(X_n \in A \mid Y=y, X_{n-1}=x) dP_{(Y \mid x)}(x) \\
+        &= \int_{y \in \Sigma} \int_{u=0}^{1} P(X_n \in A \mid U=u, Y=y, X_{n-1}=x)
+          \cdot dP_{(U \mid Y=y, X_{n-1}=x)}(u) d\nu(y) \\
+        &= \int_{y \in \Sigma}
+          \left(\int_{u=0}^{\rho(x,y)} \dots du + \int_{u=\rho(x,y)}^{1} \dots du\right)
+          q(y \mid x) d\nu(y) \\
+        &= \int_{y \in \Sigma} \left(1_A(y) \cdot q(y \mid x) + 1_A(x) \cdot (1-\rho(x,y))\right)
+          q(y \mid x) d\nu(y) \\
+        &= \int_{y \in A} \rho(x, y) q(y \mid x) d\nu(y)
+          + 1_A(x) \int_{y \in \Sigma} (1-\rho(x,y)) q(y \mid x) d\nu(y).
+      \end{align*}
+      Privzemimo, da $\nu$ nima atomov: $\nu({x}) = 0$ za vsak $x$:
+      \begin{equation*}
+        \implies P(X_n \in A \mid X_{n-1} = x) = \int_{y \in \Sigma} (1-\rho(x,y)) q(y \mid x) d\nu(y).
+      \end{equation*}
+      To je tipično $u$ pozitivna verjetnost.
+      To pomeni, da imajo prehodne verjetnosti atome $u$: $P({x} \mid x) > 0$ (vsaj za nekatere $x$).
+  \end{enumerate}
+\end{exmp}
+\begin{defn} \text{} \\
+  Porazdelitev $\pi$ je stacionarna za verigo $\{X_i\}$, če iz $X_{n-1} \sim \pi$ sledi $X_n \sim \pi$.
+\end{defn}
+\begin{claim} \text{} \\
+  Porazdelitev $f d\nu$ je stacionarna porazdelitev M-H verige.
+\end{claim}
+\begin{pro} \text{} \\
+  Privzemimo $dP_{X_{n-1}} = f d\nu$ in računajmo
+  \begin{align*}
+    P(X_n \in A) =& \int_{x \in \Sigma} P(X_n \in A \mid X_{n-1} = x) dP_{X_{n-1}}(x) \\
+    =& \int_{x \in \Sigma} \int_{y \in A} \rho(x,y) q(y \mid x) f(y) d\nu(y) d\nu(x) \\
+      &+ \int_{x \in A} \int_{y \in \Sigma} q(x \mid y) d\nu(y) f(x) d\nu(x) \\
+      &- \int_{x \in A} \int_{y \in \Sigma} \rho(x, y) q(x \mid y) f(x) d\nu(y) d\nu(x).
+  \end{align*}
+  Upoštevamo
+  \begin{equation*}
+    \int_{y \in \Sigma} q(x \mid y) f(x) d\nu(y) = 1.
+  \end{equation*}
+  Spomnimo se:
+  \begin{equation*}
+    \rho(x,y) = \begin{cases}
+      \min \{1, \frac{f(y)}{f(x)} \cdot \frac{q(x \mid y)}{q(y \mid x)}\}; f(x) q(y \mid x) \neq 0 \\
+      1; f(x) q(y \mid x) = 0
+    \end{cases}
+  \end{equation*}
+  Vidimo, da velja enakost (za $\forall x, y$)
+  \begin{equation*}
+    \rho(x,y) q(y \mid x) f(x) = \rho(y,x) q(x \mid y) f(y)
+  \end{equation*}
+  in
+  \begin{equation*}
+    \int_{x \in \Sigma} \int_{y \in A} \rho(x,y) q(y \mid x) f(y) d\nu(y) d\nu(x) =
+    \int_{y \in \Sigma} \int_{x \in A} \rho(y,x) q(x \mid y) f(x) d\nu(x) d\nu(y).
+  \end{equation*}
+  Zato je
+  \begin{equation*}
+    P(X_n \in A) = \int_{x \in A} f(x) d\nu(y).
+  \end{equation*}
+\end{pro}
+Prehodne verjetnosti $P(_ \mid x)$ generirajo verigo prehodnih verjetnosti \\
+$P(A \mid x) = P(X_n \in A \mid X_0 = x)$. \\
+To verjetnost, da veriga obišče $A$ v času $n$ ob pogoju, da je začela v $x$,
+želeni lastnosti (ki implicirata ustrezna ERVŠ) sta
+\begin{itemize}
+  \item $||P^n(_ \mid x) - \pi|| \stackrel{n \to \infty}{\to} 0$ za skoraj vse $x$,
+  \item $||P^n(_ \mid x) - \pi|| \stackrel{n \to \infty}{\to} 0$ enakomerno v $x$,
+\end{itemize}
+kjer za predznačeno mero $\mu$ definiramo normo totalne variacije
+\begin{equation*}
+  || u || = \sup_A |\mu(A)|.
+\end{equation*}
+Za osnovne lastnosti $P^n(A \mid x)$ izračunajmo
+\begin{align*}
+  &P(X_n \in A_n, X_{n-1} \in A_{n-1} \dots X_1 \in A_1 \mid X_0=x_0) \\
+  &=\int_{x_1 \in \sigma} P(X_n \in A_n \dots X_1 \in A_1 \mid X_1=x_1, X_0=x_0) dP_{(X_1 \mid X_0=x_0)}(x_1) \\
+  &=\int_{x_1 \in A_1} P(X_n \in A_n \dots X_2 \in A_2 \mid X_1=x_1, X_0=x_0) dP_{(X_1 \mid X_0=x_0)}(x_1 \mid x_0) \\
+  &=\int_{x_1 \in A_1} \int_{x_2 \in \Sigma}
+    P(X_n \in A_n \dots X_2 \in A_2 \mid X_2=x_2, X_1=x_1, X_0=x_0) dP(x_2 \mid x_1) dP(x_1 \mid x_0) \\
+  &= \dots \\
+  &= \int_{x_1 \in A_1} \dots \int_{x_n \in A_n} dP(x_n \mid x_{n-1}) \dots dP(x_1 \mid x_0).
+\end{align*}
+\underline{Posebej}:
+\begin{equation*}
+  P^n(A \mid x) = \int_{x_1 \in \Sigma} \dots \int_{x_{n-1} \in \Sigma} \int_{x_n \in A}
+    dP(x_n \mid x_{n-1}) \dots dP(x_1 \mid x).
+\end{equation*}
+Od tod sledi
+\begin{align*}
+  P^n(A \mid x) &= \int_{x_1 \in \Sigma} \dots \int_{x_m \in \Sigma}
+    \left(\int_{x_{m+1} \in \Sigma} \dots \int_{x_n \in A} dP(x_n \mid x_{n-1} \dots dP(x_{m+1} \mid x_m))\right) \\
+  &\cdot dP(x_m \mid x_{m-1}) \dots dP(x_1 \mid x_0).
+\end{align*}
+Tukaj je
+\begin{equation*}
+  \int_{x_{m+1} \in \Sigma} \dots \int_{x_n \in A} dP(x_n \mid x_{n-1} \dots dP(x_{m+1} \mid x_m)) = P^{n-m}(A \mid x_m)
+\end{equation*}
+in zato
+\begin{equation*}
+  P^n(A \mid x) = \int_{x_1 \in \Sigma} P^{n-m} (A \mid x_m) \cdot dP^m(x_m \mid x).
+\end{equation*}
+Tej enakosti rečemo enakost Chapman-Kolmogorova.
 
 % 9. predavanje: 13.11.
 
