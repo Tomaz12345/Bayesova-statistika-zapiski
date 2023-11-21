@@ -186,7 +186,8 @@
   {\bf M.v.} & {Markovska veriga} \\
   {\bf EZVŠ} & {ergodični zakon veliikih števil} \\
   {\bf ECLI} & {ergodični CLI} \\
-  {\bf M-H} & {Matropolis-Hasting}
+  {\bf M-H} & {Matropolis-Hasting} \\
+  {\bf HM} & {hierarhični model}
 \end{tabular}
 
 %\clearpage
@@ -1354,6 +1355,7 @@ in zato
 \end{equation*}
 Tej enakosti rečemo enakost Chapman-Kolmogorova.
 
+
 % 9. predavanje: 13.11.
 
 \chapter{Normalni modeli}
@@ -1505,6 +1507,94 @@ Najbolj nas zanimajo (ocene) za $\mu_j$ in $\sigma^2$, \sn{optimalne} frekventis
 \begin{align*}
   &\hat{\mu_j} = \frac{1}{n_j} \sum_{i=1}^{n_j} X_{ij} = \overline{X_{.j}} \\
   &\hat{\sigma} = \frac{1}{n-m} \sum_{j=1}^m \sum_{i=1}^{n_j} (X_{ij} - \overline{X_{.j}})^2.
+\end{align*}
+
+
+% 11. predavanje: 20.11.
+
+\underline{Zadnjič}: model $m$ terapij $N(\mu_j, \sigma^2) \; (1 \leq j \leq m)$. \\
+Po preizkušnju domnev je glavna t.i. domneva homogenosti \\
+$\mu_1 = \mu_2 = \dots = \mu_m$. \\
+V pridruženem Bayesovem modelu začnemo z idejo, da so $\mu_j$ \sn{poustvarjanje} nekega \sn{izhodiščnega} $\mu_0$. \\
+$\sigma^2$ našega homoskelastičnega modela je znana. \\
+$\mu_0, \tau_0^2, a, b$ \\
+$\downarrow$ \\
+$\mu, \eta^2 \in N(\mu_0, \tau_0^2) \times \text{InvGama}(a,b)$ - Bayesov parameter \\
+$\downarrow$ \\
+$\mu_1 \dots \mu_m \in N(\mu, \eta^2) \times \dots \times N(\mu, \eta^2)$ - $\phi$ - Bayesov parameter \\
+$\downarrow$ (neodvisno) \\
+$x_{i_1} \in N(\mu_1, \sigma^2) \; (1 \leq i \leq n_1) \dots x_{i_m} \in N(\mu_m, \sigma^2) \; (1 \leq i \leq n_m)$
+- $\vartheta$ - vzorec \\
+(večji $\tau^2$, bolj $\mu_i$ različni). \\
+
+\subsection{Abstraktna opredelitev hierarhičnega modela}
+
+Bayesov parameter je oblike $(\vartheta, \phi)$ kjer $\phi$ imenujemo hiperparameter,
+$\vartheta$ pa populacijski parameter.
+Za vzorčne gostote velja temeljni privzetek \\
+(HM - hierarhični model) $f(x \mid \vartheta, \phi) = f(x \mid \vartheta)$. \\
+Aposteriorne gostote bi lahko predstavili kot
+\begin{align*}
+  f(\vartheta \mid \phi, x) &= \frac{f(x \mid \vartheta, \phi) f(\vartheta \mid \phi) f(\phi)}{f(x)} \\
+  &= \frac{f(x \mid \vartheta) f(\vartheta)}{f(x)} \cdot \frac{f(\vartheta \mid \phi) f(\phi)}{f(\vartheta)} \\
+  &= f(\vartheta \mid x) f(\phi \mid \vartheta).
+\end{align*}
+Ta predstavitev tipično ni uporabna, ker ne poznamo $f(\vartheta)$. Zato raje
+\begin{itemize}
+  \item $f(\vartheta \mid \phi, x) = \frac{f(x \mid \vartheta, \phi) f(\vartheta \mid \phi)}{f(x \mid \phi)}$:
+    aposteriorna gostota modela z vzorčnimi $f(x \mid \vartheta)$ in apriornimi $f(\vartheta \mid \phi)$,
+  \item $f(\phi \mid \vartheta, x) = \frac{f(x \mid \vartheta) f(\phi \mid \vartheta)}{f(x \mid \vartheta)}$:
+    aposteriorna gostota modela z vzorčnimi $f(\vartheta \mid \phi)$ in apriornimi $f(\phi)$
+\end{itemize}
+($\implies$ z Gibsom $f(\vartheta, \phi \mid x)$). \\
+Aplicirajmo na naš zgled: \\
+$\phi = (\mu, \eta^2)$ \\
+$n = \sum_{j=1}^{m} n_j$ \\
+$\vartheta = (\mu_1 \dots \mu_m)$ \\
+\begin{align*}
+  f([x_{ij}] \mid \mu_1 \dots \mu_m) &= \prod_{j=1}^{m} \left(2 \pi \sigma^2\right)^{-\frac{n}{2}}
+    e^{-\frac{1}{2 \sigma^2} \sum_{i=1}^{n_j} (x_{ij} - \mu_j)^2} \\
+  &= \left(2 \pi \sigma^2\right)^{-\frac{n}{2}}
+    e^{-\frac{1}{2 \sigma^2} \sum_{j=1}^{m} \sum_{i=1}^{n_j} (x_{ij} - \mu_j)^2}
+\end{align*}
+$j = 1 \dots m, \; i = 1 \dots n_j$. \\
+Populacijska apriorna:
+\begin{equation*}
+  f(\mu_1 \dots \mu_m \mid \mu, \eta^2) = \left(2 \pi \eta^2\right)^{-\frac{n}{2}}
+    e^{-\frac{1}{2 \eta^2} \sum_{j=1}^{m} (\mu_j - \mu)^2},
+\end{equation*}
+hiperapriorna:
+\begin{equation*}
+  f(\mu, \sigma^2) = f_{N(\mu_0, \tau_0^2)}(\mu) \cdot f_{\text{InvGama}(a,b)} (\eta^2).
+\end{equation*}
+\begin{align*}
+  &f(\mu_1 \dots \mu_m \mid \mu, \eta^2, [x_{ij}]) \\
+  &\propto \prod_{i=1}^{m} e^{-\frac{1}{2 \sigma^2} \sum_{i=1}^{n_j} (x_{ij} - \mu_j)^2}
+   \cdot e^{-\frac{1}{2 \eta^2} (\mu_j - \mu)^2}.
+\end{align*}
+Analogije z aposteriornim NEP-normalnim modelom:
+\begin{itemize}
+  \item $\sigma^2 - \sigma^2$
+  \item $x_{ij} - x_i$
+  \item $\mu_j - \mu$
+  \item $\eta^2 - \tau_0^2$
+  \item $\mu_j - \mu$
+  \item $\mu - \mu_0$.
+\end{itemize}
+Ta pogojna aposteriorna porazdelitev je
+\begin{equation*}
+  \prod_{j=1}^{m} N \left( \frac{\frac{\sigma^2}{n_j}}{\frac{\sigma^2}{n_j} + \eta^2} \mu
+    + \frac{\eta^2}{\frac{\sigma^2}{n_j} + \eta^2} \overline{x_{.j}},
+    \frac{\frac{\sigma^2}{n_j} \cdot \eta^2}{\frac{\sigma^2}{n_j} + \eta^2} \right).
+\end{equation*}
+$f(\mu, \eta^2 \mid \mu_1 \dots \mu_m)$ 1-razsežni NEP-normalni model s polkonjugirano apriorno porazdelitvijo
+\begin{align*}
+  &f(\mu \mid \eta^2, \mu_1 \dots \mu_m) \dots
+    N \left( \frac{\frac{\tau_0^2}{m}}{\frac{\tau_0^2}{m} + \tau_0^2} \mu_0
+    + \frac{\tau_0^2}{\frac{\tau_0^2}{m} + \tau_0^2} \overline{\mu},
+    \frac{\frac{\tau_0^2}{m} \cdot \tau_0^2}{\frac{\tau_0^2}{m} + \tau_0^2} \right) \\
+  &f(\tau^2 \mid \mu, \mu_1 \dots \mu_m) \dots
+    \text{InvGama}\left(a+\frac{m}{2}, b+\frac{1}{2}\sum_{i=1}^{m}(\mu_j-\mu)^2\right).
 \end{align*}
 
 
