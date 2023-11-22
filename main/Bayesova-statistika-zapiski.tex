@@ -1598,6 +1598,105 @@ $f(\mu, \eta^2 \mid \mu_1 \dots \mu_m)$ 1-razsežni NEP-normalni model s polkonj
 \end{align*}
 
 
+% 12. predavanje: 21.11.
+
+\begin{defn}
+  Naj bo $\nu$ mera na $B(\Sigma)$.
+  Tedaj je veriga $\{X_n\}$ \\
+  $\nu$-ireducibilna, če iz $\nu(A) > 0$ sledi
+  \begin{equation*}
+    \forall x \; \exists m = n_n: \; P^n(A \mid x) = P(X_m \in A \mid X_0 = x) > 0.
+  \end{equation*}
+\end{defn}
+Če naj velja EZVŠ, moramo vsako množico $A$, za katero
+\begin{equation*}
+  \pi(A) = \int_A d\pi(y) = \int_A f(y) dy > 0
+\end{equation*}
+obiskati neskončno-mnogokrat.
+Torej nas v našem kontekstu zanima \\
+$\pi$-ireducibilnost, kjer je $\pi$ stacionarna porazdelitev.
+\begin{ex}
+  Če iz $f(y) > 0$ sledi $q(y \mid x) > 0$, je M-H (Metropolis-Hastingova) veriga $\pi$-ireducibilna.
+\end{ex}
+\underline{Komentar}: zgornji pogoj je za praktične namene pogosto pomešan? (neuporaben?).
+\begin{defn}
+  Naj bo $\pi$ stacionarna porazdelitev verige $\{X_n\}$, ki je \\
+  $\pi$-ireducibilna.
+  Veriga $\{X_n\}$ je periodična s periodo $d \geq 2$, če obstajajo paroma disjunktne Borelove množice $E_0 \dots E_{d-1}$,
+  za katere velja
+  \begin{equation*}
+    \forall i \in \{0 \dots d-1\} \; \forall x \in E_i: \; P({E_{i+1 \text{ mod } d}} \mid x) = 1.
+  \end{equation*}
+  Pripomnimo, da tedaj sledi
+  \begin{equation*}
+    \forall x \in E_i: \; P^d(E_i \mid x) = 1.
+  \end{equation*}
+\end{defn}
+(Naj bo $x \in E_i$.
+Tedaj
+\begin{align*}
+  P^2(E_{i+2 \text{ mod } d} \mid x) &= \int_{\Sigma} P(E_{i+2 \text{ mod } d} \mid y) dP(y \mid x) \\
+  &\geq \int_{y \in E_{i+1 \text{ mod }    d}} \dots \\
+  &= \int_{y \in E_{i+1 \text{ mod } d}} dP(y \mid x) = 1.)
+\end{align*}
+Če veriga ni periodična, je aperiodična.
+\begin{claim}
+  Če sta $f(y)$ in $q(y \mid x)$ pozitivni in zvezni povsod na $\Sigma = \R^r$ oz $\Sigma \times \Sigma = \R^r \times \R^r$,
+  je $\pi$-ireducibilna M-H veriga tudi aperiodična.
+\end{claim}
+\begin{theorem}
+  Če je M-H veriga $\pi$-ireducibilna in aperiodična, velja
+  \begin{equation*}
+    \lim_{n \to \infty} \sup_{A \in B\left(\R^r\right)} \left|P^n(A \mid x) - \pi(A)\right| = 0
+  \end{equation*}
+  $\pi = s.s. [x]$ (za s.g. vsak $x$).
+\end{theorem}
+\begin{theorem}
+  Privzemimo $q(y \mid x) = q(y)$ za $\forall x$ (neodvisni M-H) in $q(y) > 0$ ter $f(y) > 0$.
+  Če obstaja konstanta $M$, za katero je $\forall y: \; f(y) < M q(y)$, je M-H veriga ENAKOMERNO ERGODIČNA,
+  obstaja zaporedje $r(n) \stackrel{n \to \infty}{\to} 0$, za katero velja $\sup_A \left|P^n(A \mid x) - \pi(A)\right| \leq r(n)$.
+  Tu obstaja eksplicitni izraz za $r(n)$.
+\end{theorem}
+\begin{rem}
+  Pri predpostavkah izreka zmano s A/R simulirati NEODVISNO vzorčenje iz $\pi$.
+\end{rem}
+\begin{defn}
+  Naj bo $\pi$ stacionarna oprazdelitev verige $\{X_n\}$, ki je $\pi$-ireducibilna.
+  Tedaj je ta veriga POVRNLJIVA, če iz $\pi(A) > 0$ sledi
+  \begin{enumerate}[label=(\roman*)]
+    \item $P(X_n \in A \text{ neskončno mnogokrat } \mid x) > 0$ za $\forall x$,
+    \item $P(X_n \in A \text{ neskončno mnogokrat } \mid x) = 1$ za $\pi$-skoraj vse $x$.
+  \end{enumerate}
+\end{defn}
+\begin{defn}
+  Veriga je Harrisov povrnljiva, če velja (ii) za $\forall x$.
+\end{defn}
+\begin{theorem}
+  Naj bo $\pi$ stacionarna porazdelitev verige $\{X_n\}$, ki je $\pi$-ireducibilna.
+  Tedaj je veriga povrnljiva.
+  \begin{itemize}
+    \item Če je veriga še aperiodična, velja $\lim_{n \to \infty} \sup_A \left|P^n(A \mid x) - \pi(A)\right| = 0$ za vsak $x$
+      ($\pi$-s.g. $[x]$).
+    \item Če je veriga Harrisov povrnljiva,
+      velja $\lim_{n \to \infty} \sup_A B\left(P^n(A \mid x) - \pi(A)\right) = 0$ za vsak $x$.
+  \end{itemize}
+  Poleg tega v tem primeru velja EZVŠ v obliki: \\
+  $\forall x\; \forall$ integrabilna $h$:
+  \begin{equation*}
+    P\left(\lim_{n \to \infty} \frac{1}{n} \sum_{i=1}^{n} h(x_i) = \int h(u) f(u) du\right)
+    = P\left(\lim_{n \to \infty} \frac{1}{n} \sum_{i=1}^{n} h(x_i) = \int h(u) d\pi(u) \mid x\right) = 1.
+  \end{equation*}
+\end{theorem}
+\begin{claim}
+  $\pi$-ireducibilna M-H veriga je Harrisov povrnljiva.
+\end{claim}
+\begin{theorem}
+  Privzemimo Metropolisovo verigo oblike $q(y \mid x) = q(y - x)$, kjer je $q$ simetrična okrog $0$.
+  Naj bo $\Sigma = \R^r$.
+  Tedaj pridružena veriga \sn{nikdar} ni enakomerno ergodična.
+\end{theorem}
+
+
 %\clearpage
 %\phantomsection
 
