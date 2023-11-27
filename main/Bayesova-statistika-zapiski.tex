@@ -27,6 +27,7 @@
 \usepackage{mathtools}
 \usepackage{youngtab}
 \usepackage{tikz}
+\usepackage{yhmath}
 
 % encoding and language
 \usepackage{lmodern}
@@ -187,7 +188,10 @@
   {\bf EZVŠ} & {ergodični zakon veliikih števil} \\
   {\bf ECLI} & {ergodični CLI} \\
   {\bf M-H} & {Matropolis-Hasting} \\
-  {\bf HM} & {hierarhični model}
+  {\bf HM} & {hierarhični model} \\
+  {\bf EIZ} & {ergodični interval zaupanja} \\
+  {\bf MCMC} & {Monte Carlo markovske verige} \\
+  {\bf SNK} & {?} \\
 \end{tabular}
 
 %\clearpage
@@ -1354,6 +1358,133 @@ in zato
   P^n(A \mid x) = \int_{x_1 \in \Sigma} P^{n-m} (A \mid x_m) \cdot dP^m(x_m \mid x).
 \end{equation*}
 Tej enakosti rečemo enakost Chapman-Kolmogorova.
+
+
+% 13. predavanje: 27.11.
+
+\section{MCMC diagnostika}
+
+\subsection{MCMC varianca}
+
+Želimo oceniti $E_f(h) = \int h(x) f(x) dx$. \\
+Privzemimo, da je $X_0, X_1 \dots$ markovska veriga s stacionarno porazdelitvijo \sn{$f$},
+ki ima primerne ergodične lastnosti. \\
+Označimo $\widehat{E_f(h)} = \frac{1}{n} \sum_{i=1}^{n} h(X_i)$ (standardna MCMC cenilka za $E_f(h)$ za veriga do časa $n$). \\
+Definirajmo $D_{MCMC} \left(\widehat{E_f(h)(x)}\right)$ = $E\left(\left(\widehat{E_f(h)(x)} - E_f(h)\right)^{2}\right)$. \\
+(To je v resnici SNK glede na ocenjeno karakteristiko $E_f(h)$.
+V splošnem $\widehat{E_f(h)}$ \underline{ni} nepristranska cenilka za $E_f(h)$.) \\
+Tu je $\widehat{E_f(h)} - E_f(h) = \frac{1}{n} \sum_{i=1}^{n} (h(X_i) - E_f(h))$, velja
+\begin{equation*}
+  D_{MCMC} \left(\widehat{E_f(h)}\right) = \frac{1}{n^2} \sum_{i=1}^k E((h(X_i) - E_f(h))^2) +
+  \frac{1}{n^2} \sum_{j \neq j} E((h(X_i) - E_f(h)) (h(X_j) - E_f(h))).
+\end{equation*}
+Privzemimo, da je veriga STACIONARNA, t.j. $X_i \sim f$ za vse $i$ (to sledi iz $X_0 \sim f$).
+Tedaj je
+\begin{enumerate}[label=(\roman*)]
+  \item $E((h(X_i) - E_f(h))^2) =: \sigma^2$ varianca (\sn{s.s.} $h(X_i)$) (enaka za vse $i$) in
+  \item $\sigma_{i,j} = E((h(X_i) - E_f(h)) (h(X_j) - E_f(h)))$ kovarianca \sn{s.s.} $h(X_i)$ in $h(X_j)$,
+    ki je odvisna le od $|i-j|$: če je npr $i < j$, je
+    \begin{equation*}
+      E(h(X_i) h(X_j)) = \int E(h(x_i) h(x_j) \mid X_{i-1} = x_{i-1}) dx_{i-1}.
+    \end{equation*}
+\end{enumerate}
+Sledi $D_{MCMC} \left(\widehat{E_f(h)}\right) = \frac{\sigma^2}{n} + \frac{2}{n^2} \sum_{i < j} \sigma_{i,j}$ oziroma
+\begin{align*}
+  n D_{MCMC} \left(\widehat{E_f(h)}\right) &= \sigma^2 + \frac{2}{n} \sum_{i=1}^{n-1} \sum_{j=i+1}^{n} \sigma_{i,j} \\
+  &= \sigma^2 + \frac{2}{n} \sum_{k=1}^{n-1} (n-k) \sigma_{0,k} \\
+  &= \sigma^2 + 2 \sum_{k=1}^{n-1} \sigma_{0,k} - \frac{2}{n} \sum_{k=1}^{n-1} k \sigma_{0,k}.
+\end{align*}
+\includegraphics[scale=0.4]{sigma_3_5} \\
+Izkaže se, da pri primernih ergodičnih lastnostih velja $\sum_{k=1}^{\infty} |\sigma_{0,k}| < \infty$
+in posledično $\lim_{n \to \infty} \frac{1}{n} \sum_{k=1}^{n-1} k \sigma_{0,k} = 0$. \\
+Zato definiramo asimptotično MCMC varianco kot
+\begin{equation*}
+  \gamma_k^2 = \sigma^2 + 2 \sum_{k=1}^{\infty} \sigma_{0,k},
+\end{equation*}
+kjer je $\sigma^2$ \sn{stacionarna} varianca, $\sigma_{0,k}$ pa so \sn{stacionarne rang-k} avtokorelacijske verige.
+\begin{theorem}
+  Pri primernih ergodičnih lastnostih velja
+  \begin{equation*}
+    (\text{ECLI}): \quad \frac{\widehat{E_f(h)} - E_f(h)}{\frac{\gamma_k}{\sqrt{n}}} \longrightarrow N(0,1)
+  \end{equation*}
+  (za KATEROKOLI začetno porazdelitev).
+\end{theorem}
+Je to že dovolj za konstrukcijo (asimptotičnega) intervala zaupanja za $E_f(h)$?
+Teoretično da:
+\begin{equation*}
+  \lim_{n \to \infty} P\left(E_f(h) \in \left[\widehat{E_f(h)} - z_{\frac{\alpha}{2}} \cdot \frac{\gamma_k}{\sqrt{n}},
+    \widehat{E_f(h)} + z_{\frac{\alpha}{2}} \cdot \frac{\gamma_k}{\sqrt{n}}\right]\right) = 1 - \alpha.
+\end{equation*}
+Za praktično rabo je treba $\gamma_k^2$ oceniti iz vzorca.
+Preprosto je oceniti $\sigma^2$; vzamemo kar
+\begin{equation*}
+  \frac{1}{n-1} \cdot \sum_{i=1}^{n} \left(h(X_i) - E_f(X_i)\right)^2.
+\end{equation*}
+Vsoto vrste $\sum_{k=1}^{n} \sigma_{0,k}$ je zahtevno oceniti. \\
+Za neposredno ocenjevanje $\gamma_k^2$ si oglejmo metodo povprečij neprikrivajočih se serij. \\
+Privzemimo, da velja $n = ab$ za neki $a, b \in \N$.
+Veriga $X_1 \dots X_n = X_{ab}$ razdelimo v serije (\sn{batches}) \\
+$X_1 \dots X_b \stackrel{\text{povprečimo}}{\longrightarrow} \widehat{\mu_{b,1}}$ \\
+$X_{b+1} \dots X_{2b} \longrightarrow \widehat{\mu_{b,2}}$ \\
+$\dots$ \\
+$X_{(a-1)b+1} \dots X_{ab} \longrightarrow \widehat{\mu_{b,a}}$. \\
+Pripomnimo, da je $\widehat{\mu_{b,k}} = \frac{1}{b} \sum_{i=(k-1)b + 1}^{kb} h(X_i)$. \\
+Tudi to je MCMC ocena za $E_f(h)$.
+Pišimo še $\widehat{\mu_n} = \widehat{\mu_{ab}} = \frac{1}{a} \sum_{i=1}^{n} h(X_i)$. \\
+Potem je $\widehat{\gamma_k^2} = \frac{b}{a} \sum_{k=1}^{a} (\widehat{\mu_{b,k}} - \widehat{\mu_k})^2$ ocena za $\gamma_k^2$. \\
+Pišimo $\mu = E_f(h)$.
+Če začnemo z $\widehat{\gamma_k^2} = \frac{b}{a} \sum_{k=1}^{a} (\widehat{\mu_{b,k}} - \mu + \mu -\widehat{\mu_b})^2$,
+račun pripelje
+\begin{align*}
+  \widehat{\gamma_k^2} &= \frac{1}{n} \sum_{i=1}^{n} (h(X_i) - \mu)^2 +
+    \frac{1}{a} \sum_{k=1}^{a} \frac{1}{b} \sum_{i=(k-1)b+1, i \neq j}^{kb} ((h(X_i) - \mu) (h(X_j) - \mu)) \\
+    &- \frac{1}{an} \left(\sum_{i=1}^{n} (h(X_i) - \mu)^2 + \sum_{i \neq j} (h(X_i) - \mu)(h(X_j) - \mu)\right).
+\end{align*}
+\includegraphics[scale=0.5]{bloki_3_5} \\
+$\frac{1}{n} \sum_{i=1}^{n} (h(X_i) - \mu)^2 \stackrel{n \to \infty}{\longrightarrow} \sigma^2$ (EZVŠ), \\
+$\frac{1}{a} \sum_{k=1}^{a} \frac{1}{b} \sum_{i=(k-1)b+1, i \neq j}^{kb} ((h(X_i) - \mu) (h(X_j) - \mu))
+\stackrel{a \to \infty, \; b \to \infty}{\longrightarrow} 2 \sum_{k=1}^{\infty} \sigma_{0,k}$, \\
+ostalo $\stackrel{a \to \infty, \; b \to \infty}{\longrightarrow} 0$. \\
+Priporočeni izbiri sta $a = \sqrt{n}$, $a = \sqrt[3]{n}$. \\
+V praksi to realiziramo kot $a(k) \cdot b(k) = n(k) = k \cdot k^2 \; k = 1, 2 \dots$ \\
+Sledi želeni ECLI: \\
+$\lim_{n \to \infty} \frac{\widehat{E_f(h)} n(k) - E_f(h)}{\sqrt{\widehat{\gamma_k^2}(a(k),b(k))} / \sqrt{n}}
+  \stackrel{D}{=} N(0,1)$ \\
+in še EIZ (ergodični interval zaupanja) (stopnje zaupanje $1 - \alpha$) \\
+$\left[\widehat{E_f(h)} - z_{\frac{\alpha}{2}} \sqrt{\frac{\widehat{\gamma_k^2}(a(k),b(k))}{a(k) \cdot b(k)}},
+  \widehat{E_f(h)} + z_{\frac{\alpha}{2}} \sqrt{\frac{\widehat{\gamma_k^2}(a(k),b(k))}{a(k) \cdot b(k)}}
+  \right]$. \\
+Efektivna velikost vzorca. \\
+Naj bo $\sigma^2 = \int (h(x) - E_f(x))^2 f(x) dx$ kot prej. \\
+Če bi znali vzorčiti (NEP) iz $f$, bi vzorčno povprečje imelo varianco $\frac{\sigma^2}{n}$. \\
+Za MCMC vzorčenje imamo $D_{MCMC}(\widehat{E_f(h)}) \approx \frac{\gamma_k^2}{n}$.
+\begin{defn}
+  Efektivna velikost vzorca $n_{eff}$ za dejansko velikost vzorca $n$ je rešitev enačbe
+  $\frac{\gamma_k^2}{n} = \frac{\sigma^2}{n_{eff}}$. 
+\end{defn}
+Pri danem vzorcu seveda $n_{eff}$ ocenimo z
+\begin{equation*}
+  \widehat{n_{eff}} = n \frac{\widehat{\sigma^2}}{\gamma_k^2} = \frac{\widehat{\sigma^2}}{\gamma_k^2 / n}.
+\end{equation*}
+
+\subsection{Mešanje}
+
+Kvaliteto konvergence dane markovske verige za dano velikost vzorca $n$ lahko ocenimo tudi z \sn{mešanjem} neodvisnih verig,
+ki začnejo v \sn{mešano} različnih točkah prostora stanj. \\
+Privzemimo torej, da so $X_{ij}\; 1 \leq i \leq n$ neodvisne markovske verige z začetkom v $X_{01} \dots X_{0m}$
+(torej $1 \leq j \leq m$). \\
+Tu so $X_{0j} \; (1 \leq j \leq m)$ lahko konstruirani \sn{ročno} ali pa jih vzorčimo iz neke fiksne porazdelitve z veliko disperzijo. \\
+Povzemimo: skupine $(X_{1j} \dots X_{nj})$ so med seboj neodvisne $(1 \leq j \leq m)$, \\
+$X_{i-1,j} \to X_{i,j}$ pa so dani z prehodno verjetnostjo. \\
+\underline{Označimo} \\
+$W = \frac{1}{m(n-1)} \sum_{j=1}^{m} \sum_{i=1}^{n} \left(h(X_{ij}) - \overline{h(X_{.j})}\right)^2$
+(variance \sn{znotraj} skupin), \\
+$B = \frac{n}{m-1} \sum_{j=1}^{m} \left(\overline{h(X_{.j})} - \overline{h(X_{..})}\right)^2$
+(varianca \sn{med} skupinami). \\
+Končno definiramo še $\widehat{\sigma^{2+}} = \widehat{D_f(h)^{+}} = \frac{n}{n-1} W + \frac{1}{n} B$. \\
+Izkaže se, da $\widehat{\sigma^{2+}}$ precenjuje $\sigma^2$, medtem ko $W$ podcenjuje $\sigma^2$. \\
+Velja $\lim_{n \to \infty} \sqrt{\frac{\widehat{\sigma^{2+}}}{W}} = 1$; \\
+če imamo za dami $k \; \frac{\widehat{\sigma^{2+}}}{W} >> 1, n$ povečujemo.
 
 
 % 9. predavanje: 13.11.
