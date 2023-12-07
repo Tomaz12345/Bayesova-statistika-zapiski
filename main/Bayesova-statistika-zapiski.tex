@@ -192,6 +192,8 @@
   {\bf EIZ} & {ergodični interval zaupanja} \\
   {\bf MCMC} & {Monte Carlo markovske verige} \\
   {\bf SNK} & {?} \\
+  {\bf MNK} & {metoda najmanjših kvadratov} \\
+  {\bf VKR} & {vsota kvadratov residualov}
 \end{tabular}
 
 %\clearpage
@@ -1826,6 +1828,111 @@ Tedaj
   Naj bo $\Sigma = \R^r$.
   Tedaj pridružena veriga \sn{nikdar} ni enakomerno ergodična.
 \end{theorem}
+
+
+% 14. predavanje: 4.12.
+
+\section{Linearna regresija}
+
+\subsection{Večrazsežna normalna porazdelitev}
+
+Pravimo $X \sim N(\mu, \Sigma)$ za $\mu \in \R^n$ in $\sigma \in P(n)$
+(pozitivna definitna $n \times n$) matrika),
+če ima $P_X$ Lebesgueovo gostoto 
+\begin{equation*}
+  f(\mu, \Sigma) = (2 \pi)^{-\frac{n}{2}} (det \pi)^{-\frac{1}{2}}
+  e^{-\frac{1}{2} \langle \Sigma^{-1} (x-\mu), x-\mu \rangle}.
+\end{equation*}
+Posebej $f(0, I) = (2 \pi)^{-\frac{n}{2}} e^{-\frac{1}{2} \lVert x \rVert^2}$
+je gostota t.i. STANDARDNE $n$-razsežne normalne porazdeliteve. \\
+\underline{Transformacija}.
+Če je $A: \R^n \to \R^m$ linearna surjekcija in je $X \sim N(\mu, \Sigma)$,
+je za $\upsilon \in \R^m \quad Ax + \upsilon \sim N(A \mu + \upsilon, A \Sigma A^T)$
+(tu vzamemo $A \in \R^{n \times n}$). \\
+\underline{Posebej}.
+Če je $Z \sim N(0, I)$ in je $\Sigma = A A^T$ (za $\Sigma, A \in \R^{n \times n}$),
+je \\
+$Az + \mu \sim N(\mu, \Sigma)$;
+torej vzorčenje $X \in N(\mu, \Sigma)$ realiziramo z vzorčenjem $z \in N(0, I_{n \times n})$
+in transformacijo $x = Az + \mu$.
+
+\subsection{Klasična standardna linearna regresija in MNK}
+
+MNK: metoda najmanjših kvadratov. \\
+Pri linearni regresiji skušamo \sn{proučevano} s.s. $Y$
+(ki jo je drago meriti ali pa je rezultat okoliščin v prihodnosti)
+napovedati na podlagi vrednosti \sn{cenejših} t.i. pojasnjevalnih / napovedovalnih s.s. $X_1 \dots X_p$
+s pomočjo zveze
+\begin{equation*}
+  Y \approx \beta_0 + \beta_1 X_1 + \dots + \beta_p X_p.
+\end{equation*}
+\begin{exmp}
+  Še vedno je v uporabi t.i. Frideualdova formula
+  \begin{equation*}
+    LDL \approx THC - HDL - \frac{1}{2.4} TRI \quad \text{v mmd/l}.
+  \end{equation*}
+\end{exmp}
+Zgornjo linearno zvezo (v $\beta$) bi formalizirali v
+\begin{equation*}
+  Y = \beta_0 + \beta_1 X_1 + \dots + \beta_p X_p + \epsilon,
+\end{equation*}
+kjer ima $\epsilon$ vlogo slučajnega odstopanja oz. meritvene napake. \\
+Tega \sn{modela} ni mogoče parametrizirati zaradi (neznanih) porazdelitev prediktorja $X_1 \dots X_p$. \\
+Da dobimo dober parametrični model, uvedemo fikcijo laboratorijskega eksperimenta
+\begin{align*}
+  &Y_1 = \beta_0 + X_{11} \beta_1 + \dots + X_{1p} \beta_p + \epsilon_1 \\
+  &\vdots \\
+  &Y_n = \beta_0 + X_{n1} \beta_1 + \dots + X_{np} \beta_p + \epsilon_n. \\
+\end{align*}
+Tu do $X_{ij} \; (1 \leq i \leq n, \; 1 \leq j \leq p)$ ZNANE (nastavljene) konstante,
+$\epsilon_1 \dots \epsilon_n$ pa so slučajne SPREMENLJIVKE. \\
+Če označimo
+\begin{align*}
+  &y = \begin{bmatrix}
+    y_1 \\
+    \vdots \\
+    y_n
+    \end{bmatrix}_{n \times 1}
+  X = \begin{bmatrix}
+    1 & x_{11} & \dots & x_{1p} \\
+    & \vdots & & \\
+    1 & x_{n1} & \dots & x_{np}
+    \end{bmatrix}_{n \times (p+1)}
+  \beta = \begin{bmatrix}
+    \beta_1 \\
+    \vdots \\
+    \beta_p
+    \end{bmatrix}_{p \times 1}
+  \epsilon = \begin{bmatrix}
+    \epsilon_1 \\
+    \vdots \\
+    \epsilon_n
+  \end{bmatrix}_{n \times 1}
+\end{align*}
+sledi enačba linearne regresije $y = X \beta + \epsilon$. \\
+\underline{MNK} \\
+Privzemimo meritev $y$;
+pri danem vektorju $\hat{\beta}$ tvorimo \sn{napoved} $\hat{y} = X \hat{\beta}$. \\
+Kvaliteto vektorje $\hat{\beta}$ merimo preko
+\begin{equation*}
+  \lVert \hat{y} - y \rVert^2 = \sum_{i=1}^{n} (y_i - \hat{y_i})^2 = VKR = VKR(\beta)
+\end{equation*}
+VKR: vsota kvadratov residualov. \\
+Pišimo
+\begin{align*}
+  &VKR(\beta) = \lVert y - X \beta \rVert^2 = \langle y - X \beta, y - X \beta\rangle
+    = \langle X \beta, X \beta \rangle - 2\langle y, X \beta\rangle + \langle y, y\rangle, \\
+  &dVKR(\beta) = \beta^T X^t X - 2 y^T X.
+\end{align*}
+Pogoj za ekstrem je
+\begin{equation*}
+  X^T (y - X \beta) = 0 \text{ oz. } X^T X = X^T y.
+\end{equation*}
+\includegraphics[scale=0.4]{projekcija_4_3} \\
+Privzemimo $p+1 \leq n$; tedaj je $X^T X$ obrnljva matrika natanko tedaj,
+ko je $rank X = p+1$.
+Tedaj ima v $\hat{\beta} = (X^T X)^{-1} X^T y$ funkcija VKR (enoličen) minimum. \\
+Pravimo, da je $\hat{\beta} = \hat{\beta}(y)$ ocena za $\beta$ po MNK.
 
 
 %\clearpage
