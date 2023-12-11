@@ -1935,6 +1935,180 @@ Tedaj ima v $\hat{\beta} = (X^T X)^{-1} X^T y$ funkcija VKR (enoličen) minimum.
 Pravimo, da je $\hat{\beta} = \hat{\beta}(y)$ ocena za $\beta$ po MNK.
 
 
+% 15. predavanje: 11.12.
+
+Zadnjič: ocena za $\beta$ po MNK (linearna algebra). \\
+Verjetnostni model(i) standardne linearne regresije: \\
+$y = X \beta + \epsilon$; \\
+$y$: proučevani slučajni vektor, \\
+$X \in \R^{n \times d}$ matrika konstant, \\
+$\beta \in \R^d$ (delni) parameter, \\
+$\epsilon$ slučajen s porazdelitvijo v nekem modelu. \\
+Vedno privzamemo $E(\epsilon) = 0 \in \R^m$ (če $\neq 0$: sistemska napaka). \\
+Za variančno-kovariančno matriko $Var(\epsilon)$ tipično prizamemo, da je \\
+$Var(\epsilon) = \sigma^2 I$ (homoskelastičnost + nekoreliranost). \\
+Boljše modele dobimo z dodatnimi zahtevami na $\epsilon$. \\
+Tedaj postane $\hat{\beta} = \hat{\beta}(y) = (X^TX)^{-1} X^T y$ slučajni vektor, ki je cenilka za $\beta$.
+(Privzamemo $rang X = d \leq n$; $X$ polnega ranga, $(X^TX)^{-1} \; \exists$). \\
+Velja $E\left(\hat{\beta}(y)\right) = (X^TX)^{-1} X^T E(Y) = (X^TX)^{-1} X^TX \beta = \beta$;
+torej je $\beta$ nepristranska (linearna) cenilka za $\beta$.
+\begin{exmp} \text{} \\
+  $X = \begin{bmatrix}1 \\\vdots \\ 1\end{bmatrix} \in \R^n, \beta \in \R (d=1)$;
+  pišimo $Var(\epsilon_i) = \sigma^2$ \\
+  (vzamemo $Var(\epsilon) = \sigma^2 I$). \\
+  Tedaj je $Y_i = \mu + \epsilon_i, \; E(Y_i) = \mu, Var(Y_i) = \sigma^2$ ($\implies$ NEP vzorčenje). \\
+  V tem modelu (vemo) je standardna cenilka za $\sigma^2$ seveda \\
+  $S^2 = \frac{1}{n-1} \sum_{i=1}^n (y_i - \overline{y})^2$. \\
+  Očitno $\hat{\mu}(y) = \overline{y}$ (vstavimo $\beta$).
+\end{exmp} 
+Standardna cenilka za $\sigma^2$ je $\sigma^2 = \frac{1}{n-d} \lVert y - X \hat{\beta} \rVert^2$
+($X \hat{\beta}$ \sn{vzame} $d$ prostorskih stopenj). \\
+Trdimo, da je nepristranska pri pogojih $E(\epsilon) = 0, Var(\epsilon) = \sigma^2 I$. \\
+Za dokaz najprej razcepimo $X = S \cdot P$, kjer je $S \in \R^{n \times d}$ matrika z ortonormiranimi stolpci,
+$P \in \R^{d \times d}$ obrnljiva (\sn{neprehodna}) matrika. \\
+To pomeni, da stolpci matrike $S$ tvorijo ON bazo za $im \, X$. \\
+Najpreprosteje je izpeljati GS ortogonalizacijo na stolpcih matrike $X$. \\
+% skica
+$S^1 = \frac{X^1}{\lVert X^1 \rVert}$ \\
+$S^2 = \frac{X^2 - \langle X^2,S^1\rangle S^1}{\lVert \dots \rVert}$. \\
+Iz $\begin{bmatrix}X^1 & \dots & X^d\end{bmatrix} = \begin{bmatrix}S^1 & \dots & S^d\end{bmatrix}
+\begin{bmatrix}
+  \lVert X^1 \rVert^2 & * & \dots & * \\
+  & \lVert \dots \rVert & & * \\
+  & & \lVert \rVert > 0 & \\
+  \vdots & & & \\
+  & & & \lVert \rVert > 0
+\end{bmatrix}$ \\
+preberemo,
+da je pri (\sn{direktni}) GS ortogonalizaciji $P$ zgornje trikotna matrika s pozitivnimi diagonalnimi elementi. \\
+Izračunajmo $X^T X = P^T S^T S P = P^T I_{d \times d} P = P^T P$; sledi \\
+$\hat{\beta} = (P^{-1} P^{-T} P^T S^T y) = P^{-1} S^T y$ in \\
+$X \hat{\beta} = S S^T y$ (pravokotna projekcija na $X, S S^T$ projektor: $(S S^T) (S S^T) = S S^T$). \\
+Zato je $y - X \hat{\beta} = (I - S S^T)y$; velja $E(y - X \hat{\beta}) = 0 \in \R^n$. \\
+Pripomnimo, da za $\forall a = \begin{bmatrix}a_1 \\ \vdots \\ a_n\end{bmatrix} \in \R^n$ velja
+$\lVert a^2 \rVert = \sum_{a_i^2} = tr(a a^T)$. \\
+Zato lahko izrazimo
+\begin{align*}
+  E(VKR) &= E(tr((y - X \hat{\beta}) (y - X \hat{\beta})^T)) \\
+  &= tr(Var(y - X \hat{\beta})) \\
+  &= tr(Var((I - S S^T) y)) \\
+  &= tr((I - S S^T) Var(Y) (I - S S^T)^T) \\
+  &= \sigma^2 tr(I) + \sigma^2 tr(S S^T) \\
+  &= \sigma^2 (n-d).
+\end{align*}
+Normalni standardni linearni model \\
+$Y = X \beta + \epsilon$, kjer je $\epsilon \in N(0, \sigma^2 I)$. \\
+To je parametrični model s $\Theta = \R^d \times (0, \infty) = (\beta, \sigma^2)$. \\
+Seveda sledi $Y \sim N(X \beta, \sigma^2 I)$. \\
+Lastnosti cenilk $\hat{\beta}, \hat{\sigma^2}$:
+\begin{itemize}
+  \item seveda je $\hat{\beta}$ normalno porazdeljen; \\
+    velja $Var(\hat{\beta}) = (X^TX)^{-1} X^T Var(\beta) \left((X^TX)^{-1} X^T\right)^{-1} = \sigma^2 (X^T X)^{-1}$ \\
+    $\implies \beta \sim N\left(\beta, \sigma^2 (X^TX)^{-1}\right) = N(\beta, \sigma^2 P^{-1} P^{-T})$,
+  \item dopolnimo $S$ do ortogonalne matrike $Q = \begin{bmatrix}S^{'} & S\end{bmatrix} \in O^{n \times n}$
+    (ortogonalna $n \times n$ matrika) (tu je $S$ matrika $\in \R^{n \times (n-d)}$ z ON stoplci,
+    ki razpenjajo $(im \,,X)^{\bot}$)
+    \begin{align*}
+      VKR &= \lVert y - X \hat{\beta} \rVert^2 \\
+      &= \langle (I - S S^T) y, (I - S S^T) y\rangle \\
+      &\stackrel{\text{projekcija}}{=} \langle (I - S S^T) y, y \rangle \\
+      &\stackrel{\text{ortog.}}{=} \langle Q^T (I - S S^T) (Q Q^T) y, Q^T y \rangle
+    \end{align*}
+    \begin{enumerate}[label=(\roman*)]
+      \item $Q^T S = \begin{bmatrix}(S^{'})^T \\ S^T\end{bmatrix} S =
+        \begin{bmatrix}(S^{'})^T S \\ S^T S\end{bmatrix} = \begin{bmatrix}0 \\ I\end{bmatrix}$ \\
+        $(Q^T S) (Q^T S)^T = \begin{bmatrix}0 \\ I\end{bmatrix} \begin{bmatrix}0 & I\end{bmatrix}
+        = \begin{bmatrix}0 & 0 \\ 0 & I_{d \times d}\end{bmatrix}$ \\
+        $\implies Q^T (I - S S^T) Q = \begin{bmatrix}I_{(n-d) \times (n-d)} & 0 \\ 0 & 0\end{bmatrix}$
+      \item $Q^T y \sim N\left(\begin{bmatrix}(S^{'})^T \\ S^T\end{bmatrix} X \beta, Q^T \sigma^2 I Q\right)
+        = N\left(\begin{bmatrix}0_{n-d} \\ P \beta\end{bmatrix}, \sigma^2 I\right)$.
+    \end{enumerate}
+\end{itemize}
+Pišimo $z = Q^T y = \begin{bmatrix}z_1 \\ \vdots \\ z_n\end{bmatrix}$, \\
+sledi $\frac{VKR}{\sigma^2} = \sum_{i=1}^{n-d} \frac{z_i^2}{\sigma^2}$ in zato je \\
+$\frac{VKR}{\sigma^2} \sim \chi_{n-d}^2 = \text{Gama}\left(\frac{n-d}{2}, \frac{1}{2}\right)$.
+
+\subsection{Standardna neinformativna normalna porazdelitev}
+
+(Uporabljamo pri t.i. večkratni imputaciji.) \\
+Gre za model $(X \sim \beta, \sigma^2) \sim N(X \beta, \sigma^2 I)$ z NEPRAVO apriorno gostoto \\
+$f(\beta, \sigma^2) \propto \frac{1}{\sigma^2}$ (to je \sn{ploščata} gostota v spremenljivki $\ln (\sigma^2)$
+(vaja/dn)). \\
+Vzorčna gostota je
+\begin{equation*}
+  f(y \mid \beta, \sigma^2) = (2 \pi \sigma^2)^{-\frac{n}{2}} e^{-\frac{1}{2 \sigma^2} \lVert y - X \beta \rVert^2}.
+\end{equation*}
+Razcepimo \\
+$\lVert y - X \beta\rVert^2 = \lVert y - - X \hat{\beta} + X \hat{\beta} + X \beta\rVert^2
+= \lVert y - X \hat{\beta} \rVert^2 + \langle X (\hat{\beta} - \beta), \hat{\beta} - \beta \rangle$; \\
+$X \hat{\beta} - X \beta \in im \, X, \; y - X \hat{\beta} \in (im \, X^{\bot})$. \\
+Aposteriorna gostota
+\begin{align*}
+  f(\beta, \sigma^2 \mid y) &\propto
+  (\sigma^2)^{-1-\frac{n}{2}} e^{-\frac{1}{\sigma^2} \cdot \frac{VKR}{2} -
+    \frac{1}{2} \langle \frac{X^T X}{\sigma^2} (\hat{\beta} - \beta), \hat{\beta} - \beta} \rangle \\
+  &\propto (\sigma^2)^{-\frac{n}{2}-1} e^{-\frac{VKR}{2 \sigma^2}} (\sigma^2)^{\frac{d}{2}}
+    \sqrt{det\left(\frac{X^T X}{\sigma^2}\right)}
+    e^{-\frac{1}{2} \langle \frac{X^T X}{\sigma^2} (\beta - \hat{\beta}), \beta - \hat(\beta)\rangle}.
+\end{align*}
+$\frac{X^T X}{\sigma^2} = (\text{var-kovar})^{-1}$. \\
+Vidimo: $\int_{\sigma^2} \int_{\beta \in \R^d} \dots < \infty$, če $n-d > 0$. \\
+Sledi, da imamo pri $n-d > 0$ prabo aposteriorno porazdelitev
+\begin{equation*}
+  f(\beta, \sigma^2 \mid y) = f_{\text{InvGama}\left(\frac{n-d}{2}, \frac{VKR}{2}\right)}(\sigma^2)
+  \cdot f_{N(\hat{\beta}, \sigma^2 (X^T X)^{-1})}(\beta).
+\end{equation*}
+V praksi mas zanima VZORČENJE iz te aposteriorne porazdelitve. \\
+Najprej vzorčimo $\sigma^2 \in \text{InvGama}\left(\frac{n-d}{2}, \frac{VKR(y)}{2}\right)$,
+potem vzorčimo (pogojno na dobljeni $\sigma^2$) iz \\
+$N(\hat{\beta}, \sigma^2 (X^T X)^{-1}) = N(\hat{\beta}, \sigma^2 P^{-1} P^{-T})$. \\
+To realiziramo na slednji način:
+\begin{enumerate}[label=(\roman*)]
+  \item vzorčimo $g \in \chi_{n-d}^2$, za realizacijo
+    $\sigma^2 \in \text{InvGama}\left(\frac{n-d}{2}, \frac{VKR}{2}\right)$ vzamemo $\frac{VKR}{g}$,
+  \item vzorčimo $z \in N(0, I_{d \times d})$ in za realizacijo \\
+    $\beta \in (\beta, \sigma^2, y)$ vzamemo
+    \begin{align*}
+      \hat{\beta} + \sigma^2 P^{-1} z &=
+      P^{-1} S^T y + \sqrt{\frac{VKR(y)}{g}} P^{-1} z \\
+      &= P^{-1} \left(S^T y + \sqrt{\frac{VKR(y)}{g}} z\right).
+    \end{align*}
+\end{enumerate}
+Ta postopek je numerično učinkovit. \\
+Pripomnimo še: $E(\text{InvGama}(a, b)) = \frac{b}{a-1}$ \\
+$\implies E\left(\text{InvGama}\left(\frac{n-d}{2}, \frac{VKR}{2}\right)\right)
+= \frac{\frac{VKR}{2}}{\frac{n-d}{2} - 1} = \frac{VKR}{n-d-2} \stackrel{\text{asimptotično}}{\sim} \frac{VKR}{n-d}$
+- nepristranska.
+
+\subsection{Bayesovi modeli linearne regresije z znano varianco}
+
+(in informativno apriorno porazdelitvijo v $\beta$).
+
+\subsubsection{$(y \mid \beta) \sim N(X \beta, \sigma^2 I)$}
+
+Izkaže se, da je konjugirana družina porazdelitev ravno \\
+$\{N(\beta_0, T_0) \mid \beta_0 \in \R^d, T_0 \in P(d)\}$. \\
+V praksi pogosto uoprabljamo tudi konjugirano (pod)družino \\
+$\{N\left(\beta_0, \tau_0^2 (X^T X)^{-1}\right) \mid \beta_0 \in \R^d, \tau_0 \in (0, \infty)\}$. \\
+\underline{Aposteriorna porazdelitev} \\
+$N(\beta_1, T_1)$, kjer je
+\begin{align*}
+  T_1^{-1} &= T_0^{-1} + \frac{X^T X}{\sigma^2} \\
+  &= \frac{X^T X}{\tau_0^2} + \frac{X^T X}{\sigma^2} \\
+  &= \left(\frac{1}{\sigma^2} + \frac{1}{\tau_0^2}\right) X^T X
+\end{align*}
+frekventistična preciznost vzorca in
+\begin{align*}
+  \beta_1 &= T_1 (T_0^{-1} \beta_0 + (X^T X)^{-1} (X^T X) X^T y) \\
+  &= \left(T_0^{-1} + \frac{X^T X}{\sigma^2}\right)^{-1} \cdot
+    \left(T_0^{-1} \beta_0 + \frac{X^T X}{\sigma^2} \hat{\beta}\right) \\
+  &=  \left(T_0^{-1} + \frac{X^T X}{\sigma^2}\right)^{-1} \cdot
+    \left(\frac{1}{\tau_0^2} \beta_0 + \frac{1}{\sigma^2} \hat{\beta}\right)
+\end{align*}
+(daljica med $\beta_0$ in $\hat{\beta}$) \\
+($\equiv \frac{a \beta_0 + b \hat{\beta}}{a + b}$.)
+
+
 %\clearpage
 %\phantomsection
 
