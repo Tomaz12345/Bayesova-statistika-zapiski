@@ -193,7 +193,8 @@
   {\bf MCMC} & {Monte Carlo markovske verige} \\
   {\bf SNK} & {?} \\
   {\bf MNK} & {metoda najmanjših kvadratov} \\
-  {\bf VKR} & {vsota kvadratov residualov}
+  {\bf VKR} & {vsota kvadratov residualov} \\
+  {\bf UNK} & {uteženi najmanjši kvadrati}
 \end{tabular}
 
 %\clearpage
@@ -2108,6 +2109,65 @@ frekventistična preciznost vzorca in
 (daljica med $\beta_0$ in $\hat{\beta}$) \\
 ($\equiv \frac{a \beta_0 + b \hat{\beta}}{a + b}$.)
 
+
+% 16. predavanje: 18.12.
+
+\subsubsection{$(Y \mid \beta) \sim N(X \beta, V)$}
+
+$V$ je znana vzorčno-kovariančna matrika. \\
+Za $Z = V^{-\frac{1}{2}} Y$ velja $(Z \mid \beta) \sim N(V^{-\frac{1}{2}} X \beta, I)$; \\
+$W = V^{-\frac{1}{2}} X \beta$. \\
+Ocena za $\beta$ po MNK je zato \\
+$\widehat{\beta(z)} = (W^T W)^{-1} W^T z$ oz. \\
+$\widehat{\beta(y)} = (X^T V^{-1} X)^{-1} X^T V^{-1} y$ (UNK - uteženi najmanjši kvadrati). \\
+Konjugirana družina apriornih porazdelitev je seveda normalna \\
+$\{N(\beta_0, T_0) \mid \beta_0 \in \R^d, T_0 \in P(d)\}$. \\
+Aposteriorna (apriorna?) porazdelitev pri opaženem $y$ je tedaj $N(\beta_1, T_1)$, kjer \\
+$T_1^{-1} = T_0^{-1} + X^T V^{-1} x$ in \\
+$\beta_1 = (T_0^{-1} + X^T V^{-1} x) (T_0^{-1} \beta_0 + X^T V^{-1} y)$. \\
+
+\subsection{Vključevanje apriorne informacije glede variance}
+
+\subsubsection{Uvodoma si oglejmo model $(Y \mid \sigma^2) \sim N(X \beta, \sigma^2 I)$}
+
+Velja $f(y \mid \sigma^2) = (2 \pi \sigma^2)^{-\frac{n}{2}} e^{-\frac{1}{2 \sigma^2} \lVert y - X \beta\rVert^2}$. \\
+Konjugirana družina apriornih porazdelitev je očitno InvGama. \\
+Pri $f(\sigma^2) = f_{\text{InvGama}(a,b)}(\sigma^2) = \frac{b^a}{\Gamma(a)} (\sigma^2)^{-a-1}
+\cdot e^{-\frac{b}{\sigma^2}}$ \\
+realizacije $y$ je aposteriorna porazdelitev \\
+InvGama$(a + \frac{n}{2}, b + \frac{1}{2} \lVert y - X \beta \rVert^2)$.
+
+\subsubsection{$(Y \mid \beta, \sigma^2) \sim N(X \beta, \sigma^2 I)$ s polkonjugirano apriorno porazdelitvijo}
+
+Tu je $f(\beta \mid \sigma^2) = f_{\text{konj.}}(\beta) \cdot f_{\text{konj.}}(\sigma^2) =
+f_{N(\beta_0, T_0)}(\beta) \cdot f_{\text{InvGama}(a,b)}(\sigma^2)$. \\
+Uporabimo \textit{Bayesovi modeli linearne regresije z znano varianco} in
+\textit{Uvodoma si oglejmo model ..} in sledi \\
+$f(\beta \mid \sigma^2, y) = f_{N(\beta_1, T_1)}(\beta)$ in \\
+$f(\sigma^2 \mid \beta, y) = f_{\text{InvGama}(a + \frac{n}{2},
+b + \frac{1}{2} \lVert y - X \beta \rVert^2)}(\sigma^2)$ \\
+za \\
+$T_1^{-1} = T_0^{-1} + \frac{X^T X}{\sigma^2}$ in \\
+$\beta_1 = (T_0^{-1} + \frac{X^T X}{\sigma^2})^{-1} (T_0 \beta_0 + \frac{X^T Y}{\sigma^2})$. \\
+Do polne aposteriorne porazdelitve $f(\beta, \sigma^2 \mid y)$ dostopamo preko MCMC z Gibbsovim vzorčevalnikom.
+
+\subsubsection{$(Y \mid \beta, \sigma^2) \sim N(X \beta, \sigma^2 I)$ s konjugirano apriorno porazdelitvijo}
+
+Izkaže se, da je konjugirana družina podana z gostoto \\
+$f(\beta, \sigma^2) = f(\beta \mid \sigma^2) \cdot f(\sigma^2)
+= f_{N(\beta_0, \sigma^2 \Lambda_0)}(\beta) \cdot f_{\text{InvGama}(a, b)}(\sigma^2)$. \\
+(Parametri konjugirane družine so $\beta_0 \in \R^d, \Lambda_0 \in P(d); a, b \in (0, \infty)$.) \\
+Tudi aposteriorno porazdelitev pri $y$ predstavimo dvofazno \\
+$f(\beta, \sigma^2 \mid y) = f(\beta \mid \sigma^2, y) \cdot f(\sigma^2 \mid y)$. \\
+Velja $f(\beta \mid \sigma^2, y) = f_{N(\beta_1, \sigma^2 \Lambda_1)}(\beta)$, kjer \\
+$\Lambda_1^{-1} = \Lambda_0^{-1} + X^T X$ in \\
+$\beta_1 = (\Lambda_0^{-1} + X^T X)^{-1} (\Lambda_0^{-1} \beta_0 + X^T y)$ \\
+in \\
+$f(\sigma^2 \mid \beta, y) = f_{\text{InvGama}(a_1, b_1)}(\sigma^2)$, kjer \\
+$a_1 = a + \frac{n}{2}$ in \\
+$b_1 = b + \frac{1}{2} \langle (I + X \Lambda_0 X^T)^{-1} (y - X \beta_0), y - X \beta_0 \rangle \\
+= b + \frac{1}{2} \left( \langle y, y \rangle + \langle \Lambda_0 \beta_0, \beta_0 \rangle
+ - \langle \Lambda_1 \beta_1, \beta_1 \rangle \right)$.
 
 %\clearpage
 %\phantomsection
