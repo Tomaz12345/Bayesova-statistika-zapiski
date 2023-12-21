@@ -2169,6 +2169,79 @@ $b_1 = b + \frac{1}{2} \langle (I + X \Lambda_0 X^T)^{-1} (y - X \beta_0), y - X
 = b + \frac{1}{2} \left( \langle y, y \rangle + \langle \Lambda_0 \beta_0, \beta_0 \rangle
  - \langle \Lambda_1 \beta_1, \beta_1 \rangle \right)$.
 
+
+% 17. predavanje: 19.12.
+
+\subsubsection{$(Y \mid V) \sim N(X \beta, V)$}
+
+$V \in P(n) = \Theta$. \\
+Konjugirana družina apriornih porazdelitev? \\
+Gostota: $f(y \mid V) = (2 \pi)^{-\frac{n}{2}} (\det V)^{-\frac{1}{2}}
+e^{-\frac{1}{2} \langle V^{-\frac{1}{2}} (y - X \beta) (y - X \beta) \rangle}$. \\
+Za (simetrično) matriko $W$ in vektorja $u, v$ je \\
+$\langle W u, v \rangle = sled(v^T W u) = sled(W u v^T)$; \\
+$u v^T$: matrika. \\
+Pripomnimo, da je predpis \\
+$(A, B) \to sled(A \cdot B) = \langle \langle A, B \rangle \rangle$ \\
+skalarni produkt na prostoru simetričnih matrik. \\
+Sledi zapis \\
+$f(y \mid V) = (2 \pi)^{-\frac{n}{2}} e^{-\frac{1}{2} \ln (\det V)}
+e^{-\frac{1}{2} \langle \langle V^{-1}, (y - X \beta) (y - X \beta)^T \rangle \rangle}$; \\
+$\psi(V) = \frac{1}{2} \ln (\det V)$, \\
+$T(y) = (y - X \beta) (y - X \beta)^T \; \in R^{\frac{n(n-1)}{2}}$ - $\frac{n(n-1)}{2}$ prostorskih stopenj, \\
+$Q(V) = V^{-1}$. \\
+Prepoznamo eksponentni model polnega ranga. \\
+Sledi \sn{kandidat} za konjugirano družino oblike \\
+$f_{\tau, \psi}(V) \propto e^{-\frac{\tau}{2} \ln (\det V)} \cdot
+e^{-\frac{1}{2} sled(V^{-1} \psi)}$. \\
+Na $f_{\tau, \psi}$ želimo gledati kot Lebesgueovo gostoto (gostoto glede na \\
+$dv_{11} \cdot dv_{1n} dv_{22} \dots dv_{2n} \dots dv_{nn}$ na $P(n) \subset \R^{\frac{n(n+1)}{2}}$). \\
+Izkaže se, da integrabilnost zahteva $\tau > 2n$ in $\psi \in P(n)$. \\
+Vpeljimo še $\tau = \nu + n + 1$ ($\implies \nu > n-1$) in dobimo gostoto iz konjugirane družine \\
+$f_{\tau, \psi}(V) = \frac{(\det \frac{\psi}{2})^{\frac{\nu}{2}}}{\Gamma_n\left(\frac{\nu}{2}\right)}
+\cdot (\det V)^{-\frac{\nu + n + 1}{2}} \cdot e^{-sled \; \left(V^{-1} \frac{\psi}{2}\right)}$, \\
+kjer je \\
+$\Gamma_n(a) = \pi \frac{n(n-1)}{4} \prod_{j=1}^{n} \Gamma\left(a - \frac{j-1}{2}\right)$
+$n$-razsežna funkcija gama.
+\begin{exmp} \text{} \\
+  $n=1, \psi = [\tau] > 0, V = \left[\sigma^2\right]$ \\
+  $\implies f_{\nu, \psi}(\sigma^2) =
+  \frac{\left(\frac{\psi}{2}\right)^{\frac{\nu}{2}}}{\Gamma\left(\frac{\nu}{2}\right)} \cdot
+  \left(\sigma^2\right)^{-\frac{\nu}{2} - 1} e^{-\frac{\psi}{2 \sigma^2}}$. \\
+  To je $\text{InvGama}\left(\frac{\nu}{2}, \frac{\psi}{2}\right); \\
+  \nu > 0$ imenujemo posplošeno število prostorskih stopenj,
+  število $\psi$ pa \sn{skalarni} skalirni parameter.
+\end{exmp}
+\begin{defn}
+  Porazdelitvi na $P(n)$ z gostoto $f_{\nu, \psi} \; (\nu > n-1, \psi \in P(n))$ pravimo
+  INVERZNA WISHARTOVA PORAZDELITEV s številom prostorskih stopenj $\nu$
+  in skali(a?)rnim parametrom $\psi$.
+  Označimo jo $\text{InvWish}(\nu, \psi)$.
+\end{defn}
+\begin{exmp}
+  Vzorčenje je $\text{InvGama}\left(\frac{\nu}{2}, \frac{\psi}{2}\right)$ pri $\nu \in \N$.
+\end{exmp}
+To pomeni
+\begin{equation*}
+  \sum_{i=1}^{\nu} N(0, \psi^{-1})^2 \stackrel{\text{neodv}}{=}
+  \psi\left(\sum_{i=1}^{\nu} N(0, 1)^2\right)^{-1} \sim
+  \text{InvGama}\left(\frac{\nu}{2}, \frac{\psi}{2}\right).
+\end{equation*}
+Drugače povedano; če so $z_1 \dots z_{\nu} \stackrel{\text{NEP}}{\sim} N(0, \psi^{-1})$ je \\
+$\left(\sum_{i=1}^{\nu} z_i^2\right) \stackrel{\text{NEP}}{\sim}
+\text{InvGama}\left(\frac{\nu}{2}, \frac{\psi}{2}\right)$. \\
+Izkaže se: če so $\nu \in \N$ in so \\
+$Z_1 \dots Z_n \stackrel{\text{NEP}}{\sim} N(0, \psi^{-1}) \; (\nu > n-1)$, je \\
+$\left(\sum_{i=1}^{\nu} z_i ??\right) \sim \text{InvWish}(\nu, \psi)$. \\
+Zaradi analogije definirajmo inverzno gama porazdelitev na prostoru $P(n)$ takole:
+če sta $a > \frac{n-1}{2}$ in $B \in P(n)$ parametra, je \\
+$f_{\text{InvGama}(a, B)}(V) = \frac{(\det B)^{a}}{\Gamma(a)} (\det V)^{-a - \frac{n+1}{2}}
+e^{-sled \left(V^{-1} B\right)}$. \\
+Aposteriorna porazdelitev pri $y$? \\
+$\text{InvWish}(\nu+1, \psi + (y - X \beta) (y - X \beta)^T)$ oz. \\
+$\text{InvGama}\left(a + \frac{n}{2}, B + \frac{1}{2} (y - X \beta) (y - X \beta)^T\right)$.
+
+
 %\clearpage
 %\phantomsection
 
