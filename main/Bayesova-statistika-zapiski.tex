@@ -2242,6 +2242,97 @@ $\text{InvWish}(\nu+1, \psi + (y - X \beta) (y - X \beta)^T)$ oz. \\
 $\text{InvGama}\left(a + \frac{n}{2}, B + \frac{1}{2} (y - X \beta) (y - X \beta)^T\right)$.
 
 
+% 18. predavanje: 8.1.
+
+Izkaže se, da je konjugirana družina apriornih porazdelitev družina \sn{inverznih
+Wishartovih porazdelitev} na $P(n)$ z gostotami \\
+$f_{\nu, \Psi}(V) = \frac{\left(det \left(\frac{\Psi}{2}\right)\right)^n}{\Gamma\left(\frac{\nu}{2}\right)}
+(det V)^{-\frac{\nu}{2} - \frac{n+1}{2}} e^{-sled\left(V^{-1} \frac{\Psi}{2}\right)}$ \\
+(glede na Lebeguesovo mero $dv_{11} \dots dv_{1n} dv_{22} \dots dv_{2n} \dots dv_{nn}$
+na \sn{$\R^{\frac{n(n+1)}{2}}}$). \\
+Tu je $\Gamma_n(a) = \pi^{\frac{n(n+1)}{2}} \prod_{j=1}^n \Gamma\left(a - \frac{j-1}{2}\right)$
+$n$-razsežna funkcija gama, \\
+$\nu > n-1 \; (\nu \in \R)$, $\Psi \in P(n)$ pa sta parametra. \\
+$\nu$: število prostorskih stopenj, $\Psi$: \sn{skalirni} parameter. \\
+Če je $\nu \in \N$, potem simulacijo vzorčenja iz $InvWish(\nu, \Psi)$ implementiramo z
+$\left(\sum_{i=1}^{\mu} z_i z_i^T\right)^{-1}$, kjer so $z_i \stackrel{\text{NEP}}{\sim} N\left(0, \Psi^{-1}\right)$. \\
+Aposteriorna porazdelitev:
+\begin{align*}
+    f(v \mid y) &\propto f(y \mid V) \cdot f(V) \\
+    &\propto (det V)^{-\frac{1}{2}} e^{-\frac{1}{2} \langle V^{-1} (y - X\beta), y - X\beta \rangle} \cdot f(V).
+\end{align*}
+Ker je $\langle V^{-1} (y - X \beta), y - X \beta \rangle = sled \left(V^{-1} (y - X\beta) (y - X\beta)^T\right)$, \\
+je aposteriorna porazdelitev $InvWish(\nu + 1, \Psi + (y - X\beta) (y  X\beta)^T)$.
+
+\subsubsection{Splošni linearni model (\sn{polni}) $(Y \mid \beta, V) \sim N(X\beta, V)$}
+
+\begin{itemize}
+    \item Polkonjugirana apriorna porazdelitev: \\
+        $f(\beta, V) = f_{N(\beta_0, T_0)}(\beta) \cdot f_{InvWish(\nu, \Psi)}(V)$. \\
+        Do aposteriorne porazdelitve $f(\beta \mid V, y)$ pridemo preko
+        \begin{itemize}
+            \item $f(\beta \mid V, y) \dots N(\beta_1, T_1)$, kjer \\
+                $T_1^{-1} = T_0^{-1} + X^T V^{-1} X$, \\
+                $\beta_1 = T_1 \left(T_0^{-1} \beta_0 + X^T V^{-1} y\right)$,
+            \item $f(y \mid \beta, \nu) \dots InvWish(\nu + 1, \Psi + (y - X\beta) (y - X\beta)^T)$
+        \end{itemize}
+        z Gibbsovim vzorčevalnikom.
+    \item Konjugirana porazdelitev za podmodele oblike $(Y \mid \beta, \Sigma) \sim N(X\beta,  V(\Sigma))$: \\
+        $\Sigma \dots \sigma^2$, $V(\Sigma) \dots \sigma^2 I$. \\
+        Iščemo v obliki $f(\beta, \Sigma) = f(\Sigma) f(\beta \mid \Sigma) (*)$. \\
+        (Poseben primer $\Sigma = \sigma^2 \in (0, \infty)$ in $V(\sigma^2) = \sigma^2 I$ smo že domnevali). \\
+        V splošnem za apriorno porazdelitev oblike (*) velja \\
+        $f(\beta, \Sigma \mid y) = f(\Sigma \mid y) f(\beta \mid \Sigma, y)$, kjer je \\
+        $f(\beta \mid \Sigma, y)$ aposteriorna porazdelitev regresijskega modela
+        z ZNANO variančno matriko $V(\Sigma)$, \\
+        $f(\Sigma \mid y)$ pa je aposteriorna porazdelitev modela z vzorčno gostoto $f(y \mid V(\Sigma))$
+        in apriorno gostoto $f(\Sigma)$. \\
+        Torej moramo izračunati $f(y \mid V(\Sigma))$. \\
+        Iz Bayesove formule $f(\beta \mid V, y) = \frac{f(y \mid \beta, V) f(\beta \mid \Sigma)}{f(y \mid V(\Sigma))}$ \\
+        sledi $f(y \mid V(\Sigma)) = \frac{f(y \mid \beta, V) f(\beta \mid \Sigma)}{f(\beta \mid V, y)}$. \\
+        Če nastavimo $f(\beta \mid \Sigma) = f_{N(\beta_0(\Sigma), T_0(\Sigma))}(\beta)$ \\
+        in uporabimo znano formulo za $f(\beta \mid V, y) = f_{N(\beta_1(\dots), T_1(\dots))}(\beta)$, \\
+        sledi
+        \begin{align*}
+            f(y \mid V(\Sigma)) &= (2 \pi)^{-\frac{n}{2}} (det V)^{-\frac{1}{2}}
+                (det T_0)^{-\frac{1}{2}} (det (T_0^{-1} + X^T V^{-1} X))^{-\frac{1}{2}} \\
+            &\cdot e^{-\frac{1}{2} \left(\langle V^{-1} y, y \rangle + \langle T_0^{-1} \beta_0, \beta_0 \rangle
+                - \langle (T_0^{-1} + X^T V^{-1} X) \beta_1, \beta_1 \rangle\right)}
+        \end{align*}
+        \begin{exmp} \text{} \\
+            $(Y \mid \beta, \Sigma) \sim N\left(\begin{bmatrix} I \\ \vdots \\ I \end{bmatrix} \beta,
+            \begin{bmatrix}
+                \Sigma & & & \\
+                & \Sigma & & \\
+                & \vdots & & \\
+                & & & \Sigma
+            \end{bmatrix}\right)$, \\
+            kjer $\beta \in \R^d$, $\Sigma \in P(d)$. \\
+            Vidimo, da je $y = \begin{bmatrix}Y_1 \\ \vdots \\ Y_m\end{bmatrix}$, \\
+            kjer so $Y_i \stackrel{\text{NEP}}{\sim} N(\beta, \Sigma)$. \\
+            Za apriorno porazdelitev vzamemo \\
+            $f(\beta, \Sigma) = f_{InvWish(\nu, \Psi)}(\Sigma) f_{N\left(\beta_0, \frac{\Sigma}{\kappa_0}\right)}(\beta)$, \\
+            kjer je $\kappa_0$ posplošemo število prostorskih stopenj. \\
+            Račun pokaže
+            \begin{equation*}
+                f(\Sigma \mid y) \dots InvWish \left(\nu + m, \Psi + \sum_{i=1}^m (y_i - \overline{y}) (y_i - \overline{y})^T
+                    + \frac{m \kappa_0}{m + \kappa_0} (\overline{y} - \beta_0) (\overline{y} - \beta_0)^T\right)
+            \end{equation*}
+            ter $f(\beta \mid \Sigma, y) \dots N(\beta_1, T_1)$, kjer \\
+            $\beta_1 = \frac{1}{\kappa_0 + m} (\kappa_0 \beta_0 + m \overline{y})$, ter \\
+            $T_1^{-1} = (\kappa_0 + m) \Sigma^{-1}$ \\
+            (to pomeni
+            \begin{itemize}[label={}]
+                \item $\kappa_0 \to \kappa_0 + m$,
+                \item $\beta_0 \to \frac{\kappa_0}{\kappa_0 + m} \beta_0 + \frac{m}{\kappa_0 + m}{\overline{y}}$,
+                \item $\nu \to \nu + m$,
+                \item $\Psi \to \Psi + \sum_{i=1}^m (y_i - \overline{y}) (y_i - \overline{y})^T
+                    + \frac{m \kappa_0}{m + \kappa_0} (\overline{y} - \beta_0) (\overline{y} - \beta_0)^T$).
+            \end{itemize}
+        \end{exmp}
+\end{itemize}
+
+
 %\clearpage
 %\phantomsection
 
