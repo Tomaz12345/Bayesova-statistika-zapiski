@@ -2408,6 +2408,96 @@ DN:
 \end{itemize}
 
 
+% 19. predavanje: 16.1.
+
+Vprašanje neničelnosti regresijskih koeficientov v \sn{frekventističnem} modelu $y \sim N(X \beta, \sigma^2 I)$. \\
+Ideja: poleg populacijskega parametra $(\beta, \sigma^2)$ vpeljemo še dodatni parameter \sn{$\phi$},
+ki zakodira predhodno informacijo o tem, kateri koeficienti so različni od 0. \\
+Nastane hierarhični model z naslednjo shemo: \\
+vzorčimo $z = (z_1 \dots z_d) \in \{0, 1\}^d$, kjer $z_j = 1$ pomeni vključitev parametra $\beta_j$,
+$z_j = 0$ pa njegovo izključitev.
+Hiperapriorna porazdelitev je sestavljena iz $2^d$ verjetnosti. \\
+$y \approx X_1 \beta_1 + \dots + X_d \beta_d$. \\
+$(\beta, \sigma^2)$ iz $\left(N\left(0, \frac{\sigma^2}{\kappa_0} (X_z^Z X_z)^{-1}\right) = \delta_{(0 \dots 0)}\right)
+\rtimes InvGama(a, b)$, \\
+kjer je $X_z$ matrika, ki jo dobimo tako, da dodamo stolpce z $z_j = 1$,
+$\delta_{(0 \dots 0)}$ pa je Diracova mera na $\R^{d - \sum_j z_j}$, skoncentrirana v $(0 \dots 0)$. \\
+$\frac{\sigma^2}{\kappa_0} (X_z^T X_z)^{-1} \in P\left(\sum_i z_i\right)$ (še permutiramo). \\
+$y$ iz $N(X \beta, \sigma^2 I)$. \\
+Pripomnimo, da ima $(\beta, V \mid Z=z)$ gostoto glede na produktno mero
+$Leb\left(\R^{\sum_i z_i}\right) = \delta_{(0 \dots 0)} \times Leb(0, \infty) =: \nu_z$. \\
+Sledi, da imajo tudi aposteriorne porazdelitve $(B, V \mid Y=y, Z=z)$ gostote glede na $\nu_z$. \\
+Ponovno se spomnimo na abstraktni hierarhični model, kjer
+\begin{enumerate}[label=(\arabic*)]
+  \item $f(\vartheta \mid x, \phi) = \frac{f(x \mid \vartheta) f(\vartheta \mid \phi)}{f(x \mid \phi)}$,
+  \item $f(\phi \mid x, \vartheta) = f(\phi \mid \vartheta) = \frac{f(\vartheta \mid \phi) f(\phi)}{f(\vartheta)}$.
+\end{enumerate}
+Apliciramo in sledi, da apriorna gostota $\propto f(y \mid \beta, \sigma^2) \cdot f(\beta, \sigma^2 \mid z)$
+glede na $\nu_z$ ustreza produktu Diracove mere $\delta_{(0 \dots 0)}$ na $\R^{d - \sum_j z_j}$
+in aposteriorne porazdelitve modela z vzorčno porazdelitvijo $N(X_z \beta_z, \sigma^2 I)$
+in apriorno porazdelitvijo $N\left(0, \frac{\sigma^2}{\kappa_0} (X_z^T X_z)^{-1}\right) \rtimes InvGama(a, b)$. \\
+Ta aposteriorna porazdelitev ima torej gostoto (glede na $\nu_z$)
+\begin{equation*}
+  f_{N\left(\frac{\hat{\beta_z}}{\kappa_0+1}, \frac{\sigma^2}{\kappa_0+1} (X_z^T X_z)^{-1}\right)}(\beta_z)
+  \cdot \delta_{(0 \dots 0)} (\beta_z^c)
+  \cdot f_{InvGama\left(a + \frac{n}{2}, b + \frac{1}{2} \langle M_z y, y \rangle\right)} (\sigma^2),
+\end{equation*}
+$\beta_z^c$ \sn{drugi} iz $\beta$, \\
+kjer je
+\begin{itemize}[label={}]
+  \item $M_z = I - \frac{1}{\kappa_0+1} X_z (X_z^T X_z)^{-1} X_z$ in
+  \item $\beta_z = (X_z^T X_z)^{-1} X_z^T y$.
+\end{itemize}
+Obravnavajmo
+\begin{align*}
+  P(Y \in C \mid Z=z) &= \int_{\R^d \times (0, \infty)} P(Y \in C \mid \beta, \sigma^2, Z=z)
+    dP_{(\beta, V \mid Z=z)}(\beta, \sigma^2) \\
+  &\stackrel{*}{=} \int_{\R^d \times (0, \infty)} \int_C f_{N(X \beta, \sigma^2 I)}(y) dy
+    \cdot dP_{(\beta, V \mid Z=z)}(\beta, \sigma^2) \\
+  &= \int_C \left( \int_{\R^d \times (0, \infty)} f_{N(X \beta, \sigma^2 I)}(y) dP_{(\beta, V \mid Z=z)}(\beta, \sigma^2)
+    \right) dy \\
+\end{align*}
+$\implies$ porazdelitev $(Y \mid Z=z)$ ima Lebeguesovo gostoto
+\begin{align*}
+  f(y \mid z) &= \int_{\R^d \times (0, \infty)} f_{N(X \beta, \sigma^2 I)}(y) dP_{(\beta, V \mid Z=z)}(\beta, \sigma^2) \\
+  &= \int_{\R^d \times (0, \infty)} f_{N(X \beta, \sigma^2 I)}(y) f(\beta, \sigma^2) d\nu_z(\beta, \sigma^2) \\
+  &= \dots \\
+  &\stackrel{**}{=} \int_{\R^{\sum_j z_j} \times (0, \infty)} f_{N(X_z \beta_z, \sigma^2 I)}(y) \cdot
+    f_{N\left(0, \frac{\sigma^2}{\kappa_0} (X_z^T X_z)^{-1}\right)}(\beta) \cdot \\
+  &f_{InvGama(a, b)}(\sigma^2) d\beta_z d\sigma^2.
+\end{align*}
+*: $f$ hierarhični model (izpustimo $Z=z$) + vzorčna porazdelitev ($N$), \\
+**: $\int f(y \mid \vartheta) f(\vartheta) d\vartheta = f(y)$. \\
+$\left( \text{Bayesova formula } f(\vartheta \mid y) = \frac{f(y \mid \vartheta) f(\vartheta)}{f(y)} \right)$. \\
+To prepoznamo kot robno porazdelitev Bayesovega modela z vzorčno porazdelitvijo $N(X_z \beta_z, \sigma^2 I)$
+in apriorno (v $(\beta, \sigma^2)$) $N\left(0, \frac{\sigma^2}{\kappa_0} (X_z^T X_z)^{-1}\right) \rtimes InvGama(a, b)$. \\
+Vemo (vaje), da sledi \\
+\begin{equation*}
+  f(y \mid z) = (2\pi)^{-\frac{n}{2}} \frac{\Gamma\left(a + \frac{n}{2}\right)}{\Gamma(a)} \cdot
+    \frac{b^a}{\left(b + \frac{1}{2} \langle M_z y, y\rangle\right)^{a+\frac{n}{2}}}
+    \cdot \left(\frac{\kappa_0}{\kappa_0+1}\right)^{\frac{\sum_j z_j}{2}}.
+\end{equation*}
+Glede na izhodiščni problem nas zelo zanimajo aposteriorne verjetnosti \\
+$P(Z=z \mid Y=y)$;
+seveda velja
+\begin{equation*}
+  P(Z=z \mid Y=y) = \frac{f(y \mid z) P(Z=z)}{f(y)} = \frac{f(y \mid z) P(Z=z)}{\sum_{\xi \in \{0,1\}^d} f(y \mid \xi) P(Z=\xi)}.
+\end{equation*}
+Pri velikem $d$ (in zato zelo velikem $2^d$) do $k$ aposteriorne porazdelitve dostopamo preko Gibbsovega vzorčevalnika,
+kjer osveževanje poteka z vzorčevanjem iz pogojnih porazdelitev $P(Z_j=1 \mid Z_j^{'}=z_j^{'}, Y=y)$. \\
+Tu sta $Z_j^{'}$ in $z_j^{'}$ \sn{preostanka} komponent vektorjev $Z$ in $z$. \\
+$f(x_1 \dots x_d)$, $f(x_d \mid x_1 \dots x_{d-1})$, $f(x_{d-1} \mid x_1 \dots x_{d-2}, x_d)$. \\
+Velja 
+\begin{align*}
+  P(Z_j=1 \mid Z_j^{'}=z_j^{'}, Y=y)
+  &= \frac{P(Z=[0 \dots z_j^{'}] \mid Y=y)}{P(Z_j^{'}=z_j^{'} \mid Y=y)} \\
+  &= \frac{P(Z=[0 \dots z_j^{'}] \mid Y=y)}{P(Z=[0 \dots z_j^{'}] \mid Y=y) + P(Z=[1 \dots z_j^{'}] \mid Y=y)} \\
+  &= \left(1 + \frac{f(y) [0, z_j^{'}] \cdot P([0 \dots z_j^{'}])}{P([1 \dots z_j^{'}])}\right)^{-1}.
+\end{align*}
+\sn{$y \sim N(X \beta, \sigma^2 I)$} \\
+$(Y \mid \beta, \sigma^2, z) = (y \mid \beta, \sigma^2) = \dots$
+
+
 %\clearpage
 %\phantomsection
 
