@@ -2333,6 +2333,81 @@ je aposteriorna porazdelitev $InvWish(\nu + 1, \Psi + (y - X\beta) (y  X\beta)^T
 \end{itemize}
 
 
+% 18. predavanje: 9.1.
+
+\subsection{Hierarhična linearna regresija}
+
+Pri standardni linearni regresiji sta pomembni (med drugim) 2 vprašanji,
+ki jih je mogoče obravnavati s pomočjo hierarhičnih modelov:
+\begin{itemize}
+  \item pri $m$ homoskedastičnih skupinah $(y_j \mid \dots) \sim N(X_j \beta, \sigma^2 I)$ nas zanima
+    ali so pripadajoči parametri $\beta$ med seboj različni,
+  \item v \sn{eni} skupini $(y \mid \dots) \sim N(X \beta, \sigma^2 I)$ nas zanima,
+    katere komponente parametra $\beta$ so različne od 0.
+\end{itemize}
+\underline{Problem $\beta_1 = \beta_2 = \dots = \beta_m \in \R^d$ za $m$ homoskedastičnih modelov $N(X_j \beta, \sigma^2 I)$} \\
+V hierarhičnem modelu nastopajo parametri
+\begin{itemize}
+  \item hiperparameter $(\beta, \Sigma) = \phi \in \R^d \times P(d)$,
+  \item populacijski parameter $(\beta_1 \dots \beta_m, \sigma^2) = \vartheta \in \R^d \times \dots \times \R^d \times (0, \infty)$. 
+\end{itemize}
+\underline{Shema vzorčenja} \\
+$(\beta, \Sigma) \to (\beta_1 \dots \beta_m, \sigma^2) \to (y_1 \dots y_m)$;
+\begin{itemize}
+  \item $(\beta, \Sigma) \in N(\beta_0, T_0) \times InvWish(w, \Phi)$; \\
+    $\beta_0 \in \R^d, T_0 \in P(d), w > d-1, \Phi \in P(d)$ \\
+    hiperapriorna poradzelitev,
+  \item $(\beta_1 \dots \beta_m, \sigma^2) \in N(\beta, \Sigma) \times \dots \times N(\beta, \Sigma) \times InvGama(a, b)$ \\
+    populacijska apriorna porazdelitev,
+  \item $(y_1 \dots y_m) \in N(X_1 \beta_1, \sigma^2 I) \times \dots \times N(X_m \beta_m, \sigma^2 I)$ \\
+    vzorčna porazdelitev.
+\end{itemize}
+Formalno imamo gostote \\
+$f(\beta, \Sigma) = f(\beta_1 \dots \beta_m, \sigma^2 \mid \beta, \Sigma)
+= f(\beta_1 \dots \beta_m \mid \beta, \Sigma) \cdot f(\sigma^2)$ in \\
+$f(y_1 \dots y_m \mid \beta_1 \dots \beta_m, \sigma^2, \beta, \Sigma)
+= f(y_1 \dots y_m \mid \beta_1 \dots \beta_m, \sigma^2) \\
+= \prod_{j=1}^{m} f_{N(X_j \beta_j, \sigma^2 I)} (y_j)$. \\
+Spomnimo se abstraktnega hierarhičnega modela, kjer \\
+$f(x \mid \vartheta, \phi) = f(x \mid \vartheta)$ in \\
+$f(\vartheta, \phi) = f(\vartheta \mid \phi) \cdot f(\phi)$. \\
+Tedaj je
+\begin{equation*}
+  f(\vartheta \mid \phi, x) = \frac{f(x \mid \vartheta, \phi) f(\vartheta \mid \phi)}{f(x \mid \phi)}
+\end{equation*}
+\begin{align*}
+  f(\phi \mid \vartheta, x) &= \frac{f(x \mid \vartheta, \phi) f(\phi \mid \vartheta)}{f(x \mid \vartheta)} \\
+  &\stackrel{f(x \mid \vartheta, \phi) = f(x \mid \vartheta)}{=} f(\vartheta) \\
+  &\stackrel{\text{Bayes}}{=} \frac{f(\vartheta \mid \phi) f(\phi)}{f(\vartheta)}.
+\end{align*}
+Implementiramo
+\begin{align*}
+  f(\beta_1 \dots \beta_m, \sigma^2 \mid \beta, \Sigma, y_1 \dots y_m)
+  &\propto \left(\prod_{j=1}^m f_{N(X_j \beta_j, \sigma^2 I)}(y_j) \cdot f_{N(\beta, \Sigma)}(\beta_j)\right)
+  \cdot f_{InvGama(..)}(\sigma^2) \\
+  &\propto \prod_{j=1}^{m} (\sigma^2)^{-\frac{n_j}{2} - 1} \cdot e^{-\frac{1}{2 \sigma^2} \lVert y_j - X_j \beta_j \rVert^2}.
+\end{align*}
+Prepoznamo \sn{polkonjugirano} apriorno porazdelitev; sledi
+\begin{equation*}
+  f(\beta_1 \dots \beta_m \mid \sigma^2, \beta, \Sigma, y_1 \dots y_m)
+  = \prod_{j=1}^{m} f_{N\left(\beta^{(1)}, \Sigma_j^{(1)}\right)}(\beta_j);
+\end{equation*}
+kjer
+\begin{itemize}
+  \item $\Sigma_j^{(1)} = \Sigma_j^{-1} + \frac{X_j^T X_j}{\sigma^2}$ in
+  \item $\beta_j^{(1)} = \Sigma_j^{(1)} \cdot \left(\Sigma^{-1} \beta + \frac{X_j^T X_j}{\sigma^2}\right)$ in
+\end{itemize}
+\begin{align*}
+  &f(\sigma^2 \mid \beta_1 \dots \beta_m, \beta, \Sigma, y_1 \dots y_m) \dots \\
+  &InvGama\left(a + \sum_{j=1}^m \frac{n_j}{2}, b + \frac{1}{2} \sum_{j=1}^{m} \lVert y_j - X_j \beta_j \rVert^2\right)
+\end{align*}
+DN:
+\begin{itemize}
+  \item $f(\beta \mid \Sigma, \beta_1 \dots \beta_m, \sigma^2)$,
+  \item $f(\Sigma \mid \beta, \beta_1 \dots \beta_m, \sigma^2)$.
+\end{itemize}
+
+
 %\clearpage
 %\phantomsection
 
