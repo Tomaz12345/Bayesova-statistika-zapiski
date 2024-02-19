@@ -102,6 +102,24 @@
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\ch}{\operatorname{char}}
 
+\makeatletter
+\newcommand{\longeq}[1]{\mathrel{\mathpalette\longeq@{#1}}}
+\newcommand{\longeq@}[2]{%
+  \begingroup
+  \sbox\z@{$\m@th#1=$}%
+  \ifdim#2<\wd\z@
+    \resizebox{#2}{\height}{\box\z@}%
+  \else
+    \ifdim#2<3\wd\z@
+      \hbox to #2{$\m@th#1=\hss=\hss=\hss=$}%
+    \else
+      \hbox to #2{$\m@th#1=\cleaders\hbox to 0.2\wd\z@{\hss$#1=$\hss}\hfil=$}%
+    \fi
+  \fi
+  \endgroup
+}
+\makeatother
+
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
@@ -218,7 +236,7 @@
 Bayesova statistika je formalni okvir za \sn{osveževanje} vedenja/znanja o porazdelitvi nekega slučajnega vektorja.
 \begin{exmp}
   1000, $\approx 400$Č $\to 600$B (apriorno znanje). \\
-  Izvedemo (statistični) poskus: izvlečemo $10$, dobimo $6$ črnih in $4$ bele
+  Izvedemo (statistični) poskus: izvlečemo $10$, dobimo $6$ črnih in $4$ bele.
 \end{exmp}
 
 
@@ -232,11 +250,11 @@ V Bayesovem okviru nas zanimajo $P(E_j \mid A)$ (verjetnost, da se je v \sn{1. f
 če se je \sn{2. fazi} zgodil $A$).
 Ker je
 \begin{equation*}
-  P(E_j \mid A) = \frac{P(E_j \cap A)}{P(A)}
+  P(E_j \mid A) = \frac{P(E_j \cap A)}{P(A)},
 \end{equation*}
 je
 \begin{equation*}
-  P(E_j \mid A) = \frac{P(A \mid E_j) \cdot P(E_j)}{P(A)} \quad \text{- elementarna pogojna verjetnost}
+  P(E_j \mid A) = \frac{P(A \mid E_j) \cdot P(E_j)}{P(A)} \quad \text{- elementarna pogojna verjetnost,}
 \end{equation*}
 oziroma
 \begin{equation*}
@@ -244,7 +262,7 @@ oziroma
     \quad \text{- elementarna Bayesova formula.}
 \end{equation*}
 Nadaljujemo zgled. V Bayesovi statistiki predhodno (\sn{apriorno}) vedenje formaliziramo kot realizacijo slučajnega eksperimenta.
-V našem primeru vpeljemo fukcijo, da smo število črnih frnikul $\theta$ (- realizacija) dobili kot rezultat
+V našem primeru vpeljemo fukcijo, da smo število črnih frnikul $\theta$ ( realizacija) dobili kot rezultat
 slučajne spremenljivke $\Theta \in \{0, 1, 2 \dots 1000\}$. \\
 Informacijo $\theta \approx 400$ zakodiramo kot $E(\Theta) = 400$. \\
 \includegraphics[scale=0.4]{apriori_1_1} \\
@@ -252,7 +270,7 @@ Privzamemo (kar!) $\Theta \sim B\left(1000, \frac{4}{10}\right)$ \\
 $\implies P(\Theta = \theta) = \binom{1000}{\theta} \left(\frac{4}{10}\right)^{\theta} \left(1-\frac{4}{10}\right)^{1000-\theta}$. \\
 $P(k$ črnih od $10$ izvlečenih$ \mid \Theta = \theta) = \frac{\binom{\theta}{k} \binom{1000-\theta}{10-k}}{\binom{10}{k}}$ (*) \\
 (*) pri omejitvah ($k$ omejimo). \\
-Osvežena porazdelitev - novo vedenje \\
+Osvežena porazdelitev - novo vedenje
 \begin{align*}
   &P(\Theta = \theta \mid 6 \text{ črnih od } 10 \text{ izvlečenih}) = \\
   &\frac{P(6 \text{ črnih od } 10 \text{ izvlečenih} \mid \Theta = \theta) \cdot P(B(1000, \frac{4}{10}) = \theta)}
@@ -295,7 +313,8 @@ brezpogojni (robni) porazdelitvni slučajnega vektorja $X$ pa pravimo \sn{robna}
   Ocenjujemo Bernoullijevo porazdelitev. Predhodno vedenje je podano z apriorno prazdelitvijo na $(0,1)$;
   mislimo si, da je $p$ realizacija slučajne spremenljivke (s.s.) $\Pi$ z vrednostmi v $(0,1)$. Možnosti:
   \begin{itemize}
-    \item nimamo apriornega mnenja o (dejanskem) $p$: tedaj bi (morda) vzeli zvezno porazdelitev z gostoto enakomerna porazdelitve, \\
+    \item nimamo apriornega mnenja o (dejanskem) $p$:
+      tedaj bi (morda) vzeli zvezno porazdelitev z gostoto enakomerne porazdelitve, \\
       \includegraphics[scale=0.4]{apriori_nimamo_1_3} \\
     \item smo \sn{zelo} prepričani, da je (dejanski) $p \approx \frac{1}{2}$. \\ %Tedaj bi imeli
       \includegraphics[scale=0.4]{apriori_imamo_1_3} \\
@@ -317,7 +336,7 @@ To ne pomeni, da do $X_1 \dots X_n$ brezpogojno neodvisne. \\
 Za $i \neq j$ je
 \begin{align*}
   P(X_i = 1 \land X_j = 1) &= \int_{0}^{1} P(X_i = 1 \land X_j = 1 \mid \Pi = p) f(p) dp = \\
-  &\stackrel{\text{pogojno neodvisne}}{=}  \int_{0}^{1} P(X_i = 1 \mid \Pi = p) P(X_j = 1 \mid \Pi = p) f(p) dp = \\
+  &\stackrel{\text{pogojno neodvisne}}{\longeq{40pt}} \int_{0}^{1} P(X_i = 1 \mid \Pi = p) P(X_j = 1 \mid \Pi = p) f(p) dp = \\
   &= \int_{0}^{1} p^2 f(p) dp = \\
   &= E(\Pi^2).
 \end{align*}
@@ -397,10 +416,10 @@ $f_X(x) = \int f_{(X,Y)}(x,y) d\nu (y)$ za $X$ glede na $\mu$ in \\
 $f_Y(y) = \int f_{(X,Y)}(x,y) d\mu (x)$ za $Y$ glede na $\nu$.
 Dalje definiramo pogojni porazdelitvi $(Y \mid X = x)$ in $(X \mid Y = y)$ preko gostot
 \begin{equation*}
-  f_{(Y \mid X)}(y \mid x) = \frac{f_{(X,Y)}(X,Y)}{f_X(x)}
+  f_{(Y \mid X)}(y \mid x) = \frac{f_{(X,Y)}(x,y)}{f_X(x)}
 \end{equation*}
 glede na $\nu$: gostota v $X \to \mu$ in simetrično za $f_{(X \mid Y)}(x \mid y)$. \\
-$P(Y \in B) \mid X = x = \int_B f_{(Y \mid X)}(y \mid x) d\nu (y)$ - porazdelitev, opremljena z gostoto.
+$P(Y \in B \mid X = x) = \int_B f_{(Y \mid X)}(y \mid x) d\nu (y)$ - porazdelitev, opremljena z gostoto.
 \begin{defn}
   \begin{equation*}
     E(Y \mid X = x) = \int y f_{(Y \mid X)}(y \mid x) d\nu (y).
@@ -421,13 +440,14 @@ $P(Y \in B) \mid X = x = \int_B f_{(Y \mid X)}(y \mid x) d\nu (y)$ - porazdelite
   $X(\omega)$: vrednost.
 \end{defn}
 \begin{defn}
-  Pogojno varianco slučajnega vektorja $Y$, pogojno na $X = x$ definiramo kot varianco pogojne porazdelitve $(Y \mid X = x)$, t.j.
+  Pogojno varianco slučajnega vektorja $Y$, pogojno na \\
+  $X = x$ definiramo kot varianco pogojne porazdelitve $(Y \mid X = x)$, t.j.
   \begin{equation*}
     E((Y - u(X))(Y - u(X))^T \mid X = x) =: Var(Y \mid X = x).
   \end{equation*}
   Ker je $E$ aditivna, velja
   \begin{equation*}
-    E((Y - u(X))(Y - u(X))^T \mid X = x) = E(Y Y^T \mid X = x) - u(X) u(X)^T =: v(X).
+    E\left((Y - u(X))(Y - u(X))^T \mid X = x\right) = E(Y Y^T \mid X = x) - u(X) u(X)^T =: v(X).
   \end{equation*}
   $v(X)$ je $n \times n$ matrika.
 \end{defn}
@@ -510,7 +530,7 @@ $f(x \mid \theta)$ - gostota (ali verjetnostna funkcija) porazdelitve $(X \mid \
 V istem smislu gostota (ali verjetnostna funkcija) apriorne porazdelitve.
 Za aposteriorno gostoto (ali verjetnostno funkcijo) velja Bayesova formula (BF)
 \begin{equation*}
-  f(\theta \mid x) = \frac{f(x \mid \theta) f(\theta)}{f(\theta)} \propto f(x \mid \theta) f(\theta).
+  f(\theta \mid x) = \frac{f(x \mid \theta) f(\theta)}{f(x)} \propto f(x \mid \theta) f(\theta).
 \end{equation*}
 $f(x)$ je normalizacijski faktor.
 
@@ -621,13 +641,13 @@ Tukaj je:
 Preciznost je $\frac{1}{D(..)}$. \\
 To pomeni
 \begin{equation*}
-  \tau_1^2 = (\frac{n}{\sigma^2} + \frac{1}{\tau_0^2})^{-1}
+  \tau_1^2 = \left(\frac{n}{\sigma^2} + \frac{1}{\tau_0^2}\right)^{-1}
 \end{equation*}
 in
 \begin{align*}
-  \mu_1^2 &= \tau_1^2 (\frac{n}{\sigma^2} + \frac{1}{\tau_0^2}) \\
-  &= \frac{(\frac{n}{\sigma^2} \overline{x} + \frac{1}{\tau_0^2} \mu_0) \cdot \frac{\tau_0^2 \sigma^2}{n}}
-    {(\frac{n}{\sigma^2} + \frac{1}{\tau_1^2}) \cdot \frac{\tau_0^2 \sigma^2}{n}} \\
+  \mu_1^2 &= \tau_1^2 \left(\frac{n}{\sigma^2} + \frac{1}{\tau_0^2}\right) \\
+  &= \frac{\left(\frac{n}{\sigma^2} \overline{x} + \frac{1}{\tau_0^2} \mu_0\right) \cdot \frac{\tau_0^2 \sigma^2}{n}}
+    {\left(\frac{n}{\sigma^2} + \frac{1}{\tau_1^2}\right) \cdot \frac{\tau_0^2 \sigma^2}{n}} \\
   &= \frac{\tau_0^2 \overline{x} + \frac{\sigma^2 \mu_0}{n}}{\tau_0^2 + \frac{\sigma^2}{n}} \\
   &= \frac{\tau_0^2}{\tau_0^2 + \frac{\sigma^2}{n}} \overline{x} +
     \frac{\frac{\sigma^2}{n}}{\tau_0^2 + \frac{\sigma^2}{n}} \mu_0
@@ -650,7 +670,7 @@ kjer je
 \end{align*}
 \begin{exmp}
   \begin{enumerate}[label=\protect\circled{\arabic*}] \text{}
-    \item NEP Bernoullijev model: \\
+    \item NEP Bernoullijev model:
       \begin{align*}
         &(X_i \mid p) \stackrel{\text{NEP}}{\sim} Bernoulli(p) = B(1,p) \\
         &f(x_1 \dots x_n \mid p) = p^{\sum_{i=1}^{n} x_i} (1-p)^{n-\sum_{i=1}^{n} x_i} \cdot 1_{\{0,1\}^n} (x_1 \dots x_n)
@@ -737,7 +757,7 @@ kjer je
 
 Neinformirana apriorna porazdelitev je taka, ki \sn{ne vsebuje predhodne informacije} o parametru.
 Tovrsten koncept je šibko-informativna apriorna porazdelitev. % sovrsten?
-Izkaže se, da s statistični praksi (tudi v aplikacija frekventistične statistike) potrebujemo ta koncept.
+Izkaže se, da v statistični praksi (tudi v aplikacija frekventistične statistike) potrebujemo ta koncept.
 
 \begin{exmp}
   V Beta-binomskem modelu (..) je Laplace predlagal $U(0,1) = Beta(1,1)$ kot neinformirano porazdelitev. \\
@@ -752,7 +772,7 @@ Izkaže se, da s statistični praksi (tudi v aplikacija frekventistične statist
       \widetilde{f}(k \mid q) &= f(k \mid logit^{-1}(q)) \\
       &= f\left(k \mid \frac{e^q}{1+e^q}\right) \\
       &= \binom{n}{k} \left(\frac{e^q}{1+e^q}\right)^k \left(\frac{1}{1+e^q}\right)^{n-k} \\
-      &= \binom{n}{k} (1+e^q)^{-k} e^{kq} \quad (q \in \R).
+      &= \binom{n}{k} (1+e^q)^{-n} e^{kq} \quad (q \in \R).
     \end{align*}
     Kako je s transformacijo apriorne porazdelitve? \\
     Naj bo $\Pi$ slučajna spremenljivka z realizacijo $p$ in $Q$ slučajna spremenljivka z realizacijo $q$;
@@ -791,9 +811,9 @@ Izkaže se, da s statistični praksi (tudi v aplikacija frekventistične statist
   \end{equation*}
   Odvajajmo
   \begin{align*}
-    \frac{\partial}{\partial \lambda_i} \ln(\widetilde{f}(x \mid \lambda)) &=
-      \sum_{j=1}^{n} (\frac{\partial}{\partial \lambda_j} \ln(f(x \mid \lambda_j)) \cdot
-        \frac{\partial (\psi^{-1})_j}{\partial \lambda_i} (\lambda)) \\
+    \frac{\partial}{\partial \lambda_i} \ln\left(\widetilde{f}(x \mid \lambda)\right) &=
+      \sum_{j=1}^{n} \left(\frac{\partial}{\partial \lambda_j} \ln(f(x \mid \lambda_j)) \cdot
+        \frac{\partial (\psi^{-1})_j}{\partial \lambda_i} (\lambda)\right) \\
     &= \left[\frac{\partial (\psi^{-1})_j}{\partial \lambda_i}\right]_{j=1}^n
       \cdot grad_{\theta} (\ln f) (x \mid \phi^{-1}(\lambda))
   \end{align*}
@@ -826,7 +846,8 @@ Izkaže se, da s statistični praksi (tudi v aplikacija frekventistične statist
 Proučujemo (neznani) parameter vzorčnega povprečja, recimo da nas zanima realnoštevilska funkcija $h(\theta)$.
 \begin{exmp} \text{} \\
   Morda nas zanima \sn{$E(X^2)$} naše preučevane slučajne spremenljivke.
-  Če imamo normalni model s parametrom $\theta = (\mu, \sigma^2)$, nas torej zanima $h(\mu, \sigma^2) = (\mu^2, \sigma^2)$.
+  Če imamo normalni model s parametrom $\theta = (\mu, \sigma^2)$, nas torej zanima \\
+  $h(\mu, \sigma^2) = (\mu^2, \sigma^2)$.
   V Bayesovem okviru iz apriorne porazdelitve in vzorca dobimo aposteriorno porazdelitev z gostoto
   \begin{equation*}
     f(\theta \mid x) = \frac{f(x \mid \theta) f(\theta)}{f(x)},
@@ -877,7 +898,7 @@ Vzorčenje iz $(0,1)$ (za razumno velike vzorce). \\
 Oceno natančnosti lahko dobimo s pomočjo CLI: privzemino obstoj disperzije slučajne spremenljivke $X_i$
 ($\iff \int h(x)^2 f(x) dx < \infty$).
 \begin{equation*}
-  S^2 = \frac{1}{n-1} \sum_{i=1}^{n} (h(X_i) - \overline{h(X_i)})^2.
+  S^2 = \frac{1}{n-1} \sum_{i=1}^{n} (h(X_i) - \overline{h(X_.)})^2.
 \end{equation*}
 Po CLI velja
 \begin{equation*}
@@ -888,7 +909,7 @@ Za $\alpha \in (0, \frac{1}{2})$ sledi
   P\left(\frac{\overline{h(X_i)} - E(h(X_i))}{\frac{S}{\sqrt{n}}} \in [-z_{\frac{\alpha}{2}}, z_{\frac{\alpha}{2}}]\right) = 1 - \alpha%\to
 \end{equation*}
 Verjamemo, da se ocena $\overline{h(x_i)}$ razlikuje od dejanskega integrala $E(h(x_i))$ za kvečjemu
-$z_{\frac{\alpha}{2}} \cdot \frac{s}{\sqrt{n}}$.
+$z_{\frac{\alpha}{2}} \cdot \frac{S}{\sqrt{n}}$.
 
 
 % 6. predavanje: 24.10.
@@ -943,12 +964,12 @@ Pripomnimo, da za $(X,U) \sim U(A_f)$ velja $X \sim f$:
     \end{enumerate}
     Preverimo $X \sim f$. Za $I \subset (a,b)$ je
     \begin{align*}
-      P(X \in I) &\stackrel{\text{vaja}}{=} P(Y \in I \mid v < f(y)) \\
+      P(X \in I) &\stackrel{\text{vaja}}{\longeq{12pt}} P(Y \in I \mid v < f(y)) \\
       &= \frac{\int_{\R} P(Y \in I \land v < f(Y) \mid Y=y) \cdot f_Y(y) dy}
         {\int_{\R} P(v < f(Y) \mid Y=y) \cdot f_Y(y) dy} \\
-      &\stackrel{\text{pogojna}}{=} \frac{\int_{\R} P(y \in I \land v < f(y)) \cdot f_Y(y) dy}
+      &\stackrel{\text{pogojna}}{\longeq{25pt}} \frac{\int_{\R} P(y \in I \land v < f(y)) \cdot f_Y(y) dy}
         {\int_{\R} P(v < f(y)) \cdot f_Y(y) dy} \\
-      &\stackrel{I \subset (a,b)}{=} \frac{\int_{I} P(v < f(y)) \cdot \frac{1}{b-a} dy}
+      &\stackrel{I \subset (a,b)}{\longeq{25pt}} \frac{\int_{I} P(v < f(y)) \cdot \frac{1}{b-a} dy}
         {\int_{(a,b)} P(v < f(y)) \cdot \frac{1}{b-a} dy} \\
       &= \frac{\int_{I} f(y) dy}
         {\int_{(a,b)} f(y) dy} \\
@@ -966,14 +987,14 @@ Pripomnimo, da za $(X,U) \sim U(A_f)$ velja $X \sim f$:
     \end{enumerate}
     Preverimo $X \sim f$. Za $I \subset \R$ je
     \begin{align*}
-      P(X \in I) &\stackrel{\text{vaja}}{=} P(Y \in I \mid M \cdot g(y) \cdot w < f(y)) \\
+      P(X \in I) &\stackrel{\text{vaja}}{\longeq{12pt}} P(Y \in I \mid M \cdot g(y) \cdot w < f(y)) \\
       &= \frac{\int_{\R} P(Y \in I \land M \cdot g(y) \cdot w < f(Y) \mid Y=y) \cdot f_Y(y) dy}
         {\int_{\R} P(M \cdot g(y) \cdot w < f(Y) \mid Y=y) \cdot f_Y(y) dy} \\
-      &\stackrel{\text{pogojna}}{=} \frac{\int_{I} P(W < \frac{f(y)}{Mg(y)}) \cdot g(y) dy}
+      &\stackrel{\text{pogojna}}{\longeq{25pt}} \frac{\int_{I} P(W < \frac{f(y)}{Mg(y)}) \cdot g(y) dy}
         {\int_{\R} P(W < \frac{f(y)}{Mg(y)}) \cdot g(y) dy} \\
       &= \dots = \int_I f(y) dy,
     \end{align*}
-    kjer smo v upoštevali $P(W < \frac{f(y)}{Mg(y)}) = \frac{f(y)}{Mg(y)}$.
+    kjer smo upoštevali $P\left(W < \frac{f(y)}{Mg(y)}\right) = \frac{f(y)}{Mg(y)}$.
     Opazimo da je $M \cdot g(y)$ namesto $m$ od prej (na nek način). \\
     Pripomnimo, da je verjetnost sprejetja tu enaka
     \begin{equation*}
@@ -1048,7 +1069,8 @@ Privzamemo (i) in naj bo $A \subset \{f > 0\}$ vsako območje, za katero
   P(\sn{X} \in A) = \int_A f(x) dx = a > 0.
 \end{equation*}
 Vzenimo $a := 1_A$. \\ %a,n?
-Tedaj $\frac{\text{število členov (do $n$-tega, ki padejo v )A}}{n} \stackrel{n \to \infty}{\to} \int 1_A(x) f(x) dx = a$. %a?
+Tedaj $\frac{\text{število členov (do $n$-tega, ki padejo v) A}}{n} \stackrel{n \to \infty}{\longrightarrow}
+\int 1_A(x) f(x) dx = a$. %a?
 
 \subsection{Metropolisov algoritem}
 
@@ -1069,9 +1091,10 @@ kot če bi predlagali $x$, če smo v stanju $y$). \\
         X^{(n)} = x^{(n-1)} \text{ z verjetnostjo } 1 - \rho
       \end{cases}
     \end{equation*}
-    Naenkrat. $X^{(n)} = y$ z verjetnostjo $\rho = \min \{\frac{f(y)}{f\left(x^{(n-1)}\right)}, 1\}$ (*) \\
+    Naenkrat. $X^{(n)} = y$ z verjetnostjo $\rho = \min \left\{\frac{f(y)}{f\left(x^{(n-1)}\right)}, 1\right\}$ (*) \\
     (*): če $f\left(x^{(n-1)}\right) = 0$, vedno vzamemo $y$. \\
-    Ta korak implementiramo z realizacijo $u \in U(0,1)$, vzamemo $X^{(n)} = y$, če $u \leq \rho$, oz. $X^{(n)} = x^{(n-1)}$, če $u > \rho$.
+    Ta korak implementiramo z realizacijo $u \in U(0,1)$, vzamemo $X^{(n)} = y$,
+    če $u \leq \rho$, oz. $X^{(n)} = x^{(n-1)}$, če $u > \rho$.
 \end{enumerate}
 Izkaže se, da ta opis določa markovsko verigo s stacionarno porazdelitvijo $f$.
 Če velja sklep $f(y) > 0 \implies \; \forall x: q(y \mid x) > 0$, ima veriga EZVŠ. \\
@@ -1101,13 +1124,13 @@ Metropolisov algoritem tipično nima ECLI :(.
 Tu predlagane gostote $q(y \mid x)$ ne zadoščajo simetričnosti.
 V algoritmu namesto $\rho$ iz 3.4.1. uporabimo
 \begin{equation*}
-  \rho = \rho\left(x^{(n-1)}, y\right) = \min \{1, \frac{f(y)}{f\left(x^{(n-1)}\right)} \cdot
-    \frac{q\left(x^{(n-1)} \mid y\right)}{q\left(y \mid x^{(n-1)}\right)}\}
+  \rho = \rho\left(x^{(n-1)}, y\right) = \min \left\{1, \frac{f(y)}{f\left(x^{(n-1)}\right)} \cdot
+    \frac{q\left(x^{(n-1)} \mid y\right)}{q\left(y \mid x^{(n-1)}\right)}\right\}
 \end{equation*}
 (in $\rho = 1$ če $f\left(x^{(n-1)}\right) \cdot q\left(y \mid x^{(n-1)}\right) = 0$). \\
 \underline{Enake lastnosti kot prej:}
 \begin{itemize}
-  \item vedno dobimo verigo s stacionarno porazdelitvijo $f$
+  \item vedno dobimo verigo s stacionarno porazdelitvijo $f$,
   \item če $\forall x: \; q(\_, x^{(n)})$ dopušča kandidate iz $\{f > 0\}$ (v končno korakih), velja EVZŠ (blagi pogoji).
 \end{itemize}
 Dobimo pa še: \\
@@ -1134,9 +1157,9 @@ ne pa (neposredno) iz $f(\theta_1, \theta_2 \mid x)$. \\
     potem pa še $x_n$ iz $f(y \mid y_n)$ (temu koraku oz. njegovim podkorakom pravimo \sn{osveževanje}).
 \end{enumerate}
 Dobimo zaporedje s.s. (ali DN)
-\begin{equation*}
-  X^{(0)} = (x_0, y_0), \; X^{(1)} = (x_1, y_1), \; X^{(2)} = (x_2, y_2) \text{ itd.}
-\end{equation*}
+$X^{(0)} = (x_0, y_0), \\
+X^{(1)} = (x_1, y_1), \\
+X^{(2)} = (x_2, y_2)$ itd.
 Izkaže se, da so zaporedja
 \begin{align*}
   &X^{(0)}, X^{(1)}, X^{(2)} \dots \\
@@ -1147,7 +1170,7 @@ markovske verige in da ima veriga $\{X^{(i)} \mid n\}$ stacionarno porazdelitev 
 Pri blagih pogojih je ta veriga ergodična.
 \begin{exmp} \text{} \\
   Tipična aplikacija v Bayesovi statistiki je: \\
-  privzemimo model $f(x \mid \theta_1, \theta_2)$ z apriorno gostoto $f(\theta_1, \theta_2) = f(\theta_1), f(\theta_2)$,
+  privzemimo model $f(x \mid \theta_1, \theta_2)$ z apriorno gostoto $f(\theta_1, \theta_2) = f(\theta_1) \cdot f(\theta_2)$,
   kjer je $f(\theta_1)$ iz konjugirane družine k modelu $f(x \mid \theta_1, \text{KONST})$,
   $f(\theta_2)$ pa je iz konjugirane družine k modelu $f(x \mid \text{KONST}, \theta_2)$,
   iz katerih znamo simulirati NEP vzorčenje. \\
@@ -1227,7 +1250,7 @@ $(i = 0, 1, 2 \dots)$, kjer je $\Omega$ verjetnostni prostor, $\Sigma$ merljiv p
 \end{equation}
 za vse $n \in \N, A \subset \Sigma$ in vse n-terice $x_0 \dots x_{n-1} \in \Sigma$. \\
 Tu je $\{P(\_ \mid x) \mid x \in \Sigma\}$ družina verjetnostnih mer na $\Sigma$, za katero velja,
-da je za vsako merljivo množico $A \subset \Sigma$ preslikava $\Sigma \to [0,1]$, $x \mapsto \P(A \mid x)$ merljiva. \\
+da je za vsako merljivo množico $A \subset \Sigma$ preslikava $\Sigma \to [0,1]$, $x \mapsto P(A \mid x)$ merljiva. \\
 Prostoru $\Sigma$ pravimo parameter stanj, $X_i$ so členi verige,
 lastnosti \refeq{markovska-lastnost-A} pa pravimo markovska lastnost. \\
 Tu se bomo omejili na Borelove množice $\Sigma \subset \R^r$ (z Borelovo $\sigma$-algebro.) \\
@@ -1235,7 +1258,7 @@ Poudarimo, da so verjetnosti $P(_ \mid x)$ (pravimo jim \sn{prehodne verjetnosti
 (torej za vse $n$ enake).
 \begin{exmp} \text{} \\
   Če ima $X_0$ neko porazdelitev in velja $X_n = X_{n-1} + \varepsilon_n$
-  (kjer so $X_0, \varepsilon_1 \dots$ neodvisne in $\epsilon_0 \sim N(0, V)$ za $V \in \P(r)$ (V je s.p.d.))
+  (kjer so $X_0, \varepsilon_1 \dots$ neodvisne in $\varepsilon_0 \sim N(0, V)$ za $V \in P(r)$ (V je s.p.d.))
   in $X_0, X_1, X_2 \dots$ markovska veriga in velja
   \begin{equation*}
     P(A \mid x) = P(N(x, V) \in A).
@@ -1252,8 +1275,8 @@ Poudarimo, da so verjetnosti $P(_ \mid x)$ (pravimo jim \sn{prehodne verjetnosti
           oz. $X_n = x$, če $u > \rho(x,y)$, kjer
           \begin{equation*}
             \rho(x,y) = \begin{cases}
-              \min \{1, \frac{f(y)}{f(x)} \cdot \frac{q(x \mid y)}{q(y \mid x)}\}; f(x) q(y \mid x) \neq 0 \\
-              1; f(x) q(y \mid x) = 0
+              \min \left\{1, \frac{f(y)}{f(x)} \cdot \frac{q(x \mid y)}{q(y \mid x)}\right\}: &f(x) q(y \mid x) \neq 0 \\
+              1: &f(x) q(y \mid x) = 0
             \end{cases}
           \end{equation*}
           Tu je $f$ ciljna gostota (glede na $\nu$),
@@ -1277,7 +1300,7 @@ Poudarimo, da so verjetnosti $P(_ \mid x)$ (pravimo jim \sn{prehodne verjetnosti
         \implies P(X_n \in A \mid X_{n-1} = x) = \int_{y \in \Sigma} (1-\rho(x,y)) q(y \mid x) d\nu(y).
       \end{equation*}
       To je tipično $u$ pozitivna verjetnost.
-      To pomeni, da imajo prehodne verjetnosti atome $u$: $P({x} \mid x) > 0$ (vsaj za nekatere $x$).
+      To pomeni, da imajo prehodne verjetnosti atome $u$: $P(\{x\} \mid x) > 0$ (vsaj za nekatere $x$).
   \end{enumerate}
 \end{exmp}
 \begin{defn} \text{} \\
@@ -1301,8 +1324,8 @@ Poudarimo, da so verjetnosti $P(_ \mid x)$ (pravimo jim \sn{prehodne verjetnosti
   Spomnimo se:
   \begin{equation*}
     \rho(x,y) = \begin{cases}
-      \min \{1, \frac{f(y)}{f(x)} \cdot \frac{q(x \mid y)}{q(y \mid x)}\}; f(x) q(y \mid x) \neq 0 \\
-      1; f(x) q(y \mid x) = 0
+      \min \left\{1, \frac{f(y)}{f(x)} \cdot \frac{q(x \mid y)}{q(y \mid x)}\right\}: &f(x) q(y \mid x) \neq 0 \\
+      1: &f(x) q(y \mid x) = 0
     \end{cases}
   \end{equation*}
   Vidimo, da velja enakost (za $\forall x, y$)
@@ -1324,8 +1347,8 @@ $P(A \mid x) = P(X_n \in A \mid X_0 = x)$. \\
 To verjetnost, da veriga obišče $A$ v času $n$ ob pogoju, da je začela v $x$,
 želeni lastnosti (ki implicirata ustrezna ERVŠ) sta
 \begin{itemize}
-  \item $||P^n(_ \mid x) - \pi|| \stackrel{n \to \infty}{\to} 0$ za skoraj vse $x$,
-  \item $||P^n(_ \mid x) - \pi|| \stackrel{n \to \infty}{\to} 0$ enakomerno v $x$,
+  \item $||P^n(_ \mid x) - \pi|| \stackrel{n \to \infty}{\longrightarrow} 0$ za skoraj vse $x$,
+  \item $||P^n(_ \mid x) - \pi|| \stackrel{n \to \infty}{\longrightarrow} 0$ enakomerno v $x$,
 \end{itemize}
 kjer za predznačeno mero $\mu$ definiramo normo totalne variacije
 \begin{equation*}
@@ -1373,7 +1396,7 @@ Tej enakosti rečemo enakost Chapman-Kolmogorova.
 Privzemimo, da je $X_0, X_1 \dots$ markovska veriga s stacionarno porazdelitvijo \sn{$f$},
 ki ima primerne ergodične lastnosti. \\
 Označimo $\widehat{E_f(h)} = \frac{1}{n} \sum_{i=1}^{n} h(X_i)$ (standardna MCMC cenilka za $E_f(h)$ za veriga do časa $n$). \\
-Definirajmo $D_{MCMC} \left(\widehat{E_f(h)(x)}\right)$ = $E\left(\left(\widehat{E_f(h)(x)} - E_f(h)\right)^{2}\right)$. \\
+Definirajmo $D_{MCMC} \left(\widehat{E_f(h)}(x)\right) = E\left(\left(\widehat{E_f(h)}(x) - E_f(h)\right)^2\right)$. \\
 (To je v resnici SNK glede na ocenjeno karakteristiko $E_f(h)$.
 V splošnem $\widehat{E_f(h)}$ \underline{ni} nepristranska cenilka za $E_f(h)$.) \\
 Tu je $\widehat{E_f(h)} - E_f(h) = \frac{1}{n} \sum_{i=1}^{n} (h(X_i) - E_f(h))$, velja
@@ -1449,11 +1472,11 @@ $\frac{1}{a} \sum_{k=1}^{a} \frac{1}{b} \sum_{i=(k-1)b+1, i \neq j}^{kb} ((h(X_i
 \stackrel{a \to \infty, \; b \to \infty}{\longrightarrow} 2 \sum_{k=1}^{\infty} \sigma_{0,k}$, \\
 ostalo $\stackrel{a \to \infty, \; b \to \infty}{\longrightarrow} 0$. \\
 Priporočeni izbiri sta $a = \sqrt{n}$, $a = \sqrt[3]{n}$. \\
-V praksi to realiziramo kot $a(k) \cdot b(k) = n(k) = k \cdot k^2 \; k = 1, 2 \dots$ \\
+V praksi to realiziramo kot $a(k) \cdot b(k) = n(k) = k \cdot k^2; \; k = 1, 2 \dots$ \\
 Sledi želeni ECLI: \\
-$\lim_{n \to \infty} \frac{\widehat{E_f(h)} n(k) - E_f(h)}{\sqrt{\widehat{\gamma_k^2}(a(k),b(k))} / \sqrt{n}}
+$\lim_{n \to \infty} \frac{\widehat{E_f(h)} n(k) - E_f(h)}{\frac{\sqrt{\widehat{\gamma_k^2}(a(k),b(k))}}{\sqrt{n}}}
   \stackrel{D}{=} N(0,1)$ \\
-in še EIZ (ergodični interval zaupanja) (stopnje zaupanje $1 - \alpha$) \\
+in še EIZ (ergodični interval zaupanja) (stopnje zaupanja $1 - \alpha$) \\
 $\left[\widehat{E_f(h)} - z_{\frac{\alpha}{2}} \sqrt{\frac{\widehat{\gamma_k^2}(a(k),b(k))}{a(k) \cdot b(k)}},
   \widehat{E_f(h)} + z_{\frac{\alpha}{2}} \sqrt{\frac{\widehat{\gamma_k^2}(a(k),b(k))}{a(k) \cdot b(k)}}
   \right]$. \\
@@ -1467,7 +1490,7 @@ Za MCMC vzorčenje imamo $D_{MCMC}(\widehat{E_f(h)}) \approx \frac{\gamma_k^2}{n
 \end{defn}
 Pri danem vzorcu seveda $n_{eff}$ ocenimo z
 \begin{equation*}
-  \widehat{n_{eff}} = n \frac{\widehat{\sigma^2}}{\gamma_k^2} = \frac{\widehat{\sigma^2}}{\gamma_k^2 / n}.
+  \widehat{n_{eff}} = n \frac{\widehat{\sigma^2}}{\gamma_k^2} = \frac{\widehat{\sigma^2}}{\frac{\gamma_k^2}{n}}.
 \end{equation*}
 
 \subsection{Mešanje}
@@ -1495,8 +1518,8 @@ Velja $\lim_{n \to \infty} \sqrt{\frac{\widehat{\sigma^{2+}}}{W}} = 1$; \\
 \chapter{Normalni modeli}
 
 
-\underline{Uvodni zgled}: 1-razsežni \sn{NEP-normalni} model, kjer je
-$(X \mid \mu, \sigma^2) \sim N(\left(\begin{bmatrix}\mu & \vdots & \mu\end{bmatrix}, \sigma^2 I_{n \times n}\right))$
+\underline{Uvodni zgled}: 1-razsežni \sn{NEP-normalni} model, kjer je \\
+$(X \mid \mu, \sigma^2) \sim N\left(\begin{bmatrix}\mu & \vdots & \mu\end{bmatrix}, \sigma^2 I_{n \times n}\right)$
 z vzorčnimi gostotami
 \begin{equation}
   f(x \mid \mu, \sigma^2) = \left(2 \pi \sigma^2\right)^{-\frac{n}{2}} e^{-\frac{1}{2 \sigma^2} \left(\sum_{i=1}^{n} (x_i-\mu)^2\right)}.
@@ -1527,8 +1550,8 @@ oz.
 \begin{equation*}
   f(\vartheta_1, \vartheta_2 \mid x) = f(\vartheta_1 \mid \vartheta_2, x) \cdot f(\vartheta_2 \mid x).
 \end{equation*}
-Tu je $f(\vartheta_1 \mid \vartheta_2, x)$ aposteriorna gostota modela z vzorčnimi gostotami $f(x \mid \vartheta_2)$
-in apriorno gostoto $f(\vartheta_2$). \\
+Tu je $f(\vartheta_1 \mid \vartheta_2, x)$ aposteriorna gostota modela z vzorčnimi gostotami \\
+$f(x \mid \vartheta_2)$ in apriorno gostoto $f(\vartheta_2$). \\
 Tipično je $f(\vartheta_1 \mid \vartheta_2, x)$ enostavneje izračunati (eksplicitno) kot $f(\vartheta_2 \mid x)$,
 ker za slednje potrebujemo še $f(x \mid \vartheta_2)$. \\
 Načeloma lahko $f(x \mid \vartheta_2)$ izračunamo z integriranjem:
@@ -1569,7 +1592,8 @@ vendar :( \\
         -\frac{1}{\sigma^2} & \frac{1}{\sigma^2} & \dots & \frac{\kappa_0 + n}{\sigma^2}
       \end{bmatrix}.
     \end{equation*}
-    Vidimo, da je $(X, M \mid V \sim \sigma^2)$ normalna porazdelitev $\implies \; (X \mid V \sim \sigma^2)$ je kot robna tudi normalna. \\
+    Vidimo, da je $(X, M \mid V \sim \sigma^2)$ normalna porazdelitev \\
+    $\implies \; (X \mid V \sim \sigma^2)$ je kot robna tudi normalna. \\
     $\stackrel{!!}{\implies}$ potrebujemo le $E(X \mid V \sim \sigma^2)$ in $Var(X \mid V \sim \sigma^2)$. \\
     Vemo:
     \begin{align*}
@@ -1603,7 +1627,7 @@ vendar :( \\
     Velja še
     \begin{align*}
       &f(\sigma^2) = f_{\text{InvGama}}(\sigma^2) = \frac{b^a}{\gamma(a)} \cdot (\sigma^2)^{-a-1} \cdot e^{-\frac{b}{\sigma^2}} \\
-      \implies &f(\sigma^2 \mid x) \propto (\sigma^2)^{-\frac{n}{2}} \cdot
+      &\implies f(\sigma^2 \mid x) \propto (\sigma^2)^{-\frac{n}{2}} \cdot
         e^{-\frac{1}{\sigma^2} \frac{1}{2} \left(\langle \dots, \dots \rangle\right)} \cdot (\sigma^2)^{-a-1} e^{-\frac{b}{\sigma^2}} \\
         &\leftrightarrow \text{InvGama}\left(a + \frac{n}{2},
           b + \frac{1}{2} \left\langle
@@ -1633,8 +1657,8 @@ Frekvencistično gledamo neodvisne skupine s.s. \\
   $\vdots$ & $\vdots$ & & $X_{n_m, m}$ \\
   $X_{n_1, 1}$ & $\vdots$ & & \\
   & $X_{n_2, 2}$ & &
-\end{tabular}. \\
-Velikosti $n_1 + \dots + n_m = n$. \\
+\end{tabular} \\
+velikosti $n_1 + \dots + n_m = n$. \\
 Funkcija neodvisnosti: $X_{ij} \sim N(\mu_j, \sigma^2)$. \\
 Vse variance so enaka (homoskelastičnost) zaradi \sn{preprostosti}. \\
 Najbolj nas zanimajo (ocene) za $\mu_j$ in $\sigma^2$, \sn{optimalne} frekventistične cenilke so:
@@ -1678,7 +1702,8 @@ Ta predstavitev tipično ni uporabna, ker ne poznamo $f(\vartheta)$. Zato raje
   \item $f(\vartheta \mid \phi, x) = \frac{f(x \mid \vartheta, \phi) f(\vartheta \mid \phi)}{f(x \mid \phi)}$:
     aposteriorna gostota modela z vzorčnimi $f(x \mid \vartheta)$ in apriornimi $f(\vartheta \mid \phi)$,
   \item $f(\phi \mid \vartheta, x) = \frac{f(x \mid \vartheta) f(\phi \mid \vartheta)}{f(x \mid \vartheta)}$:
-    aposteriorna gostota modela z vzorčnimi $f(\vartheta \mid \phi)$ in apriornimi $f(\phi)$
+    aposteriorna gostota modela z vzorčnimi \\
+    $f(\vartheta \mid \phi)$ in apriornimi $f(\phi)$
 \end{itemize}
 ($\implies$ z Gibsom $f(\vartheta, \phi \mid x)$). \\
 Aplicirajmo na naš zgled: \\
@@ -1795,7 +1820,8 @@ Tedaj
   Pri predpostavkah izreka zmano s A/R simulirati NEODVISNO vzorčenje iz $\pi$.
 \end{rem}
 \begin{defn}
-  Naj bo $\pi$ stacionarna oprazdelitev verige $\{X_n\}$, ki je $\pi$-ireducibilna.
+  Naj bo $\pi$ stacionarna oprazdelitev verige $\{X_n\}$, ki je \\
+  $\pi$-ireducibilna.
   Tedaj je ta veriga POVRNLJIVA, če iz $\pi(A) > 0$ sledi
   \begin{enumerate}[label=(\roman*)]
     \item $P(X_n \in A \text{ neskončno mnogokrat } \mid x) > 0$ za $\forall x$,
@@ -1811,8 +1837,8 @@ Tedaj
   \begin{itemize}
     \item Če je veriga še aperiodična, velja $\lim_{n \to \infty} \sup_A \left|P^n(A \mid x) - \pi(A)\right| = 0$ za vsak $x$
       ($\pi$-s.g. $[x]$).
-    \item Če je veriga Harrisov povrnljiva,
-      velja $\lim_{n \to \infty} \sup_A B\left(P^n(A \mid x) - \pi(A)\right) = 0$ za vsak $x$.
+    \item Če je veriga Harrisov povrnljiva, velja \\
+      $\lim_{n \to \infty} \sup_A B\left(P^n(A \mid x) - \pi(A)\right) = 0$ za vsak $x$.
   \end{itemize}
   Poleg tega v tem primeru velja EZVŠ v obliki: \\
   $\forall x\; \forall$ integrabilna $h$:
@@ -1875,18 +1901,18 @@ s pomočjo zveze
 \end{exmp}
 Zgornjo linearno zvezo (v $\beta$) bi formalizirali v
 \begin{equation*}
-  Y = \beta_0 + \beta_1 X_1 + \dots + \beta_p X_p + \epsilon,
+  Y = \beta_0 + \beta_1 X_1 + \dots + \beta_p X_p + \varepsilon,
 \end{equation*}
 kjer ima $\epsilon$ vlogo slučajnega odstopanja oz. meritvene napake. \\
 Tega \sn{modela} ni mogoče parametrizirati zaradi (neznanih) porazdelitev prediktorja $X_1 \dots X_p$. \\
 Da dobimo dober parametrični model, uvedemo fikcijo laboratorijskega eksperimenta
 \begin{align*}
-  &Y_1 = \beta_0 + X_{11} \beta_1 + \dots + X_{1p} \beta_p + \epsilon_1 \\
+  &Y_1 = \beta_0 + X_{11} \beta_1 + \dots + X_{1p} \beta_p + \varepsilon_1 \\
   &\vdots \\
-  &Y_n = \beta_0 + X_{n1} \beta_1 + \dots + X_{np} \beta_p + \epsilon_n. \\
+  &Y_n = \beta_0 + X_{n1} \beta_1 + \dots + X_{np} \beta_p + \varepsilon_n. \\
 \end{align*}
 Tu do $X_{ij} \; (1 \leq i \leq n, \; 1 \leq j \leq p)$ ZNANE (nastavljene) konstante,
-$\epsilon_1 \dots \epsilon_n$ pa so slučajne SPREMENLJIVKE. \\
+$\varepsilon_1 \dots \varepsilon_n$ pa so slučajne SPREMENLJIVKE. \\
 Če označimo
 \begin{align*}
   &y = \begin{bmatrix}
@@ -1904,13 +1930,13 @@ $\epsilon_1 \dots \epsilon_n$ pa so slučajne SPREMENLJIVKE. \\
     \vdots \\
     \beta_p
     \end{bmatrix}_{p \times 1}
-  \epsilon = \begin{bmatrix}
-    \epsilon_1 \\
+  \varepsilon = \begin{bmatrix}
+    \varepsilon_1 \\
     \vdots \\
-    \epsilon_n
+    \varepsilon_n
   \end{bmatrix}_{n \times 1}
 \end{align*}
-sledi enačba linearne regresije $y = X \beta + \epsilon$. \\
+sledi enačba linearne regresije $y = X \beta + \varepsilon$. \\
 \underline{MNK} \\
 Privzemimo meritev $y$;
 pri danem vektorju $\hat{\beta}$ tvorimo \sn{napoved} $\hat{y} = X \hat{\beta}$. \\
@@ -1940,24 +1966,24 @@ Pravimo, da je $\hat{\beta} = \hat{\beta}(y)$ ocena za $\beta$ po MNK.
 
 Zadnjič: ocena za $\beta$ po MNK (linearna algebra). \\
 Verjetnostni model(i) standardne linearne regresije: \\
-$y = X \beta + \epsilon$; \\
+$y = X \beta + \varepsilon$; \\
 $y$: proučevani slučajni vektor, \\
 $X \in \R^{n \times d}$ matrika konstant, \\
 $\beta \in \R^d$ (delni) parameter, \\
-$\epsilon$ slučajen s porazdelitvijo v nekem modelu. \\
-Vedno privzamemo $E(\epsilon) = 0 \in \R^m$ (če $\neq 0$: sistemska napaka). \\
-Za variančno-kovariančno matriko $Var(\epsilon)$ tipično prizamemo, da je \\
-$Var(\epsilon) = \sigma^2 I$ (homoskelastičnost + nekoreliranost). \\
-Boljše modele dobimo z dodatnimi zahtevami na $\epsilon$. \\
+$\varepsilon$ slučajen s porazdelitvijo v nekem modelu. \\
+Vedno privzamemo $E(\varepsilon) = 0 \in \R^m$ (če $\neq 0$: sistemska napaka). \\
+Za variančno-kovariančno matriko $Var(\varepsilon)$ tipično prizamemo, da je \\
+$Var(\varepsilon) = \sigma^2 I$ (homoskelastičnost + nekoreliranost). \\
+Boljše modele dobimo z dodatnimi zahtevami na $\varepsilon$. \\
 Tedaj postane $\hat{\beta} = \hat{\beta}(y) = (X^TX)^{-1} X^T y$ slučajni vektor, ki je cenilka za $\beta$.
 (Privzamemo $rang X = d \leq n$; $X$ polnega ranga, $(X^TX)^{-1} \; \exists$). \\
 Velja $E\left(\hat{\beta}(y)\right) = (X^TX)^{-1} X^T E(Y) = (X^TX)^{-1} X^TX \beta = \beta$;
 torej je $\beta$ nepristranska (linearna) cenilka za $\beta$.
 \begin{exmp} \text{} \\
   $X = \begin{bmatrix}1 \\\vdots \\ 1\end{bmatrix} \in \R^n, \beta \in \R (d=1)$;
-  pišimo $Var(\epsilon_i) = \sigma^2$ \\
-  (vzamemo $Var(\epsilon) = \sigma^2 I$). \\
-  Tedaj je $Y_i = \mu + \epsilon_i, \; E(Y_i) = \mu, Var(Y_i) = \sigma^2$ ($\implies$ NEP vzorčenje). \\
+  pišimo $Var(\varepsilon_i) = \sigma^2$ \\
+  (vzamemo $Var(\varepsilon) = \sigma^2 I$). \\
+  Tedaj je $Y_i = \mu + \varepsilon_i, \; E(Y_i) = \mu, Var(Y_i) = \sigma^2$ ($\implies$ NEP vzorčenje). \\
   V tem modelu (vemo) je standardna cenilka za $\sigma^2$ seveda \\
   $S^2 = \frac{1}{n-1} \sum_{i=1}^n (y_i - \overline{y})^2$. \\
   Očitno $\hat{\mu}(y) = \overline{y}$ (vstavimo $\beta$).
@@ -1972,7 +1998,8 @@ Najpreprosteje je izpeljati GS ortogonalizacijo na stolpcih matrike $X$. \\
 % skica
 $S^1 = \frac{X^1}{\lVert X^1 \rVert}$ \\
 $S^2 = \frac{X^2 - \langle X^2,S^1\rangle S^1}{\lVert \dots \rVert}$. \\
-Iz $\begin{bmatrix}X^1 & \dots & X^d\end{bmatrix} = \begin{bmatrix}S^1 & \dots & S^d\end{bmatrix}
+Iz \\
+$\begin{bmatrix}X^1 & \dots & X^d\end{bmatrix} = \begin{bmatrix}S^1 & \dots & S^d\end{bmatrix}
 \begin{bmatrix}
   \lVert X^1 \rVert^2 & * & \dots & * \\
   & \lVert \dots \rVert & & * \\
@@ -1984,21 +2011,22 @@ preberemo,
 da je pri (\sn{direktni}) GS ortogonalizaciji $P$ zgornje trikotna matrika s pozitivnimi diagonalnimi elementi. \\
 Izračunajmo $X^T X = P^T S^T S P = P^T I_{d \times d} P = P^T P$; sledi \\
 $\hat{\beta} = (P^{-1} P^{-T} P^T S^T y) = P^{-1} S^T y$ in \\
-$X \hat{\beta} = S S^T y$ (pravokotna projekcija na $X, S S^T$ projektor: $(S S^T) (S S^T) = S S^T$). \\
+$X \hat{\beta} = S S^T y$ (pravokotna projekcija na $X, S S^T$ projektor: \\
+$(S S^T) (S S^T) = S S^T$). \\
 Zato je $y - X \hat{\beta} = (I - S S^T)y$; velja $E(y - X \hat{\beta}) = 0 \in \R^n$. \\
 Pripomnimo, da za $\forall a = \begin{bmatrix}a_1 \\ \vdots \\ a_n\end{bmatrix} \in \R^n$ velja
 $\lVert a^2 \rVert = \sum_{a_i^2} = tr(a a^T)$. \\
 Zato lahko izrazimo
 \begin{align*}
-  E(VKR) &= E(tr((y - X \hat{\beta}) (y - X \hat{\beta})^T)) \\
-  &= tr(Var(y - X \hat{\beta})) \\
-  &= tr(Var((I - S S^T) y)) \\
-  &= tr((I - S S^T) Var(Y) (I - S S^T)^T) \\
-  &= \sigma^2 tr(I) + \sigma^2 tr(S S^T) \\
+  E(VKR) &= E\left(tr\left((y - X \hat{\beta}) (y - X \hat{\beta})^T\right)\right) \\
+  &= tr\left(Var(y - X \hat{\beta})\right) \\
+  &= tr\left(Var((I - S S^T) y)\right) \\
+  &= tr\left((I - S S^T) Var(Y) (I - S S^T)^T\right) \\
+  &= \sigma^2 tr(I) + \sigma^2 tr\left(S S^T\right) \\
   &= \sigma^2 (n-d).
 \end{align*}
 Normalni standardni linearni model \\
-$Y = X \beta + \epsilon$, kjer je $\epsilon \in N(0, \sigma^2 I)$. \\
+$Y = X \beta + \varepsilon$, kjer je $\varepsilon \in N(0, \sigma^2 I)$. \\
 To je parametrični model s $\Theta = \R^d \times (0, \infty) = (\beta, \sigma^2)$. \\
 Seveda sledi $Y \sim N(X \beta, \sigma^2 I)$. \\
 Lastnosti cenilk $\hat{\beta}, \hat{\sigma^2}$:
@@ -2012,8 +2040,8 @@ Lastnosti cenilk $\hat{\beta}, \hat{\sigma^2}$:
     \begin{align*}
       VKR &= \lVert y - X \hat{\beta} \rVert^2 \\
       &= \langle (I - S S^T) y, (I - S S^T) y\rangle \\
-      &\stackrel{\text{projekcija}}{=} \langle (I - S S^T) y, y \rangle \\
-      &\stackrel{\text{ortog.}}{=} \langle Q^T (I - S S^T) (Q Q^T) y, Q^T y \rangle
+      &\stackrel{\text{projekcija}}{\longeq{30pt}} \langle (I - S S^T) y, y \rangle \\
+      &\stackrel{\text{ortog.}}{\longeq{20pt}} \langle Q^T (I - S S^T) (Q Q^T) y, Q^T y \rangle
     \end{align*}
     \begin{enumerate}[label=(\roman*)]
       \item $Q^T S = \begin{bmatrix}(S^{'})^T \\ S^T\end{bmatrix} S =
@@ -2049,12 +2077,12 @@ Aposteriorna gostota
   (\sigma^2)^{-1-\frac{n}{2}} e^{-\frac{1}{\sigma^2} \cdot \frac{VKR}{2} -
     \frac{1}{2} \langle \frac{X^T X}{\sigma^2} (\hat{\beta} - \beta), \hat{\beta} - \beta} \rangle \\
   &\propto (\sigma^2)^{-\frac{n}{2}-1} e^{-\frac{VKR}{2 \sigma^2}} (\sigma^2)^{\frac{d}{2}}
-    \sqrt{det\left(\frac{X^T X}{\sigma^2}\right)}
-    e^{-\frac{1}{2} \langle \frac{X^T X}{\sigma^2} (\beta - \hat{\beta}), \beta - \hat(\beta)\rangle}.
+    \cdot \sqrt{det\left(\frac{X^T X}{\sigma^2}\right)}
+    \cdot e^{-\frac{1}{2} \left\langle \frac{X^T X}{\sigma^2} (\beta - \hat{\beta}), \beta - \hat(\beta)\right\rangle}.
 \end{align*}
 $\frac{X^T X}{\sigma^2} = (\text{var-kovar})^{-1}$. \\
 Vidimo: $\int_{\sigma^2} \int_{\beta \in \R^d} \dots < \infty$, če $n-d > 0$. \\
-Sledi, da imamo pri $n-d > 0$ prabo aposteriorno porazdelitev
+Sledi, da imamo pri $n-d > 0$ pravo aposteriorno porazdelitev
 \begin{equation*}
   f(\beta, \sigma^2 \mid y) = f_{\text{InvGama}\left(\frac{n-d}{2}, \frac{VKR}{2}\right)}(\sigma^2)
   \cdot f_{N(\hat{\beta}, \sigma^2 (X^T X)^{-1})}(\beta).
@@ -2223,7 +2251,7 @@ $n$-razsežna funkcija gama.
 \end{exmp}
 To pomeni
 \begin{equation*}
-  \sum_{i=1}^{\nu} N(0, \psi^{-1})^2 \stackrel{\text{neodv}}{=}
+  \sum_{i=1}^{\nu} N(0, \psi^{-1})^2 \stackrel{\text{neodv}}{\longeq{20pt}}
   \psi\left(\sum_{i=1}^{\nu} N(0, 1)^2\right)^{-1} \sim
   \text{InvGama}\left(\frac{\nu}{2}, \frac{\psi}{2}\right).
 \end{equation*}
@@ -2378,7 +2406,7 @@ Tedaj je
 \begin{align*}
   f(\phi \mid \vartheta, x) &= \frac{f(x \mid \vartheta, \phi) f(\phi \mid \vartheta)}{f(x \mid \vartheta)} \\
   &\stackrel{f(x \mid \vartheta, \phi) = f(x \mid \vartheta)}{=} f(\vartheta) \\
-  &\stackrel{\text{Bayes}}{=} \frac{f(\vartheta \mid \phi) f(\phi)}{f(\vartheta)}.
+  &\stackrel{\text{Bayes}}{\longeq{20pt}} \frac{f(\vartheta \mid \phi) f(\phi)}{f(\vartheta)}.
 \end{align*}
 Implementiramo
 \begin{align*}
